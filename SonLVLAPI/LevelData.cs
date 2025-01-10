@@ -48,6 +48,7 @@ namespace SonicRetro.SonLVL.API
 		public static ObjectDefinition unkobj;
 		private static string dllcache;
 		private static Dictionary<string, BitmapBits> spriteSheets;
+		private static Dictionary<string, RSDKv5.Animation> animations;
 		public static BitmapBits[][] ChunkColBmpBits;
 		public static Bitmap[][] ChunkColBmps;
 		public static Sprite[][] ChunkColSprites;
@@ -286,6 +287,7 @@ namespace SonicRetro.SonLVL.API
 			unkobj = new DefaultObjectDefinition();
 			INIObjDefs = new Dictionary<string, ObjectData>();
 			spriteSheets = new Dictionary<string, BitmapBits>();
+			animations = new Dictionary<string, RSDKv5.Animation>();
 			if (Directory.Exists("SonLVLObjDefs"))
 				foreach (string file in Directory.EnumerateFiles("SonLVLObjDefs", "*.ini"))
 					LoadObjectDefinitionFile(file, false);
@@ -1593,6 +1595,27 @@ namespace SonicRetro.SonLVL.API
 				spriteSheets.Add(sheetname, img);
 				return img;
 			}
+		}
+
+		public static RSDKv5.Animation GetAnimation(string path)
+		{
+			lock (animations)
+			{
+				path = "Resources/Sprites/" + path;
+				if (animations.TryGetValue(path, out RSDKv5.Animation bits))
+					return bits;
+				RSDKv5.Animation anim = ReadFile<RSDKv5.Animation>(path);
+				animations.Add(path, anim);
+				return anim;
+			}
+		}
+
+		public static Sprite GetAnimationFrame(string path, int animation, int frame)
+		{
+			RSDKv5.Animation anim = GetAnimation(path);
+			RSDKv5.Animation.AnimationEntry.Frame f = anim.animations[animation].frames[frame];
+			BitmapBits img = GetSpriteSheet(anim.spriteSheets[f.sheet].Replace("\x00", ""));
+			return new Sprite(img.GetSection(f.sprX, f.sprY, f.width, f.height), f.pivotX, f.pivotY);
 		}
 
 		public static Size FGSize { get { return new Size(FGWidth, FGHeight); } }

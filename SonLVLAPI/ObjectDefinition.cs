@@ -565,10 +565,7 @@ namespace SonicRetro.SonLVL.API
 			{
 				if (data.Anim != null)
 				{
-					RSDKv5.Animation anim = LevelData.ReadFile<RSDKv5.Animation>($"Resources/Sprites/{data.Anim.File}");
-					RSDKv5.Animation.AnimationEntry.Frame frame = anim.animations[data.Anim.Anim].frames[data.Anim.Frame];
-					BitmapBits img = LevelData.GetSpriteSheet(anim.spriteSheets[frame.sheet].Replace("\x00", ""));
-					spr[0] = new Sprite(img.GetSection(frame.sprX, frame.sprY, frame.width, frame.height), frame.pivotX, frame.pivotY);
+					spr[0] = LevelData.GetAnimationFrame(data.Anim.File, data.Anim.Anim, data.Anim.Frame);
 					if (data.Priority)
 						spr[0].InvertPriority();
 				}
@@ -724,10 +721,8 @@ namespace SonicRetro.SonLVL.API
 							if (sheetimg.priority) sprite.InvertPriority();
 							break;
 						case XMLDef.ImageFromAnim animimg:
-							RSDKv5.Animation anim = LevelData.ReadFile<RSDKv5.Animation>($"Resources/Sprites/{animimg.file}");
-							RSDKv5.Animation.AnimationEntry.Frame frame = anim.animations[animimg.anim].frames[animimg.frame];
-							bmp = LevelData.GetSpriteSheet(anim.spriteSheets[frame.sheet].Replace("\x00", ""));
-							sprite = new Sprite(bmp.GetSection(frame.sprX, frame.sprY, frame.width, frame.height), frame.pivotX + animimg.Offset.X, frame.pivotY + animimg.Offset.Y);
+							sprite = LevelData.GetAnimationFrame(animimg.file, animimg.anim, animimg.frame);
+							sprite.Offset(animimg.Offset.X, animimg.Offset.Y);
 							if (data.Priority) sprite.InvertPriority();
 							break;
 					}
