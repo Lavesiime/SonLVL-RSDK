@@ -1978,7 +1978,8 @@ namespace SonicRetro.SonLVL.GUI
 					}
 					break;
 			}
-			panel.PanelGraphics.DrawImage(LevelBmp, 0, 0, panel.PanelWidth, panel.PanelHeight);
+			panel.GraphicsBuffer.Graphics.DrawImage(LevelBmp, 0, 0, panel.PanelWidth, panel.PanelHeight);
+			panel.GraphicsBuffer.Render(panel.PanelGraphics);
 		}
 
 		public Rectangle DrawHUDStr(int x, int y, string str)
