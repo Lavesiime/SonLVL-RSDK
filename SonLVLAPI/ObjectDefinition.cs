@@ -765,6 +765,8 @@ namespace SonicRetro.SonLVL.API
 					Action<ObjectEntry, object> setMethod;
 					string name = property.sourceSpecified ? property.source : "PropertyValue";
 					System.Reflection.PropertyInfo prop = typeof(V4ObjectEntry).GetProperty(name);
+					if (prop == null)
+						continue;
 					if (enums.ContainsKey(property.type))
 					{
 						if (prop.PropertyType == typeof(byte))

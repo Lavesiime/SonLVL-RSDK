@@ -224,8 +224,6 @@ namespace SonicRetro.SonLVL.GUI
 				Settings.MRUList = mru;
 				if (mru.Count > 0) recentProjectsToolStripMenuItem.DropDownItems.Remove(noneToolStripMenuItem2);
 			}
-			if (Settings.RecentMods == null)
-				Settings.RecentMods = new List<MRUModItem>();
 			recentModsToolStripMenuItem.Visible = false;
 			selectModToolStripMenuItem.Visible = false;
 			editGameConfigToolStripMenuItem.Visible = false;
@@ -450,21 +448,6 @@ namespace SonicRetro.SonLVL.GUI
 			}
 			sfxFileBox.AutoCompleteCustomSource.Clear();
 			sfxFileBox.AutoCompleteCustomSource.AddRange(sfxFiles.ToArray());
-			if (Settings.RecentMods.Count == 0)
-				recentModsToolStripMenuItem.DropDownItems.Remove(noneToolStripMenuItem);
-			int ind = Settings.RecentMods.FindIndex(a => a.INIPath == LevelData.GamePath && a.ModPath == path);
-			if (ind != -1)
-			{
-				recentModsToolStripMenuItem.DropDownItems.RemoveAt(ind);
-				Settings.RecentMods.RemoveAt(ind);
-			}
-			string modname;
-			if (path == null)
-				modname = $"No Mod ({LevelData.GameTitle})";
-			else
-				modname = $"{IniSerializer.Deserialize<ModInfo>(path).Name ?? "Unknown Mod"} ({LevelData.GameTitle})";
-			Settings.RecentMods.Insert(0, new MRUModItem(modname, LevelData.GamePath, path));
-			recentModsToolStripMenuItem.DropDownItems.Insert(0, new ToolStripMenuItem(modname));
 			Text = "SonLVL-RSDK - " + LevelData.GameTitle;
 		}
 
@@ -866,10 +849,6 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void recentModsToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			loaded = false;
-			MRUModItem item = Settings.RecentMods[recentModsToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem)];
-			LoadINI(item.INIPath);
-			LoadMod(item.ModPath);
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
