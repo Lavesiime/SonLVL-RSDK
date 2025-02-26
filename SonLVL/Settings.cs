@@ -39,7 +39,6 @@ namespace SonicRetro.SonLVL
 		public byte ObjectGridSize { get; set; }
 		public string Username { get; set; }
 		public Color BackgroundColor { get; set; }
-		public bool IncludeObjectsInForegroundSelection { get; set; }
 		[DefaultValue(true)]
 		public bool TransparentBackgroundExport { get; set; }
 		[DefaultValue(true)]
@@ -81,7 +80,6 @@ namespace SonicRetro.SonLVL
 				result.GridColor = Color.Red;
 				result.Username = null;
 				result.BackgroundColor = Color.FromArgb(160, 0, 0, 192);
-				result.IncludeObjectsInForegroundSelection = false;
 				result.TransparentBackgroundExport = true;
 				result.ViewLowPlane = result.ViewHighPlane = true;
 				result.ZoomLevel = "1x";

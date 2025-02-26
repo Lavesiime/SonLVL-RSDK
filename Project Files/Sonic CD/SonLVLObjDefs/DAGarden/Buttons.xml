@@ -7,10 +7,10 @@
     <ImageFromSheet id="zoomin" sheet="DAGarden/Objects.gif" sourcex="210" sourcey="577" width="63" height="31">
       <Offset X="-32" Y="-16" />
     </ImageFromSheet>
-    <ImageFromSheet id="rotateright" sheet="DAGarden/Objects.gif" sourcex="274" sourcey="577" width="63" height="31">
+    <ImageFromSheet id="rotatecw" sheet="DAGarden/Objects.gif" sourcex="274" sourcey="577" width="63" height="31">
       <Offset X="-32" Y="-16" />
     </ImageFromSheet>
-    <ImageFromSheet id="rotateleft" sheet="DAGarden/Objects.gif" sourcex="338" sourcey="577" width="63" height="31">
+    <ImageFromSheet id="rotateccw" sheet="DAGarden/Objects.gif" sourcex="338" sourcey="577" width="63" height="31">
       <Offset X="-32" Y="-16" />
     </ImageFromSheet>
     <ImageFromSheet id="lasttrack" sheet="DAGarden/Objects.gif" sourcex="210" sourcey="641" width="63" height="31">
@@ -30,14 +30,14 @@
     </ImageFromSheet>
   </Images>
   <Properties>
-    <Property name="Button" description="Which button this object is." type="buttons" startbit="0" length="8" />
+    <Property name="Button" description="What this button should do when pressed." type="buttons" startbit="0" length="8" />
   </Properties>
   <Enums>
     <Enum name="buttons">
       <EnumMember name="Zoom Out" />
       <EnumMember name="Zoom In" />
-      <EnumMember name="Rotate Right" />
-      <EnumMember name="Rotate Left" />
+      <EnumMember name="Rotate Clockwise" />
+      <EnumMember name="Rotate Counterclockwise" />
       <EnumMember name="Last Track" />
       <EnumMember name="Play Track" />
       <EnumMember name="Next Track" />
@@ -48,8 +48,8 @@
   <Subtypes>
     <Subtype id="00" name="Zoom Out" image="zoomout" />
     <Subtype id="01" name="Zoom In" image="zoomin" />
-    <Subtype id="02" name="Rotate Right" image="rotateright" />
-    <Subtype id="03" name="Rotate Left" image="rotateleft" />
+    <Subtype id="02" name="Rotate Clockwise" image="rotatecw" />
+    <Subtype id="03" name="Rotate Counterclockwise" image="rotateccw" />
     <Subtype id="04" name="Last Track" image="lasttrack" />
     <Subtype id="05" name="Play Track" image="playtrack" />
     <Subtype id="06" name="Next Track" image="nexttrack" />

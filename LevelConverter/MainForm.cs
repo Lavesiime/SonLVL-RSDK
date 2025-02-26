@@ -350,6 +350,7 @@ namespace SonicRetro.SonLVL.LevelConverter
 											dstTile.solidityA = RSDKv5.SceneLayer.Tile.Solidities.SolidAll;
 											break;
 										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTop:
+										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip:
 											dstTile.solidityA = RSDKv5.SceneLayer.Tile.Solidities.SolidTop;
 											break;
 										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAllButTop:
@@ -365,6 +366,7 @@ namespace SonicRetro.SonLVL.LevelConverter
 											dstTile.solidityB = RSDKv5.SceneLayer.Tile.Solidities.SolidAll;
 											break;
 										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTop:
+										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip:
 											dstTile.solidityB = RSDKv5.SceneLayer.Tile.Solidities.SolidTop;
 											break;
 										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAllButTop:
@@ -516,6 +518,7 @@ namespace SonicRetro.SonLVL.LevelConverter
 												dstTile.solidityA = RSDKv5.SceneLayer.Tile.Solidities.SolidAll;
 												break;
 											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTop:
+											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip:
 												dstTile.solidityA = RSDKv5.SceneLayer.Tile.Solidities.SolidTop;
 												break;
 											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAllButTop:
@@ -531,6 +534,7 @@ namespace SonicRetro.SonLVL.LevelConverter
 												dstTile.solidityB = RSDKv5.SceneLayer.Tile.Solidities.SolidAll;
 												break;
 											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTop:
+											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip:
 												dstTile.solidityB = RSDKv5.SceneLayer.Tile.Solidities.SolidTop;
 												break;
 											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAllButTop:
@@ -859,6 +863,7 @@ namespace SonicRetro.SonLVL.LevelConverter
 											dstTile.solidityA = RSDKv5.SceneLayer.Tile.Solidities.SolidAll;
 											break;
 										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTop:
+										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip:
 											dstTile.solidityA = RSDKv5.SceneLayer.Tile.Solidities.SolidTop;
 											break;
 										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAllButTop:
@@ -874,6 +879,7 @@ namespace SonicRetro.SonLVL.LevelConverter
 											dstTile.solidityB = RSDKv5.SceneLayer.Tile.Solidities.SolidAll;
 											break;
 										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTop:
+										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip:
 											dstTile.solidityB = RSDKv5.SceneLayer.Tile.Solidities.SolidTop;
 											break;
 										case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAllButTop:
@@ -1025,6 +1031,7 @@ namespace SonicRetro.SonLVL.LevelConverter
 												dstTile.solidityA = RSDKv5.SceneLayer.Tile.Solidities.SolidAll;
 												break;
 											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTop:
+											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip:
 												dstTile.solidityA = RSDKv5.SceneLayer.Tile.Solidities.SolidTop;
 												break;
 											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAllButTop:
@@ -1040,6 +1047,7 @@ namespace SonicRetro.SonLVL.LevelConverter
 												dstTile.solidityB = RSDKv5.SceneLayer.Tile.Solidities.SolidAll;
 												break;
 											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTop:
+											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip:
 												dstTile.solidityB = RSDKv5.SceneLayer.Tile.Solidities.SolidTop;
 												break;
 											case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAllButTop:

@@ -279,7 +279,7 @@ namespace SonicRetro.SonLVL
             this.objectScriptBox.Enabled = false;
             this.objectScriptBox.Location = new System.Drawing.Point(281, 75);
             this.objectScriptBox.Margin = new System.Windows.Forms.Padding(4);
-            this.objectScriptBox.MaxLength = 255;
+            this.objectScriptBox.MaxLength = 64;
             this.objectScriptBox.Name = "objectScriptBox";
             this.objectScriptBox.Size = new System.Drawing.Size(211, 22);
             this.objectScriptBox.TabIndex = 6;
@@ -302,7 +302,7 @@ namespace SonicRetro.SonLVL
             this.objectNameBox.Enabled = false;
             this.objectNameBox.Location = new System.Drawing.Point(281, 27);
             this.objectNameBox.Margin = new System.Windows.Forms.Padding(4);
-            this.objectNameBox.MaxLength = 255;
+            this.objectNameBox.MaxLength = 16;
             this.objectNameBox.Name = "objectNameBox";
             this.objectNameBox.Size = new System.Drawing.Size(211, 22);
             this.objectNameBox.TabIndex = 4;
@@ -573,7 +573,7 @@ namespace SonicRetro.SonLVL
             this.sfxFileBox.Enabled = false;
             this.sfxFileBox.Location = new System.Drawing.Point(281, 75);
             this.sfxFileBox.Margin = new System.Windows.Forms.Padding(4);
-            this.sfxFileBox.MaxLength = 255;
+            this.sfxFileBox.MaxLength = 64;
             this.sfxFileBox.Name = "sfxFileBox";
             this.sfxFileBox.Size = new System.Drawing.Size(211, 22);
             this.sfxFileBox.TabIndex = 6;
@@ -596,7 +596,7 @@ namespace SonicRetro.SonLVL
             this.sfxNameBox.Enabled = false;
             this.sfxNameBox.Location = new System.Drawing.Point(281, 27);
             this.sfxNameBox.Margin = new System.Windows.Forms.Padding(4);
-            this.sfxNameBox.MaxLength = 255;
+            this.sfxNameBox.MaxLength = 16;
             this.sfxNameBox.Name = "sfxNameBox";
             this.sfxNameBox.Size = new System.Drawing.Size(211, 22);
             this.sfxNameBox.TabIndex = 4;

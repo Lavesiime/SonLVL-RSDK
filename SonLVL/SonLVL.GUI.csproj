@@ -84,6 +84,12 @@
     <Compile Include="GoToDialog.Designer.cs">
       <DependentUpon>GoToDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ImportPalette.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImportPalette.Designer.cs">
+      <DependentUpon>ImportPalette.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoadErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -245,6 +251,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GoToDialog.resx">
       <DependentUpon>GoToDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImportPalette.resx">
+      <DependentUpon>ImportPalette.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImportProgressControl.resx">
       <DependentUpon>ImportProgressControl.cs</DependentUpon>

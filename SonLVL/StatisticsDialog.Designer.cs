@@ -64,7 +64,7 @@
             this.listView1.Location = new System.Drawing.Point(6, 6);
             this.listView1.Margin = new System.Windows.Forms.Padding(6);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(540, 444);
+            this.listView1.Size = new System.Drawing.Size(562, 444);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -82,7 +82,7 @@
             // columnHeader5
             // 
             this.columnHeader5.Text = "Folder Total";
-            this.columnHeader5.Width = 90;
+            this.columnHeader5.Width = 80;
             // 
             // tabControl1
             // 
@@ -104,7 +104,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(6);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(6);
-            this.tabPage1.Size = new System.Drawing.Size(552, 456);
+            this.tabPage1.Size = new System.Drawing.Size(574, 456);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Objects";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -145,7 +145,7 @@
             // columnHeader3
             // 
             this.columnHeader3.Text = "ID";
-            this.columnHeader3.Width = 50;
+            this.columnHeader3.Width = 45;
             // 
             // columnHeader4
             // 
@@ -160,7 +160,7 @@
             // columnHeader9
             // 
             this.columnHeader9.Text = "Folder Total";
-            this.columnHeader9.Width = 90;
+            this.columnHeader9.Width = 75;
             // 
             // tabPage4
             // 
@@ -169,7 +169,7 @@
             this.tabPage4.Margin = new System.Windows.Forms.Padding(6);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(6);
-            this.tabPage4.Size = new System.Drawing.Size(552, 456);
+            this.tabPage4.Size = new System.Drawing.Size(574, 456);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Tiles";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -187,7 +187,7 @@
             this.listView4.Location = new System.Drawing.Point(6, 6);
             this.listView4.Margin = new System.Windows.Forms.Padding(6);
             this.listView4.Name = "listView4";
-            this.listView4.Size = new System.Drawing.Size(540, 444);
+            this.listView4.Size = new System.Drawing.Size(562, 444);
             this.listView4.TabIndex = 1;
             this.listView4.UseCompatibleStateImageBehavior = false;
             this.listView4.View = System.Windows.Forms.View.Details;
@@ -196,7 +196,7 @@
             // columnHeader7
             // 
             this.columnHeader7.Text = "ID";
-            this.columnHeader7.Width = 50;
+            this.columnHeader7.Width = 45;
             // 
             // columnHeader8
             // 

@@ -20,7 +20,7 @@ namespace SonicRetro.SonLVL.API
 
 		private void okButton_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://github.com/MainMemory/SonLVL-RSDK/issues");
+			System.Diagnostics.Process.Start("https://github.com/Lavesiime/SonLVL-RSDK/issues");
 			Close();
 		}
 

@@ -278,7 +278,13 @@ namespace SonicRetro.SonLVL.API
 				}
 				else
 					BGScroll[i].Add(new ScrollData());
+				
+				Background.layers[i].lineScroll = new byte[0];
 			}
+			
+			Background.hScroll.Clear();
+			Background.vScroll.Clear();
+			
 			using (Bitmap palbmp = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
 				BmpPal = palbmp.Palette;
 			NewPalette.CopyTo(BmpPal.Entries, 0);

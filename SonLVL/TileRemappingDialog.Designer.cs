@@ -196,6 +196,7 @@ namespace SonicRetro.SonLVL
 			this.AcceptButton = this.okButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(812, 472);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(label2);

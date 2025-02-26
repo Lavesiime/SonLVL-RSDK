@@ -11,7 +11,8 @@
       <Offset X="-4" Y="-44" />
     </ImageFromSheet>
   </Images>
-  <!-- ..are big bomgs badniks, or are they just generic objects? i'm honestly not sure.. 
+  <!-- ..are big bomgs badniks, or are they just generic objects? i'm honestly not sure..
+       they're still in the good future, so.. i guess they're just normal objects, then?..
        at first this was Condition, and while i still think that makes sense, i'm not sure if it's really the best fit -->
   <Properties>
     <Property name="Behaviour" description="How this Big Bomb should behave." type="behaviours" startbit="0" length="8" />
