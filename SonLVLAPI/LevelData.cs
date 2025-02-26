@@ -33,7 +33,7 @@ namespace SonicRetro.SonLVL.API
 		public static bool ForegroundDeformation;
 		public static List<ObjectEntry> Objects;
 		public static List<ScrollData>[] BGScroll = new List<ScrollData>[8];
-		public static List<GameConfig.StageList.StageInfo>[] StageLists = new List<GameConfig.StageList.StageInfo>[4];
+		public static List<GameConfig.StageList.StageInfo> StageLists = new List<GameConfig.StageList.StageInfo>();
 		public static List<GameConfig.ObjectInfo> GlobalObjects;
 		public static List<AdditionalScene> AdditionalScenes;
 		public static Bitmap[] NewTileBmps;
@@ -48,6 +48,7 @@ namespace SonicRetro.SonLVL.API
 		public static ObjectDefinition unkobj;
 		private static string dllcache;
 		private static Dictionary<string, BitmapBits> spriteSheets;
+		private static Dictionary<string, RSDKv5.Animation> animations;
 		public static BitmapBits[][] ChunkColBmpBits;
 		public static Bitmap[][] ChunkColBmps;
 		public static Sprite[][] ChunkColSprites;
@@ -116,60 +117,27 @@ namespace SonicRetro.SonLVL.API
 			else
 				DataFile = new DataFolder(EXEFolder);
 			ModFolder = null;
-			switch (Game.RSDKVer)
+			GameConfig = new RSDKv4.GameConfig();
+			GameConfig.gameTitle = "Sonic 2 - TQ";
+			foreach (var stg in Game.Levels)
 			{
-				case EngineVersion.V4:
-					GameConfig = ReadFile<RSDKv4.GameConfig>("Data/Game/GameConfig.bin");
-					break;
-				case EngineVersion.V3:
-					GameConfig = ReadFile<RSDKv3.GameConfig>("Data/Game/GameConfig.bin");
-					break;
+				GameConfig.stageLists[0].list.Add(new GameConfig.StageList.StageInfo()
+				{
+					name = stg.Key,
+					folder = stg.Value.folder,
+					actID = stg.Value.id,
+					highlighted = stg.Value.header
+				});
 			}
 		}
 
 		public static void LoadMod(string path)
 		{
 			ModFolder = path;
-			switch (Game.RSDKVer)
-			{
-				case EngineVersion.V4:
-					GameConfig = ReadFile<RSDKv4.GameConfig>("Data/Game/GameConfig.bin");
-					var pal = ((RSDKv4.GameConfig)GameConfig).masterPalette;
-					for (int l = 0; l < pal.colors.Length; l++)
-						for (int c = 0; c < pal.colors[l].Length; c++)
-							if ((l * pal.colors[l].Length) + c < 256)
-								NewPalette[(l * pal.colors[l].Length) + c] = pal.colors[l][c].ToSystemColor();
-					break;
-				case EngineVersion.V3:
-					GameConfig = ReadFile<RSDKv3.GameConfig>("Data/Game/GameConfig.bin");
-					var mpal = ReadFileRaw("Data/Palettes/MasterPalette.act");
-					for (int i = 0; i < Math.Min(mpal.Length / 3, 256); i++)
-						NewPalette[i] = Color.FromArgb(mpal[i * 3], mpal[i * 3 + 1], mpal[i * 3 + 2]);
-					break;
-			}
-			for (int i = 0; i < 4; i++)
-				StageLists[i] = new List<GameConfig.StageList.StageInfo>(GameConfig.stageLists[i].list);
+			StageLists = new List<GameConfig.StageList.StageInfo>(GameConfig.stageLists[0].list);
 			GlobalObjects = new List<GameConfig.ObjectInfo>(GameConfig.objects);
 			GameTitle = GameConfig.gameTitle;
 			GameXML = null;
-			if (ModFolder != null)
-			{
-				string xmlpath = Path.Combine(ModFolder, "Data/Game/game.xml");
-				if (File.Exists(xmlpath))
-				{
-					GameXML = GameXML.Load(xmlpath);
-					foreach (var col in GameXML.palette.colors.Where(a => a.bank == 0))
-						NewPalette[col.index] = (Color)col;
-					StageLists[0].AddRange(GameXML.presentationStages.Select(a => (GameConfig.StageList.StageInfo)a));
-					StageLists[1].AddRange(GameXML.regularStages.Select(a => (GameConfig.StageList.StageInfo)a));
-					StageLists[2].AddRange(GameXML.specialStages.Select(a => (GameConfig.StageList.StageInfo)a));
-					StageLists[3].AddRange(GameXML.bonusStages.Select(a => (GameConfig.StageList.StageInfo)a));
-					GlobalObjects.AddRange(GameXML.objects.Where(a => !a.forceLoad).Select(a => (GameConfig.ObjectInfo)a));
-
-					if (GameXML.title.name != null)
-						GameTitle = GameXML.title.name;
-				}
-			}
 		}
 
 		public static T ReadFile<T>(string filename)
@@ -230,7 +198,7 @@ namespace SonicRetro.SonLVL.API
 			stopwatch.Start();
 			Log("Loading " + stage.name + "...");
 			StageInfo = stage;
-			string stgfol = $"Data/Stages/{stage.folder}/";
+			string stgfol = $"Resources/Stages/{stage.folder}/";
 			switch (Game.RSDKVer)
 			{
 				case EngineVersion.V4:
@@ -252,7 +220,7 @@ namespace SonicRetro.SonLVL.API
 					NewTiles[i] = new BitmapBits(16, 16);
 					Array.Copy(tilebmp.pixels, i * 256, NewTiles[i].Bits, 0, 256);
 				}
-				for (int i = 128; i < 256; i++)
+				for (int i = 0; i < 256; i++)
 					NewPalette[i] = tilebmp.palette[i].ToSystemColor();
 			}
 			else
@@ -269,13 +237,13 @@ namespace SonicRetro.SonLVL.API
 				case EngineVersion.V4:
 					Background = ReadFile<RSDKv4.Backgrounds>(stgfol + "Backgrounds.bin");
 					Scene = ReadFile<RSDKv4.Scene>($"{stgfol}Act{stage.actID}.bin");
-					foreach (var astg in StageLists.SelectMany(a => a).Where(a => a != stage && a.folder.Equals(stage.folder, StringComparison.OrdinalIgnoreCase) && !a.actID.Equals(stage.actID, StringComparison.OrdinalIgnoreCase)))
+					foreach (var astg in StageLists.Where(a => a != stage && a.folder.Equals(stage.folder, StringComparison.OrdinalIgnoreCase) && !a.actID.Equals(stage.actID, StringComparison.OrdinalIgnoreCase)))
 						AdditionalScenes.Add(new AdditionalScene(astg, ReadFile<RSDKv4.Scene>($"{stgfol}Act{astg.actID}.bin")));
 					break;
 				case EngineVersion.V3:
 					Background = ReadFile<RSDKv3.Backgrounds>(stgfol + "Backgrounds.bin");
 					Scene = ReadFile<RSDKv3.Scene>($"{stgfol}Act{stage.actID}.bin");
-					foreach (var astg in StageLists.SelectMany(a => a).Where(a => a != stage && a.folder.Equals(stage.folder, StringComparison.OrdinalIgnoreCase) && !a.actID.Equals(stage.actID, StringComparison.OrdinalIgnoreCase)))
+					foreach (var astg in StageLists.Where(a => a != stage && a.folder.Equals(stage.folder, StringComparison.OrdinalIgnoreCase) && !a.actID.Equals(stage.actID, StringComparison.OrdinalIgnoreCase)))
 						AdditionalScenes.Add(new AdditionalScene(astg, ReadFile<RSDKv3.Scene>($"{stgfol}Act{astg.actID}.bin")));
 					break;
 			}
@@ -325,17 +293,11 @@ namespace SonicRetro.SonLVL.API
 			unkobj = new DefaultObjectDefinition();
 			INIObjDefs = new Dictionary<string, ObjectData>();
 			spriteSheets = new Dictionary<string, BitmapBits>();
+			animations = new Dictionary<string, RSDKv5.Animation>();
 			if (Directory.Exists("SonLVLObjDefs"))
 				foreach (string file in Directory.EnumerateFiles("SonLVLObjDefs", "*.ini"))
 					LoadObjectDefinitionFile(file, false);
-			if (ModFolder != null && Directory.Exists(Path.Combine(ModFolder, "SonLVLObjDefs")))
-			{
-				foreach (string file in Directory.EnumerateFiles(Path.Combine(ModFolder, "SonLVLObjDefs"), "*.ini"))
-					LoadObjectDefinitionFile(file, true);
-				dllcache = Path.Combine(ModFolder, "SonLVLObjDefs", "dllcache");
-			}
-			else
-				dllcache = Path.Combine("SonLVLObjDefs", "dllcache");
+			dllcache = Path.Combine("SonLVLObjDefs", "dllcache");
 			unkobj.Init(new ObjectData());
 			if (INIObjDefs.Count > 0 && !Directory.Exists(dllcache))
 			{
@@ -379,7 +341,7 @@ namespace SonicRetro.SonLVL.API
 
 		public static void ReloadTiles()
 		{
-			Gif tilebmp = ReadFile<Gif>($"Data/Stages/{StageInfo.folder}/16x16Tiles.gif");
+			Gif tilebmp = ReadFile<Gif>($"Resources/Stages/{StageInfo.folder}/16x16Tiles.gif");
 			if (tilebmp.width >= 16 && tilebmp.height >= 16)
 			{
 				NewTiles = new BitmapBits[tilebmp.height / 16];
@@ -388,7 +350,7 @@ namespace SonicRetro.SonLVL.API
 					NewTiles[i] = new BitmapBits(16, 16);
 					Array.Copy(tilebmp.pixels, i * 256, NewTiles[i].Bits, 0, 256);
 				}
-				for (int i = 128; i < 256; i++)
+				for (int i = 0; i < 256; i++)
 					NewPalette[i] = tilebmp.palette[i].ToSystemColor();
 			}
 			else
@@ -471,121 +433,14 @@ namespace SonicRetro.SonLVL.API
 		public static void SaveLevel()
 		{
 			Log($"Saving {StageInfo.name}...");
-			if (GameXML != null)
-			{
-				GameXML.palette.colors.RemoveAll(a => a.bank == 0 && a.index < 96);
-				switch (Game.RSDKVer)
-				{
-					case EngineVersion.V3:
-						{
-							byte[] origpal = ReadFileRaw("Data/Palettes/MasterPalette.act");
-							int pallen = Math.Min(origpal.Length / 3, 96);
-							int v = 0;
-							for (int i = 0; i < pallen; i++)
-							{
-								if (origpal[v] != NewPalette[i].R || origpal[v + 1] != NewPalette[i].G || origpal[v + 2] != NewPalette[i].B)
-									GameXML.palette.colors.Add(new ColorXML(0, (byte)i, NewPalette[i]));
-								v += 3;
-							}
-						}
-						break;
-					case EngineVersion.V4:
-						{
-							var origpal = ((RSDKv4.GameConfig)GameConfig).masterPalette;
-							int i = 0;
-							for (int l = 0; l < origpal.colors.Length; l++)
-								for (int c = 0; c < origpal.colors[l].Length; c++)
-								{
-									if (i == 96) break;
-									if (origpal.colors[l][c].r != NewPalette[i].R || origpal.colors[l][c].g != NewPalette[i].G || origpal.colors[l][c].b != NewPalette[i].B)
-										GameXML.palette.colors.Add(new ColorXML(0, (byte)i, NewPalette[i]));
-									++i;
-								}
-						}
-						break;
-				}
-				GameXML.palette.colors.Sort((a, b) =>
-				{
-					int result = a.bank.CompareTo(b.bank);
-					if (result == 0)
-						result = a.index.CompareTo(b.index);
-					return result;
-				});
-				GameXML.Save(Path.Combine(ModFolder, "Data/Game/game.xml"));
-			}
-			else
-			{
-				switch (Game.RSDKVer)
-				{
-					case EngineVersion.V3:
-						{
-							byte[] pal = ReadFileRaw("Data/Palettes/MasterPalette.act");
-							int pallen = Math.Min(pal.Length / 3, 96);
-							int v = 0;
-							bool edit = false;
-							for (int i = 0; i < pallen; i++)
-							{
-								if (pal[v] != NewPalette[i].R)
-								{
-									pal[v] = NewPalette[i].R;
-									edit = true;
-								}
-								if (pal[v + 1] != NewPalette[i].G)
-								{
-									pal[v + 1] = NewPalette[i].G;
-									edit = true;
-								}
-								if (pal[v + 2] != NewPalette[i].B)
-								{
-									pal[v + 2] = NewPalette[i].B;
-									edit = true;
-								}
-								v += 3;
-							}
-							if (edit)
-							{
-								Directory.CreateDirectory(Path.Combine(ModFolder, "Data/Palettes"));
-								File.WriteAllBytes(Path.Combine(ModFolder, "Data/Palettes/MasterPalette.act"), pal);
-							}
-						}
-						break;
-					case EngineVersion.V4:
-						{
-							var pal = ((RSDKv4.GameConfig)GameConfig).masterPalette;
-							int i = 0;
-							bool edit = false;
-							for (int l = 0; l < pal.colors.Length; l++)
-								for (int c = 0; c < pal.colors[l].Length; c++)
-								{
-									if (i == 96) break;
-									if (pal.colors[l][c].r != NewPalette[i].R || pal.colors[l][c].g != NewPalette[i].G || pal.colors[l][c].b != NewPalette[i].B)
-									{
-										pal.colors[l][c] = new Palette.Color(NewPalette[i].R, NewPalette[i].G, NewPalette[i].B);
-										edit = true;
-									}
-									++i;
-								}
-							if (edit)
-							{
-								Directory.CreateDirectory(Path.Combine(ModFolder, "Data/Game"));
-								GameConfig.Write(Path.Combine(ModFolder, "Data/Game/GameConfig.bin"));
-							}
-						}
-						break;
-				}
-			}
-			Directory.CreateDirectory(Path.Combine(ModFolder, "Data/Stages", StageInfo.folder));
-			for (int i = 0; i < 32; i++)
-				StageConfig.stagePalette.colors[i / StageConfig.stagePalette.colors[0].Length][i % StageConfig.stagePalette.colors[0].Length] = new Palette.Color(NewPalette[i + 96].R, NewPalette[i + 96].G, NewPalette[i + 96].B);
+			Directory.CreateDirectory(Path.Combine("Resources/Stages", StageInfo.folder));
 			SaveFile("StageConfig.bin", fn => StageConfig.Write(fn));
 			BitmapBits tiles = new BitmapBits(16, NewTiles.Length * 16);
 			for (int i = 0; i < NewTiles.Length; i++)
 				tiles.DrawBitmap(NewTiles[i], 0, i * 16);
 			SaveFile("16x16Tiles.gif", fn =>
 			{
-				Color[] palette = (Color[])NewPalette.Clone();
-				palette.Fill(NewPalette[0], 1, 95);
-				using (Bitmap bmp = tiles.ToBitmap(palette))
+				using (Bitmap bmp = tiles.ToBitmap(NewPalette))
 					bmp.Save(fn, ImageFormat.Gif);
 			});
 			SaveFile("128x128Tiles.bin", fn => NewChunks.Write(fn));
@@ -654,11 +509,11 @@ namespace SonicRetro.SonLVL.API
 
 		private static void SaveFile(string name, Action<string> action)
 		{
-			string fullpath = Path.Combine(ModFolder, "Data/Stages", StageInfo.folder, name);
+			string fullpath = Path.Combine("Resources/Stages", StageInfo.folder, name);
 			bool isnew = !File.Exists(fullpath);
-			bool noModExists = (DataFile != null && DataFile.FileExists($"Data/Stages/{StageInfo.folder}/{name}")) || File.Exists($"Data/Stages/{StageInfo.folder}/{name}");
+			bool noModExists = (DataFile != null && DataFile.FileExists($"Resources/Stages/{StageInfo.folder}/{name}")) || File.Exists($"Resources/Stages/{StageInfo.folder}/{name}");
 			action(fullpath);
-			if (isnew && noModExists && ReadFileRawNoMod($"Data/Stages/{StageInfo.folder}/{name}").FastArrayEqual(File.ReadAllBytes(fullpath)))
+			if (isnew && noModExists && ReadFileRawNoMod($"Resources/Stages/{StageInfo.folder}/{name}").FastArrayEqual(File.ReadAllBytes(fullpath)))
 				File.Delete(fullpath);
 		}
 
@@ -990,7 +845,7 @@ namespace SonicRetro.SonLVL.API
 
 		public static ObjectDefinition MakeObjectDefinition(GameConfig.ObjectInfo objinf)
 		{
-			if (!INIObjDefs.TryGetValue(objinf.script, out ObjectData data))
+			if (!INIObjDefs.TryGetValue(objinf.name, out ObjectData data))
 				data = new ObjectData();
 			ObjectDefinition def;
 			if (data.CodeFile != null)
@@ -1063,7 +918,7 @@ namespace SonicRetro.SonLVL.API
 #if !DEBUG
 			catch (Exception ex)
 			{
-				Log("Object definition " + objinf.script + " failed to initialize!");
+				Log("Object definition " + objinf.name + " failed to initialize!");
 				Log(ex.ToString());
 				def = new DefaultObjectDefinition();
 				def.Init(new ObjectData());
@@ -1739,13 +1594,34 @@ namespace SonicRetro.SonLVL.API
 		{
 			lock (spriteSheets)
 			{
-				sheetname = "Data/Sprites/" + sheetname;
+				sheetname = "Resources/Sprites/" + sheetname;
 				if (spriteSheets.TryGetValue(sheetname, out BitmapBits bits))
 					return bits;
 				BitmapBits img = new BitmapBits(LevelData.ReadFile<Gif>(sheetname));
 				spriteSheets.Add(sheetname, img);
 				return img;
 			}
+		}
+
+		public static RSDKv5.Animation GetAnimation(string path)
+		{
+			lock (animations)
+			{
+				path = "Resources/Sprites/" + path;
+				if (animations.TryGetValue(path, out RSDKv5.Animation bits))
+					return bits;
+				RSDKv5.Animation anim = ReadFile<RSDKv5.Animation>(path);
+				animations.Add(path, anim);
+				return anim;
+			}
+		}
+
+		public static Sprite GetAnimationFrame(string path, int animation, int frame)
+		{
+			RSDKv5.Animation anim = GetAnimation(path);
+			RSDKv5.Animation.AnimationEntry.Frame f = anim.animations[animation].frames[frame];
+			BitmapBits img = GetSpriteSheet(anim.spriteSheets[f.sheet].Replace("\x00", ""));
+			return new Sprite(img.GetSection(f.sprX, f.sprY, f.width, f.height), f.pivotX, f.pivotY);
 		}
 
 		public static Size FGSize { get { return new Size(FGWidth, FGHeight); } }

@@ -18,8 +18,11 @@ namespace SonicRetro.SonLVL.API
 
 	public class LevelInfo
 	{
-		[IniCollection(IniCollectionMode.NoSquareBrackets, StartIndex = 1)]
-		[IniName("ExtraPalette")]
-		public List<string> ExtraPalettes { get; set; }
+		[IniName("folder")]
+		public string folder { get; set; }
+		[IniName("id")]
+		public string id { get; set; }
+		[IniName("header")]
+		public bool header { get; set; }
 	}
 }
