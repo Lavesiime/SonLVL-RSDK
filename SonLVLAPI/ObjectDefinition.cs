@@ -565,10 +565,7 @@ namespace SonicRetro.SonLVL.API
 			{
 				if (data.Anim != null)
 				{
-					RSDKv3_4.Animation anim = LevelData.ReadFile<RSDKv3_4.Animation>($"Data/Animations/{data.Anim.File}");
-					RSDKv3_4.Animation.AnimationEntry.Frame frame = anim.animations[data.Anim.Anim].frames[data.Anim.Frame];
-					BitmapBits img = LevelData.GetSpriteSheet(anim.spriteSheets[frame.sheet]);
-					spr[0] = new Sprite(img.GetSection(frame.sprX, frame.sprY, frame.width, frame.height), frame.pivotX, frame.pivotY);
+					spr[0] = LevelData.GetAnimationFrame(data.Anim.File, data.Anim.Anim, data.Anim.Frame);
 					if (data.Priority)
 						spr[0].InvertPriority();
 				}
@@ -724,10 +721,8 @@ namespace SonicRetro.SonLVL.API
 							if (sheetimg.priority) sprite.InvertPriority();
 							break;
 						case XMLDef.ImageFromAnim animimg:
-							RSDKv3_4.Animation anim = LevelData.ReadFile<RSDKv3_4.Animation>($"Data/Animations/{animimg.file}");
-							RSDKv3_4.Animation.AnimationEntry.Frame frame = anim.animations[animimg.anim].frames[animimg.frame];
-							bmp = LevelData.GetSpriteSheet(anim.spriteSheets[frame.sheet]);
-							sprite = new Sprite(bmp.GetSection(frame.sprX, frame.sprY, frame.width, frame.height), frame.pivotX + animimg.Offset.X, frame.pivotY + animimg.Offset.Y);
+							sprite = LevelData.GetAnimationFrame(animimg.file, animimg.anim, animimg.frame);
+							sprite.Offset(animimg.Offset.X, animimg.Offset.Y);
 							if (data.Priority) sprite.InvertPriority();
 							break;
 					}
@@ -768,10 +763,22 @@ namespace SonicRetro.SonLVL.API
 						mask |= 1 << (property.startbit + i);
 					Func<ObjectEntry, object> getMethod;
 					Action<ObjectEntry, object> setMethod;
+					string name = property.sourceSpecified ? property.source : "PropertyValue";
+					System.Reflection.PropertyInfo prop = typeof(V4ObjectEntry).GetProperty(name);
+					if (prop == null)
+						continue;
 					if (enums.ContainsKey(property.type))
 					{
-						getMethod = (obj) => (obj.PropertyValue & mask) >> prop_startbit;
-						setMethod = (obj, val) => obj.PropertyValue = (byte)((obj.PropertyValue & ~mask) | (((int)val << prop_startbit) & mask));
+						if (prop.PropertyType == typeof(byte))
+						{
+							getMethod = (obj) => ((byte)prop.GetValue(obj) & mask) >> prop_startbit;
+							setMethod = (obj, val) => prop.SetValue(obj, (byte)(((byte)prop.GetValue(obj) & ~mask) | (((int)val << prop_startbit) & mask)));
+						}
+						else
+						{
+							getMethod = (obj) => ((int)prop.GetValue(obj) & mask) >> prop_startbit;
+							setMethod = (obj, val) => prop.SetValue(obj, (int)(((int)prop.GetValue(obj) & ~mask) | (((int)val << prop_startbit) & mask)));
+						}
 						custprops.Add(new PropertySpec(property.displayname ?? property.name, typeof(int), "Extended", property.description, null, enums[property.type], getMethod, setMethod));
 						propinf.Add(property.name, new PropertyInfo(typeof(int), enums[property.type], getMethod, setMethod));
 					}
@@ -780,13 +787,29 @@ namespace SonicRetro.SonLVL.API
 						Type type = LevelData.ExpandTypeName(property.type);
 						if (type != typeof(bool))
 						{
-							getMethod = (obj) => (obj.PropertyValue & mask) >> prop_startbit;
-							setMethod = (obj, val) => obj.PropertyValue = (byte)((obj.PropertyValue & ~mask) | (((int)val << prop_startbit) & mask));
+							if (prop.PropertyType == typeof(byte))
+							{
+								getMethod = (obj) => ((byte)prop.GetValue(obj) & mask) >> prop_startbit;
+								setMethod = (obj, val) => prop.SetValue(obj, (byte)(((byte)prop.GetValue(obj) & ~mask) | (((int)val << prop_startbit) & mask)));
+							}
+							else
+							{
+								getMethod = (obj) => ((int)prop.GetValue(obj) & mask) >> prop_startbit;
+								setMethod = (obj, val) => prop.SetValue(obj, (int)(((int)prop.GetValue(obj) & ~mask) | (((int)val << prop_startbit) & mask)));
+							}
 						}
 						else
 						{
-							getMethod = (obj) => ((obj.PropertyValue & mask) >> prop_startbit) != 0;
-							setMethod = (obj, val) => obj.PropertyValue = (byte)((obj.PropertyValue & ~mask) | (((bool)val ? 1 : 0) << prop_startbit));
+							if (prop.PropertyType == typeof(byte))
+							{
+								getMethod = (obj) => (((byte)prop.GetValue(obj) & mask) >> prop_startbit) != 0;
+								setMethod = (obj, val) => prop.SetValue(obj, (byte)(((byte)prop.GetValue(obj) & ~mask) | (((bool)val ? 1 : 0) << prop_startbit)));
+							}
+							else
+							{
+								getMethod = (obj) => (((int)prop.GetValue(obj) & mask) >> prop_startbit) != 0;
+								setMethod = (obj, val) => prop.SetValue(obj, (int)(((int)prop.GetValue(obj) & ~mask) | (((bool)val ? 1 : 0) << prop_startbit)));
+							}
 						}
 						custprops.Add(new PropertySpec(property.displayname ?? property.name, type, "Extended", property.description, null, getMethod, setMethod));
 						propinf.Add(property.name, new PropertyInfo(type, getMethod, setMethod));

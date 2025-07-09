@@ -67,12 +67,6 @@ namespace SonicRetro.SonLVL.GUI
 			}
 		}
 
-		class ModStuff
-		{
-			public string Path;
-			public ToolStripMenuItem MenuItem;
-		}
-
 		class LevelStuff
 		{
 			public string FullName;
@@ -104,7 +98,6 @@ namespace SonicRetro.SonLVL.GUI
 		Point lastmouse;
 		internal LogWindow LogWindow;
 		internal List<string> LogFile = new List<string>();
-		List<ModStuff> modMenuItems;
 		List<LevelStuff> levelMenuItems;
 		string levelname;
 		List<string> scriptFiles;
@@ -241,27 +234,14 @@ namespace SonicRetro.SonLVL.GUI
 				Settings.MRUList = mru;
 				if (mru.Count > 0) recentProjectsToolStripMenuItem.DropDownItems.Remove(noneToolStripMenuItem2);
 			}
-			if (Settings.RecentMods == null)
-				Settings.RecentMods = new List<MRUModItem>();
-			else
-			{
-				List<MRUModItem> mru = new List<MRUModItem>();
-				foreach (MRUModItem item in Settings.RecentMods)
-				{
-					if (File.Exists(item.INIPath) && !item.INIPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) && (item.ModPath == null || File.Exists(item.ModPath)))
-					{
-						mru.Add(item);
-						recentModsToolStripMenuItem.DropDownItems.Add(item.Name.Replace("&", "&&"));
-					}
-				}
-				Settings.RecentMods = mru;
-				if (mru.Count > 0) recentModsToolStripMenuItem.DropDownItems.Remove(noneToolStripMenuItem);
-			}
-
+			recentModsToolStripMenuItem.Visible = false;
+			selectModToolStripMenuItem.Visible = false;
+			editGameConfigToolStripMenuItem.Visible = false;
+      
 			// SplitterDistance is relative to the left, but let's make it so that we can fit exactly two chunks in
 			splitContainer2.SplitterDistance = splitContainer2.Size.Width - 293;
 			splitContainer3.SplitterDistance = splitContainer3.Size.Width - 293;
-
+      
 			findObjectsDialog = new FindObjectsDialog();
 			findFGChunksDialog = new FindChunksDialog();
 			findBGChunksDialog = new FindChunksDialog();
@@ -299,7 +279,7 @@ namespace SonicRetro.SonLVL.GUI
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			scrollPreviewButton.Checked = false;
-			if (loaded && LevelData.ModFolder != null && !saved)
+			if (loaded && !saved)
 			{
 				switch (MessageBox.Show(this, "Do you want to save?", Text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
 				{
@@ -359,33 +339,6 @@ namespace SonicRetro.SonLVL.GUI
 				return;
 			}
 #endif
-			modMenuItems = new List<ModStuff>();
-			selectModToolStripMenuItem.DropDownItems.Clear();
-			ModStuff ms = new ModStuff();
-			ToolStripMenuItem menuitem = new ToolStripMenuItem("None (Read Only)", null, new EventHandler(ModToolStripMenuItem_Clicked)) { Tag = ms };
-			ms.MenuItem = menuitem;
-			modMenuItems.Add(ms);
-			selectModToolStripMenuItem.DropDownItems.Add(menuitem);
-			string[] mods;
-			string modpath = Path.Combine(LevelData.EXEFolder, "mods");
-			if (Directory.Exists(modpath))
-				mods = ModInfo.GetModFiles(new DirectoryInfo(modpath)).ToArray();
-			else
-				mods = new string[0];
-			ToolStripMenuItem parent = selectModToolStripMenuItem;
-			if (mods.Length > 10)
-				parent = (ToolStripMenuItem)selectModToolStripMenuItem.DropDownItems.Add("Set 1");
-			for (int i = 0; i < mods.Length; i++)
-			{
-				if (i > 0 && i % 10 == 0)
-					parent = (ToolStripMenuItem)selectModToolStripMenuItem.DropDownItems.Add($"Set {i / 10 + 1}");
-				ms = new ModStuff() { Path = mods[i] };
-				menuitem = new ToolStripMenuItem(IniSerializer.Deserialize<ModInfo>(mods[i]).Name ?? "Unknown Mod", null, new EventHandler(ModToolStripMenuItem_Clicked)) { Tag = ms };
-				ms.MenuItem = menuitem;
-				parent.DropDownItems.Add(menuitem);
-				modMenuItems.Add(ms);
-			}
-			selectModToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem("New Mod...", null, new EventHandler(NewModToolStripMenuItem_Clicked)));
 			if (Settings.MRUList.Count == 0)
 				recentProjectsToolStripMenuItem.DropDownItems.Remove(noneToolStripMenuItem2);
 			if (Settings.MRUList.Contains(filename))
@@ -409,37 +362,12 @@ namespace SonicRetro.SonLVL.GUI
 			tabControl1.Enabled = editToolStripMenuItem.Enabled = exportToolStripMenuItem.Enabled = saveToolStripMenuItem.Enabled = editGameConfigToolStripMenuItem.Enabled = changeLevelToolStripMenuItem.Enabled = false;
 			selectModToolStripMenuItem.Enabled = buildAndRunToolStripMenuItem.Enabled = true;
 			Text = "SonLVL-RSDK - " + LevelData.GameTitle;
-		}
-
-		private void NewModToolStripMenuItem_Clicked(object sender, EventArgs e)
-		{
-			using (NewModDialog dlg = new NewModDialog())
-				if (dlg.ShowDialog(this) == DialogResult.OK)
-				{
-					foreach (var item in modMenuItems)
-						item.MenuItem.Checked = false;
-					ModStuff ms = new ModStuff() { Path = dlg.ModFile };
-					ToolStripMenuItem menuitem = new ToolStripMenuItem(IniSerializer.Deserialize<ModInfo>(dlg.ModFile).Name ?? "Unknown Mod", null, new EventHandler(ModToolStripMenuItem_Clicked)) { Tag = ms, Checked = true };
-					ms.MenuItem = menuitem;
-					modMenuItems.Add(ms);
-					selectModToolStripMenuItem.DropDownItems.Insert(selectModToolStripMenuItem.DropDownItems.Count - 1, menuitem);
-					LoadMod(dlg.ModFile);
-				}
-		}
-
-		private void ModToolStripMenuItem_Clicked(object sender, EventArgs e)
-		{
-			ModStuff mod = (ModStuff)((ToolStripMenuItem)sender).Tag;
-			foreach (var item in modMenuItems)
-				item.MenuItem.Checked = false;
-			mod.MenuItem.Checked = true;
-			LoadMod(mod.Path);
+			LoadMod(null);
 		}
 
 		private void LoadMod(string path)
 		{
 			saveToolStripMenuItem.Enabled = editToolStripMenuItem.Enabled = exportToolStripMenuItem.Enabled = tabControl1.Enabled = false;
-			editGameConfigToolStripMenuItem.Enabled = path != null;
 			try
 			{
 				LevelData.LoadMod(Path.GetDirectoryName(path));
@@ -453,57 +381,50 @@ namespace SonicRetro.SonLVL.GUI
 				return;
 			}
 			levelMenuItems = new List<LevelStuff>();
-			List<List<RSDKv3_4.GameConfig.StageList.StageInfo>>[] groups = new List<List<RSDKv3_4.GameConfig.StageList.StageInfo>>[4];
-			for (int i = 0; i < 4; i++)
-			{
-				groups[i] = new List<List<RSDKv3_4.GameConfig.StageList.StageInfo>>();
-				List<RSDKv3_4.GameConfig.StageList.StageInfo> curgrp = null;
-				foreach (var item in LevelData.StageLists[i])
-					if (item.highlighted)
-					{
-						curgrp = new List<RSDKv3_4.GameConfig.StageList.StageInfo>() { item };
-						groups[i].Add(curgrp);
-					}
-					else if (curgrp == null)
-						groups[i].Add(new List<RSDKv3_4.GameConfig.StageList.StageInfo>() { item });
-					else
-						curgrp.Add(item);
-			}
-			for (int i = 0; i < 4; i++)
-			{
-				ToolStripMenuItem parent = (ToolStripMenuItem)changeLevelToolStripMenuItem.DropDownItems[i];
-				parent.DropDownItems.Clear();
-				foreach (var grp in groups[i])
+			var groups = new List<List<RSDKv3_4.GameConfig.StageList.StageInfo>>();
+			List<RSDKv3_4.GameConfig.StageList.StageInfo> curgrp = null;
+			foreach (var item in LevelData.StageLists)
+				if (item.highlighted)
 				{
-					if (grp.Count > 1)
-					{
-						string basename = grp[0].name.Substring(0, Math.Max(0, grp[0].name.Length - grp.Skip(1).Max(a => a.name.Length)));
-						var par2 = new ToolStripMenuItem(basename.Trim());
-						parent.DropDownItems.Add(par2);
-						foreach (var item in grp)
-							if (item.name != null)
-							{
-								string name = item.name;
-								string text = item.name;
-								if (item.highlighted)
-									text = text.Remove(0, basename.Length);
-								else
-									name = basename + name;
-								LevelStuff ls = new LevelStuff() { FullName = name, Stage = item };
-								ToolStripMenuItem ts = new ToolStripMenuItem(text, null, new EventHandler(LevelToolStripMenuItem_Clicked)) { Tag = ls };
-								ls.MenuItem = ts;
-								levelMenuItems.Add(ls);
-								par2.DropDownItems.Add(ts);
-							}
-					}
-					else if (!string.IsNullOrEmpty(grp[0].name))
-					{
-						LevelStuff ls = new LevelStuff() { FullName = grp[0].name, Stage = grp[0] };
-						ToolStripMenuItem ts = new ToolStripMenuItem(grp[0].name, null, new EventHandler(LevelToolStripMenuItem_Clicked)) { Tag = ls };
-						ls.MenuItem = ts;
-						levelMenuItems.Add(ls);
-						parent.DropDownItems.Add(ts);
-					}
+					curgrp = new List<RSDKv3_4.GameConfig.StageList.StageInfo>() { item };
+					groups.Add(curgrp);
+				}
+				else if (curgrp == null)
+					groups.Add(new List<RSDKv3_4.GameConfig.StageList.StageInfo>() { item });
+				else
+					curgrp.Add(item);
+			ToolStripMenuItem parent = changeLevelToolStripMenuItem;
+			parent.DropDownItems.Clear();
+			foreach (var grp in groups)
+			{
+				if (grp.Count > 1)
+				{
+					string basename = grp[0].name.Substring(0, Math.Max(0, grp[0].name.Length - grp.Skip(1).Max(a => a.name.Length)));
+					var par2 = new ToolStripMenuItem(basename.Trim());
+					parent.DropDownItems.Add(par2);
+					foreach (var item in grp)
+						if (item.name != null)
+						{
+							string name = item.name;
+							string text = item.name;
+							if (item.highlighted)
+								text = text.Remove(0, basename.Length);
+							else
+								name = basename + name;
+							LevelStuff ls = new LevelStuff() { FullName = name, Stage = item };
+							ToolStripMenuItem ts = new ToolStripMenuItem(text, null, new EventHandler(LevelToolStripMenuItem_Clicked)) { Tag = ls };
+							ls.MenuItem = ts;
+							levelMenuItems.Add(ls);
+							par2.DropDownItems.Add(ts);
+						}
+				}
+				else if (!string.IsNullOrEmpty(grp[0].name))
+				{
+					LevelStuff ls = new LevelStuff() { FullName = grp[0].name, Stage = grp[0] };
+					ToolStripMenuItem ts = new ToolStripMenuItem(grp[0].name, null, new EventHandler(LevelToolStripMenuItem_Clicked)) { Tag = ls };
+					ls.MenuItem = ts;
+					levelMenuItems.Add(ls);
+					parent.DropDownItems.Add(ts);
 				}
 			}
 
@@ -543,21 +464,6 @@ namespace SonicRetro.SonLVL.GUI
 			}
 			sfxFileBox.AutoCompleteCustomSource.Clear();
 			sfxFileBox.AutoCompleteCustomSource.AddRange(sfxFiles.ToArray());
-			if (Settings.RecentMods.Count == 0)
-				recentModsToolStripMenuItem.DropDownItems.Remove(noneToolStripMenuItem);
-			int ind = Settings.RecentMods.FindIndex(a => a.INIPath == LevelData.GamePath && a.ModPath == path);
-			if (ind != -1)
-			{
-				recentModsToolStripMenuItem.DropDownItems.RemoveAt(ind);
-				Settings.RecentMods.RemoveAt(ind);
-			}
-			string modname;
-			if (path == null)
-				modname = $"No Mod ({LevelData.GameTitle})";
-			else
-				modname = $"{IniSerializer.Deserialize<ModInfo>(path).Name ?? "Unknown Mod"} ({LevelData.GameTitle})";
-			Settings.RecentMods.Insert(0, new MRUModItem(modname, LevelData.GamePath, path));
-			recentModsToolStripMenuItem.DropDownItems.Insert(0, new ToolStripMenuItem(modname));
 			Text = "SonLVL-RSDK - " + LevelData.GameTitle;
 		}
 
@@ -567,7 +473,7 @@ namespace SonicRetro.SonLVL.GUI
 #region File Menu
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (loaded && LevelData.ModFolder != null && !saved)
+			if (loaded && !saved)
 			{
 				switch (MessageBox.Show(this, "Do you want to save?", Text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
 				{
@@ -593,7 +499,7 @@ namespace SonicRetro.SonLVL.GUI
 		private void editGameConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			fileToolStripMenuItem.DropDown.Hide();
-			if (loaded && LevelData.ModFolder != null && !saved)
+			if (loaded && !saved)
 			{
 				switch (MessageBox.Show(this, "Do you want to save?", Text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
 				{
@@ -626,7 +532,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void LevelToolStripMenuItem_Clicked(object sender, EventArgs e)
 		{
-			if (loaded && LevelData.ModFolder != null && !saved)
+			if (loaded && !saved)
 			{
 				fileToolStripMenuItem.DropDown.Hide();
 				switch (MessageBox.Show(this, "Do you want to save?", Text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
@@ -791,8 +697,9 @@ namespace SonicRetro.SonLVL.GUI
 			sfxAddButton.Enabled = LevelData.StageConfig.soundFX.Count < 255;
 			loaded = true;
 			SelectedItems = new List<Entry>();
-			saveToolStripMenuItem.Enabled = LevelData.ModFolder != null;
-			editToolStripMenuItem.Enabled = exportToolStripMenuItem.Enabled = true;
+			saveToolStripMenuItem.Enabled = true;
+			editToolStripMenuItem.Enabled = true;
+			exportToolStripMenuItem.Enabled = true;
 			if (invertColorsToolStripMenuItem.Checked)
 				for (int i = 0; i < 256; i++)
 					LevelImgPalette.Entries[i] = LevelImgPalette.Entries[i].Invert();
@@ -913,7 +820,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void buildAndRunToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LevelData.Scene != null && LevelData.ModFolder != null)
+			if (LevelData.Scene != null)
 				saveToolStripMenuItem_Click(sender, e);
 
 			string path = Path.GetFullPath(LevelData.Game.EXEFile);
@@ -954,12 +861,6 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void recentModsToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			loaded = false;
-			MRUModItem item = Settings.RecentMods[recentModsToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem)];
-			LoadINI(item.INIPath);
-			foreach (var mmi in modMenuItems)
-				mmi.MenuItem.Checked = mmi.Path == item.ModPath;
-			LoadMod(item.ModPath);
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)

@@ -16,9 +16,6 @@ namespace SonicRetro.SonLVL
 		public bool ShowHUD { get; set; }
 		[IniCollection(IniCollectionMode.SingleLine, Format = "|")]
 		public List<string> MRUList { get; set; }
-		[IniName("RecentMod")]
-		[IniCollection(IniCollectionMode.NoSquareBrackets, StartIndex = 1)]
-		public List<MRUModItem> RecentMods { get; set; }
 		public bool ShowGrid { get; set; }
 		[DefaultValue(true)]
 		public bool SnapObjectsToGrid { get; set; }
