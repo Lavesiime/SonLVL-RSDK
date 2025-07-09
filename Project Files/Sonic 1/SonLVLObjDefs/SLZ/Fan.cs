@@ -19,7 +19,7 @@ namespace S1ObjectDefinitions.SLZ
 			
 			for (int i = 1; i < 4; i++) // set up flipped sprites
 			{
-				// it would be cool if we could cast to RSDKv3_4.Tiles128x128.Block.Tile.Directions for flip dir but it turns out only BitmapBits has that, not Sprite
+				// it would be cool if we could cast to RSDKv3_4.Tiles128x128.Block.Tile.Directions for flip dir but if we wanna keep compatibility with older SonLVL-RSDK builds, we can't :(
 				sprites[0, i] = new Sprite(sprites[0, 0], (i & 1) == 1, (i & 2) == 2);
 				sprites[1, i] = new Sprite(sprites[1, 0], (i & 1) == 1, (i & 2) == 2);
 			}
@@ -61,7 +61,7 @@ namespace S1ObjectDefinitions.SLZ
 				(obj, value) => ((V4ObjectEntry)obj).Direction = (RSDKv3_4.Tiles128x128.Block.Tile.Directions)value);
 			
 			/*
-			// was thinking about combining Wind Dir and Sprite Dir, but then decided against it
+			// was thinking about combining Wind Dir and Sprite Dir, but then decided against it since fans can both blow in and out
 			properties[0] = new PropertySpec("Direction", typeof(int), "Extended",
 				"Where the wind blows.", null, new Dictionary<string, int>
 				{

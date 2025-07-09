@@ -77,7 +77,7 @@ namespace S1ObjectDefinitions.Global
 				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~32) | (int)value));
 			
 			properties[5] = new PropertySpec("Grounded", typeof(bool), "Extended",
-				"If only grounded players should be affected.", null,
+				"If the player has to be on the ground to be affected.", null,
 				(obj) => (obj.PropertyValue > 127),
 				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~128) | ((bool)value ? 128 : 0)));
 		}
@@ -114,18 +114,16 @@ namespace S1ObjectDefinitions.Global
 
 		public override Sprite GetSprite(ObjectEntry obj)
 		{
-			int count = Math.Max((1 << ((obj.PropertyValue & 3) + 2)), 1);
-			int sy = -(((count) * 16) / 2) + 8;
+			int count = 4 << (obj.PropertyValue & 3);
+			int sy = -(count * 8) + 8;
 			
-			Sprite frame = new Sprite(sprites[(obj.PropertyValue >> 2) & 15]);
+			Sprite frame = sprites[(obj.PropertyValue >> 2) & 15];
 			if (obj.PropertyValue > 0x7f) // Grounded, add back sprite
 				frame = new Sprite(sprites[16], frame);
 			
-			List<Sprite> sprs = new List<Sprite>();
+			List<Sprite> sprs = new List<Sprite>(count);
 			for (int i = 0; i < count; i++)
-			{
 				sprs.Add(new Sprite(frame, 0, sy + (i * 16)));
-			}
 			
 			return new Sprite(sprs.ToArray());
 		}

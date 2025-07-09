@@ -36,7 +36,7 @@
     </ImageFromSheet>
   </Images>
   <Properties>
-    <Property name="Speed" description="Mission Mode only. How fast this boss should be. 10 is normal speed." type="int" startbit="0" length="8" /> <!-- well "Mission Mode only" is a bit of a lie.. technically it's only used by Boss Face 2s.. but Boss Face 1s are automatically turned into Boss Face 2s when Boss Face 2s exist in the scene.. and those only exist in mission mode.. so.....
+    <Property name="Speed" description="Mission Mode only. How fast this boss should be. 10 (1.0) is normal speed." type="int" startbit="0" length="8" /> <!-- well "Mission Mode only" is a bit of a lie.. technically it's only used by Boss Face 2s.. but Boss Face 1s are automatically turned into Boss Face 2s when Boss Face 2s exist in the scene.. and those only exist in mission mode.. so.....
       (btw min value is 5, anything less than that will just freeze the boss, dunno if that's worth noting in the desc though)
       (also not sure if i should make a decimal rather than an int? the ".0" doesn't show by default though, so would the user even know that they can go beyond whole numbers?) -->
   </Properties>

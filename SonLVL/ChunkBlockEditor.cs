@@ -18,6 +18,12 @@ namespace SonicRetro.SonLVL
 			Enabled = false;
 		}
 
+		public bool Hexadecimal
+		{
+			get => block.Hexadecimal;
+			set => block.Hexadecimal = value;
+		}
+
 		public event EventHandler PropertyValueChanged = delegate { };
 
 		bool initializing;

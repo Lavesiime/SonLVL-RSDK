@@ -39,11 +39,11 @@ namespace S1ObjectDefinitions.SBZ
 			debug[3] = new Sprite(debug[2], true, false);
 			
 			// let's combine prop val and dir for this
-			// not sure if putting Strays here is a good idea or not, but this is the cleanest solution i can come up with
+			// not sure if putting Strays here is a good idea or not, but they don't really fit anywhere else, so..
 			properties[0] = new PropertySpec("Start From", typeof(int), "Extended",
 				"Which direction this Buzzsaw should start from.", null, new Dictionary<string, int>
 				{
-					// { "Static", 0x00 }, // not sure if this is supposed to be placed, actually? it doesn't really do anything, it's p much just deco
+					// { "Static", 0x00 }, // not sure if this is supposed to be placed, actually? it doesn't really do anything, it's p much just a deco sprite
 					{ "Right", 0x01 },
 					{ "Left", 0x101 },
 					{ "Bottom", 0x02 },
@@ -53,7 +53,7 @@ namespace S1ObjectDefinitions.SBZ
 				},
 				(obj) => {
 						int result = obj.PropertyValue;
-						if ((result == 1) || (result == 2)) // hover type?
+						if ((result == 1) || (result == 2)) // hover type? let's add direction if so
 							result |= ((int)((V4ObjectEntry)obj).Direction << 8) & 0x100;
 						return result;
 					},
@@ -66,7 +66,7 @@ namespace S1ObjectDefinitions.SBZ
 		
 		public override ReadOnlyCollection<byte> Subtypes
 		{
-			get { return new ReadOnlyCollection<byte>(new byte[] {1, 2, 3, 4}); } // can't stick in dir attr in here, 
+			get { return new ReadOnlyCollection<byte>(new byte[] {1, 2, 3, 4}); } // can't stick in dir attr in here, sorry..
 		}
 		
 		public override byte DefaultSubtype

@@ -18,25 +18,25 @@ namespace SCDObjectDefinitions.R4
 			
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects.gif").GetSection(163, 1, 32, 32));
 					break;
-				case 'B':
+				case 'B': // Past
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects2.gif").GetSection(1, 157, 32, 32));
 					break;
-				case 'C':
+				case 'C': // Good Future
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects2.gif").GetSection(1, 190, 32, 32));
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects2.gif").GetSection(1, 223, 32, 32));
 					break;
 			}
 			
 			sprites[0] = new Sprite(block, -16, -16);
-			sprites[1] = new Sprite(new Sprite[] {new Sprite(block, -32, -16), new Sprite(block, 0, -16)});
-			sprites[2] = new Sprite(new Sprite[] {new Sprite(block, -48, -16), new Sprite(block, -16, -16), new Sprite(block, 16, -16)});
-			sprites[3] = new Sprite(new Sprite[] {new Sprite(block, -64, -16), new Sprite(block, -32, -16), new Sprite(block, 0, -16), new Sprite(block, 32, -16)});
+			sprites[1] = new Sprite(new Sprite(block, -32, -16), new Sprite(block, 0, -16));
+			sprites[2] = new Sprite(new Sprite(block, -48, -16), new Sprite(block, -16, -16), new Sprite(block, 16, -16));
+			sprites[3] = new Sprite(new Sprite(block, -64, -16), new Sprite(block, -32, -16), new Sprite(block, 0, -16), new Sprite(block, 32, -16));
 			
 			// (these lines are kind of useless tbh, you can hardly even see them..)
 			int[] amplitudes = {0x800, 0x1000, 0x1800, 0x2000};

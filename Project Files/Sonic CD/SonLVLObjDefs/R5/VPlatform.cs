@@ -13,23 +13,23 @@ namespace SCDObjectDefinitions.R5
 			
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					BitmapBits sheet = LevelData.GetSpriteSheet("R5/Objects.gif");
 					sprites[0] = new Sprite(sheet.GetSection(1, 51, 32, 32), -16, -16);
 					sprites[1] = new Sprite(sheet.GetSection(65, 208, 32, 16), -16, -16);
 					break;
-				case 'B':
+				case 'B': // Past
 					sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(1, 170, 32, 32), -16, -16);
 					sprites[1] = new Sprite(sheet.GetSection(223, 148, 32, 16), -16, -16);
 					break;
-				case 'C':
+				case 'C': // Good Future
 					sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(1, 170, 32, 32), -16, -16);
 					sprites[1] = new Sprite(sheet.GetSection(223, 182, 32, 16), -16, -16);
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(1, 170, 32, 32), -16, -16);
 					sprites[1] = new Sprite(sheet.GetSection(223, 216, 32, 16), -16, -16);
@@ -50,23 +50,23 @@ namespace SCDObjectDefinitions.R5
 			
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					BitmapBits sheet = LevelData.GetSpriteSheet("R5/Objects.gif");
 					sprites[0] = new Sprite(sheet.GetSection(34, 51, 64, 32), -32, -16);
 					sprites[1] = new Sprite(sheet.GetSection(1, 208, 64, 16), -32, -16);
 					break;
-				case 'B':
+				case 'B': // Past
 					sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(34, 170, 64, 32), -32, -16);
 					sprites[1] = new Sprite(sheet.GetSection(159, 148, 64, 16), -32, -16);
 					break;
-				case 'C':
+				case 'C': // Good Future
 					sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(34, 170, 64, 32), -32, -16);
 					sprites[1] = new Sprite(sheet.GetSection(159, 182, 64, 16), -32, -16);
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(34, 170, 64, 32), -32, -16);
 					sprites[1] = new Sprite(sheet.GetSection(159, 216, 64, 16), -32, -16);
@@ -90,23 +90,23 @@ namespace SCDObjectDefinitions.R5
 			
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					BitmapBits sheet = LevelData.GetSpriteSheet("R5/Objects.gif");
 					sprites[0] = new Sprite(sheet.GetSection(1, 84, 96, 32), -48, -16);
 					sprites[1] = new Sprite(sheet.GetSection(1, 191, 96, 16), -48, -16);
 					break;
-				case 'B':
+				case 'B': // Past
 					sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(1, 203, 96, 32), -48, -16);
 					sprites[1] = new Sprite(sheet.GetSection(159, 131, 96, 16), -48, -16);
 					break;
-				case 'C':
+				case 'C': // Good Future
 					sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(1, 203, 96, 32), -48, -16);
 					sprites[1] = new Sprite(sheet.GetSection(159, 165, 96, 16), -48, -16);
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(1, 203, 96, 32), -48, -16);
 					sprites[1] = new Sprite(sheet.GetSection(159, 199, 96, 16), -48, -16);

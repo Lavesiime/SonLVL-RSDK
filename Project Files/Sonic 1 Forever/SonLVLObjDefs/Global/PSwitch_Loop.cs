@@ -69,7 +69,7 @@ namespace S1ObjectDefinitions.Global
 			
 			int count = obj.PropertyValue + 1;
 			int sy = -(count * 8) + 8;
-			List<Sprite> sprs = new List<Sprite>();
+			List<Sprite> sprs = new List<Sprite>(count);
 			for (int i = 0; i < count; i++)
 				sprs.Add(new Sprite(sprite, 0, sy + (i * 16)));
 			

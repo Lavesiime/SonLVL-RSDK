@@ -8,7 +8,7 @@ namespace S2ObjectDefinitions.MPZ
 {
 	class Transporter : ObjectDefinition
 	{
-		private PropertySpec[] properties = new PropertySpec[2];
+		private PropertySpec[] properties = new PropertySpec[3];
 		private Sprite sprite;
 
 		public override void Init(ObjectData data)
@@ -45,6 +45,15 @@ namespace S2ObjectDefinitions.MPZ
 				},
 				(obj) => obj.PropertyValue & 0x10,
 				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~0x10) | (int)value));
+			
+			properties[2] = new PropertySpec("Enter From", typeof(int), "Extended",
+				"Which direction the player should enter the Transporter from.", null, new Dictionary<string, int>
+				{
+					{ "Left", 0 },
+					{ "Right", 1 }
+				},
+				(obj) => (((V4ObjectEntry)obj).Direction == (RSDKv3_4.Tiles128x128.Block.Tile.Directions.FlipX)) ? 1 : 0,
+				(obj, value) => ((V4ObjectEntry)obj).Direction = (RSDKv3_4.Tiles128x128.Block.Tile.Directions)value);
 		}
 
 		public override ReadOnlyCollection<byte> Subtypes

@@ -57,7 +57,7 @@
     </ImageFromSheet>
   </Images>
   <Properties>
-    <Property name="Contents" description="The contents of this Monitor." type="Contents" startbit="0" length="8" />
+    <Property name="Contents" description="The contents of this Monitor. With Elemental Shields disabled, said shields will either disappear or become Blue Shields, depending on the zone." type="Contents" startbit="0" length="8" />
   </Properties>
   <Enums>
     <Enum name="Contents">

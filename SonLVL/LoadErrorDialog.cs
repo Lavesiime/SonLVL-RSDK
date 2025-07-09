@@ -27,7 +27,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://info.sonicretro.org/SCHG_How-to:Set_Up_SonLVL");
+			System.Diagnostics.Process.Start("https://lavesiime.github.io/guides/sonlvl/install/");
 			Close();
 		}
 	}

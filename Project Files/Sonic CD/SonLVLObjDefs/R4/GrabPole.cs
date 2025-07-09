@@ -12,7 +12,7 @@ namespace SCDObjectDefinitions.R4
 		
 		public override void Init(ObjectData data)
 		{
-			if (LevelData.StageInfo.folder.EndsWith("D")) // Bad Future
+			if (LevelData.StageInfo.folder.EndsWith("D")) // We're using a different sprite in the Bad Future
 				sprite = new Sprite(LevelData.GetSpriteSheet("R4/Objects3.gif").GetSection(51, 163, 8, 92), -4, -46);
 			else
 				sprite = new Sprite(LevelData.GetSpriteSheet("R4/Objects3.gif").GetSection(134, 46, 8, 92), -4, -46);

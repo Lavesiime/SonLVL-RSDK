@@ -14,17 +14,17 @@ namespace SCDObjectDefinitions.R5
 		{
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					sprite = new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(35, 1, 16, 16), -8, -8);
 					break;
-				case 'B':
+				case 'B': // Past
 					sprite = new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(67, 174, 16, 16), -8, -8);
 					break;
-				case 'C':
+				case 'C': // Good Future
 					sprite = new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(83, 174, 16, 16), -8, -8);
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					sprite = new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(83, 158, 16, 16), -8, -8);
 					break;
 			}

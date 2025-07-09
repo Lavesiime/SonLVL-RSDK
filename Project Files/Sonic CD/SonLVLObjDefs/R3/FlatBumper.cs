@@ -17,14 +17,14 @@ namespace SCDObjectDefinitions.R3
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
 				default:
-				case 'A':
-				case 'B':
+				case 'A': // Present
+				case 'B': // Past
 					sprite = new Sprite(LevelData.GetSpriteSheet("R3/Objects.gif").GetSection(1, 75, 64, 32), -32, -16);
 					break;
-				case 'C':
+				case 'C': // Good Future
 					sprite = new Sprite(LevelData.GetSpriteSheet("R3/Objects3.gif").GetSection(132, 67, 64, 32), -32, -16);
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					sprite = new Sprite(LevelData.GetSpriteSheet("R3/Objects3.gif").GetSection(132, 100, 64, 32), -32, -16);
 					break;
 			}
@@ -40,8 +40,8 @@ namespace SCDObjectDefinitions.R3
 			properties[0] = new PropertySpec("Direction", typeof(int), "Extended",
 				"Which direction this bumper should travel in.", null, new Dictionary<string, int>
 				{
-					{ "Horizontally", 0 },
-					{ "Vertically", 1 }
+					{ "Horizontal", 0 },
+					{ "Vertical", 1 }
 				},
 				(obj) => (obj.PropertyValue == 0) ? 0 : 1,
 				(obj, value) => obj.PropertyValue = (byte)((int)value));

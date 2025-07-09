@@ -6,6 +6,6 @@
     </ImageFromSheet>
   </Images>
   <Properties>
-    <Property name="ID" description="The checkpoint ID of this Star Post. Used in relation to other Star Posts, to know their order." type="int" startbit="0" length="8" />
+    <Property name="ID" description="The checkpoint ID of this Star Post. Any Star Posts with lower IDs will automatically activate with this one." type="int" startbit="0" length="8" />
   </Properties>
 </ObjDef>

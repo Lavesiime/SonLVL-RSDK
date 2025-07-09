@@ -17,10 +17,10 @@ namespace S2ObjectDefinitions.MPZ
 			
 			BitmapBits bitmap = new BitmapBits(sprite.Width, sprite.Height);
 			bitmap.DrawRectangle(6, 0, 0, sprite.Width-1, sprite.Height-1); // LevelData.ColorWhite
-			debug = new Sprite(bitmap, sprite.X, sprite.Y + 72);
+			debug = new Sprite(bitmap, sprite.X, sprite.Y + 64);
 			
-			bitmap = new BitmapBits(2, 73);
-			bitmap.DrawLine(6, 0, 0, 0, 72); // LevelData.ColorWhite
+			bitmap = new BitmapBits(2, 65);
+			bitmap.DrawLine(6, 0, 0, 0, 64); // LevelData.ColorWhite
 			debug = new Sprite(debug, new Sprite(bitmap));
 		}
 		

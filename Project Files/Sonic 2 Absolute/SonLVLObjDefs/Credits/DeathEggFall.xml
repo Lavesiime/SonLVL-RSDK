@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ObjDef xmlns="http://www.sonicretro.org" Image="angelisland">
+<ObjDef xmlns="http://www.sonicretro.org" Image="angelisland" DefaultSubtype="02">
   <Images>
     <ImageFromSheet id="skybg" sheet="Ending/Fall.gif" sourcex="1" sourcey="1" width="96" height="96">
       <Offset X="-48" Y="-48" />

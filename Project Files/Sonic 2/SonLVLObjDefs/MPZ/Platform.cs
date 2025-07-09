@@ -98,6 +98,9 @@ namespace S2ObjectDefinitions.MPZ
 		}
 	}
 	
+	// This whole bit is unused, it's not like it's broken or anything, but..
+	// It's *way* too complicated and it just looks horrible in-editor imo
+	// Instead, M Platforms just get the generic Platform sprite and that's it, no debug vis for them!-
 	class MPlatform : MPZ.Platform
 	{
 		public override Sprite SetupDebugOverlay()

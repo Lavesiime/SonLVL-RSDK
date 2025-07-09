@@ -18,6 +18,7 @@ namespace SCDObjectDefinitions.R3
 			frames[0] = new Sprite(sheet.GetSection(181, 143, 16, 16), -8, -8);
 			frames[1] = new Sprite(sheet.GetSection(181, 160, 16, 16), -8, -8);
 			
+			// In the future ('C' and 'D'), the first length is 4 chains instead of 3
 			int[] lengths = {(LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1] > 'B') ? 4 : 3, 2};
 			
 			for (int i = 0; i < lengths.Length; i++)

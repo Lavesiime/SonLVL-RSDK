@@ -34,6 +34,7 @@ Left click: Select an object or ring group. Hold Ctrl to select multiple objects
 Left click empty area, drag: Select all objects within an area.
 Left click object, drag: Move object(s).
 Double left click: Create a new object.
+Shift + double left click: Add a new group of objects.
 Right click: Bring up a context menu.
 Delete: Delete all selected objects.
 Numpad 12346789: Move selected objects by grid size in direction of number.
@@ -58,7 +59,7 @@ Right click, drag: Select an area.
 Right click inside selected area: Open context menu.
 A: Decrease index of selected chunk.
 Z: Increase index of selected chunk.
-P: View Objects (Foreground Tab Only).
+P: Toggle Objects View in Foreground Tab, Toggle Scroll Area View in Background Tab.
 Ctrl+F: Find chunk.
 Ctrl+H: Find and replace chunk.
 Use the list on the right to select a chunk.
@@ -68,12 +69,13 @@ Click and drag chunks in the chunk list to re-order them, hold Ctrl to swap two 
 On the chunk preview:
 Page Up, Page Down, Home, End: Change current chunk.
 Up, Down, Left, Right: Change selected chunk tile.
-X: Flip horizontally.
-Y: Flip vertically.
-P: Toggle visual plane.
-S: Increment Plane A solidity. (Hold Shift to decrement instead)
-T: Increment Plane B solidity. (Hold Shift to decrement instead)
-B: Increment tile index. (Hold Shift to decrement instead)
+A: Decrease index of all selected tiles.
+Z: Decrease index of all selected tiles.
+S: Flip horizontally
+X: Flip vertically
+D: Increment Plane A solidity. (Hold Shift to decrement instead)
+C: Increment Plane B solidity. (Hold Shift to decrement instead)
+F: Toggle visual plane.
 
 Tile Editing:
 Click and drag tiles in the tile list to re-order them, hold Ctrl to swap two tiles.

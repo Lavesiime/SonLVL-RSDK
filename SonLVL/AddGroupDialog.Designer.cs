@@ -48,10 +48,10 @@ namespace SonicRetro.SonLVL.GUI
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(15, 148);
-            this.okButton.Margin = new System.Windows.Forms.Padding(4);
+            this.okButton.Location = new System.Drawing.Point(22, 251);
+            this.okButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(100, 28);
+            this.okButton.Size = new System.Drawing.Size(150, 44);
             this.okButton.TabIndex = 0;
             this.okButton.Text = "&OK";
             this.okButton.UseVisualStyleBackColor = true;
@@ -61,10 +61,10 @@ namespace SonicRetro.SonLVL.GUI
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(123, 148);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(4);
+            this.cancelButton.Location = new System.Drawing.Point(176, 251);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(100, 28);
+            this.cancelButton.Size = new System.Drawing.Size(150, 44);
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "&Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
@@ -72,116 +72,113 @@ namespace SonicRetro.SonLVL.GUI
             // 
             // XDist
             // 
-            this.XDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.XDist.Location = new System.Drawing.Point(104, 15);
-            this.XDist.Margin = new System.Windows.Forms.Padding(4);
+            this.XDist.Location = new System.Drawing.Point(160, 72);
+            this.XDist.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.XDist.Maximum = new decimal(new int[] {
             4095,
             0,
             0,
             0});
             this.XDist.Name = "XDist";
-            this.XDist.Size = new System.Drawing.Size(63, 22);
-            this.XDist.TabIndex = 2;
+            this.XDist.Size = new System.Drawing.Size(94, 31);
+            this.XDist.TabIndex = 4;
+            this.XDist.ValueChanged += new System.EventHandler(this.value_ValueChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 17);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(28, 76);
+            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 16);
-            this.label1.TabIndex = 3;
+            this.label1.Size = new System.Drawing.Size(119, 25);
             this.label1.Text = "X distance:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 49);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(28, 184);
+            this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(73, 16);
-            this.label2.TabIndex = 5;
+            this.label2.Size = new System.Drawing.Size(120, 25);
             this.label2.Text = "Y distance:";
             // 
             // YDist
             // 
-            this.YDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.YDist.Location = new System.Drawing.Point(104, 47);
-            this.YDist.Margin = new System.Windows.Forms.Padding(4);
+            this.YDist.Location = new System.Drawing.Point(160, 180);
+            this.YDist.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.YDist.Maximum = new decimal(new int[] {
             4095,
             0,
             0,
             0});
             this.YDist.Name = "YDist";
-            this.YDist.Size = new System.Drawing.Size(63, 22);
-            this.YDist.TabIndex = 4;
+            this.YDist.Size = new System.Drawing.Size(94, 31);
+            this.YDist.TabIndex = 6;
+            this.YDist.ValueChanged += new System.EventHandler(this.value_ValueChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 81);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(28, 141);
+            this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 16);
-            this.label3.TabIndex = 7;
+            this.label3.Size = new System.Drawing.Size(71, 25);
             this.label3.Text = "Rows:";
             // 
             // Rows
             // 
-            this.Rows.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Rows.Location = new System.Drawing.Point(104, 79);
-            this.Rows.Margin = new System.Windows.Forms.Padding(4);
+            this.Rows.Location = new System.Drawing.Point(160, 137);
+            this.Rows.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Rows.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.Rows.Name = "Rows";
-            this.Rows.Size = new System.Drawing.Size(63, 22);
-            this.Rows.TabIndex = 6;
+            this.Rows.Size = new System.Drawing.Size(94, 31);
+            this.Rows.TabIndex = 5;
             this.Rows.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
+            this.Rows.ValueChanged += new System.EventHandler(this.value_ValueChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(16, 113);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(28, 33);
+            this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(62, 16);
-            this.label4.TabIndex = 9;
+            this.label4.Size = new System.Drawing.Size(102, 25);
             this.label4.Text = "Columns:";
             // 
             // Columns
             // 
-            this.Columns.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Columns.Location = new System.Drawing.Point(104, 111);
-            this.Columns.Margin = new System.Windows.Forms.Padding(4);
+            this.Columns.Location = new System.Drawing.Point(160, 29);
+            this.Columns.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Columns.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.Columns.Name = "Columns";
-            this.Columns.Size = new System.Drawing.Size(63, 22);
-            this.Columns.TabIndex = 8;
+            this.Columns.Size = new System.Drawing.Size(94, 31);
+            this.Columns.TabIndex = 3;
             this.Columns.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
+            this.Columns.ValueChanged += new System.EventHandler(this.value_ValueChanged);
             // 
             // AddGroupDialog
             // 
             this.AcceptButton = this.okButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(239, 191);
+            this.CancelButton = this.cancelButton;
+            this.ClientSize = new System.Drawing.Size(350, 318);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.Columns);
             this.Controls.Add(this.label3);
@@ -193,7 +190,7 @@ namespace SonicRetro.SonLVL.GUI
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AddGroupDialog";

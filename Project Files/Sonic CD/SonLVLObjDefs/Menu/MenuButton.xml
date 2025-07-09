@@ -50,9 +50,9 @@
       <EnumMember name="Leaderboards" />
       <EnumMember name="Help And Options" />
       <EnumMember name="Extras" />
-      <EnumMember name="Buy Full Game" /> <!-- Unlock Full Game on Steam -->
+      <EnumMember name="Buy Full Game" /> <!-- Unlock Full Game on Steam, Remove Ads in Forever -->
       <EnumMember name="Unlock Full Game" /> <!-- Return To Arcade on Steam -->
-      <EnumMember name="Exit" />  <!-- Exit Game on Steam -->
+      <EnumMember name="Exit" />  <!-- Exit Game on Steam/Forever -->
       <EnumMember name="Soundtrack" />
       <EnumMember name="More Games" /> <!-- invalid frame on Steam -->
     </Enum>
@@ -123,13 +123,13 @@
     <Subtype id="06" name="Extras">
       <ImageSetRef set="extras" />
     </Subtype>
-    <Subtype id="07" name="Buy Full Game"> <!-- Unlock Full Game on Steam -->
+    <Subtype id="07" name="Buy Full Game"> <!-- Unlock Full Game on Steam, Remove Ads in Forever -->
       <ImageSetRef set="buyfullgame" />
     </Subtype>
     <Subtype id="08" name="Unlock Full Game"> <!-- Return To Arcade on Steam -->
       <ImageSetRef set="unlockfullgame" />
     </Subtype>
-    <Subtype id="09" name="Exit"> <!-- Exit Game on Steam -->
+    <Subtype id="09" name="Exit"> <!-- Exit Game on Steam/Forever -->
       <ImageSetRef set="exit" />
     </Subtype>
     <Subtype id="0A" name="Soundtrack">

@@ -5,10 +5,19 @@
       <Offset X="-40" Y="-32" />
     </ImageFromSheet>
     <ImageFromSheet id="electricity" sheet="Global/Items3.gif" sourcex="149" sourcey="1" width="12" height="16" />
-    <ImageFromSheet id="inactivebase" sheet="Global/Items3.gif" sourcex="175" sourcey="18" width="80" height="25">
+    <ImageFromSheet id="ruined" sheet="Global/Items3.gif" sourcex="175" sourcey="18" width="80" height="25">
       <Offset X="-40" Y="-32" />
     </ImageFromSheet>
   </Images>
+  <Properties>
+    <Property name="Condition" description="The state of this Transporter. Typically active in the Past and ruined in the Present." type="conditions" startbit="0" length="8" />
+  </Properties>
+  <Enums>
+    <Enum name="conditions">
+      <EnumMember name="Active" />
+      <EnumMember name="Ruined" />
+    </Enum>
+  </Enums>
   <ImageSets>
     <ImageSet id="active">
       <ImageRef image="activebase" />
@@ -23,9 +32,9 @@
         <Offset X="10" Y="-8" />
       </ImageRef>
     </ImageSet>
-    <ImageSet id="inactive">
-      <ImageRef image="inactivebase" />
-      <ImageRef image="inactivebase" yflip="ReverseFlip" />
+    <ImageSet id="ruined">
+      <ImageRef image="ruined" />
+      <ImageRef image="ruined" yflip="ReverseFlip" />
     </ImageSet>
   </ImageSets>
   <DefaultImage>
@@ -35,11 +44,8 @@
     <Subtype id="00" name="Active">
       <ImageSetRef set="active" />
     </Subtype>
-    <Subtype id="01" name="Inactive">
-      <ImageSetRef set="inactive" />
+    <Subtype id="01" name="Ruined">
+      <ImageSetRef set="ruined" />
     </Subtype>
   </Subtypes>
-  <Properties>
-    <Property name="Inactive" description="If this Transporter should be active or not. Traditionally active in the Past and inactive in the Present." type="bool" startbit="0" length="1" />
-  </Properties>
 </ObjDef>

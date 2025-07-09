@@ -19,26 +19,26 @@ namespace SCDObjectDefinitions.R4
 			
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					sheet = LevelData.GetSpriteSheet("R4/Objects.gif");
 					sprx1 = 163;
 					sprx2 = 196;
 					spry = 1;
 					break;
-				case 'B':
+				case 'B': // Past
 					sheet = LevelData.GetSpriteSheet("R4/Objects2.gif");
 					sprx1 = 1;
 					sprx2 = 34;
 					spry = 157;
 					break;
-				case 'C':
+				case 'C': // Good Future
 					sheet = LevelData.GetSpriteSheet("R4/Objects2.gif");
 					sprx1 = 1;
 					sprx2 = 34;
 					spry = 190;
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					sheet = LevelData.GetSpriteSheet("R4/Objects2.gif");
 					sprx1 = 1;
 					sprx2 = 34;

@@ -16,7 +16,7 @@ namespace SCDObjectDefinitions.R5
 			Sprite[] sprites = new Sprite[2];
 			BitmapBits sheet = LevelData.GetSpriteSheet("R5/Objects3.gif");
 			
-			if (LevelData.StageInfo.folder.EndsWith("D"))
+			if (LevelData.StageInfo.folder.EndsWith("D")) // In the Bad Future, we use different sprites
 			{
 				sprites[0] = new Sprite(sheet.GetSection(131, 98, 64, 32), -32, -16);
 				sprites[1] = new Sprite(sheet.GetSection(131, 98, 64, 32),  96, -16);

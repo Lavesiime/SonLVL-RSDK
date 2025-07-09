@@ -10,10 +10,10 @@ namespace SCDObjectDefinitions.R5
 	{
 		public override Sprite GetFrame()
 		{
-			if (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1] < 'D')
-				return new Sprite(LevelData.GetSpriteSheet("R5/Objects2.gif").GetSection(125, 191, 48, 64), -24, -32);
+			if (LevelData.StageInfo.folder.EndsWith("D")) // Using a different sprite in the Bad Future
+				return new Sprite(LevelData.GetSpriteSheet("R5/Objects2.gif").GetSection(76, 191, 48, 64), -24, -32); // Bad Future frame
 			else
-				return new Sprite(LevelData.GetSpriteSheet("R5/Objects2.gif").GetSection(76, 191, 48, 64), -24, -32);
+				return new Sprite(LevelData.GetSpriteSheet("R5/Objects2.gif").GetSection(125, 191, 48, 64), -24, -32); // Good Future frame
 		}
 	}
 	
@@ -23,14 +23,14 @@ namespace SCDObjectDefinitions.R5
 		{
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					return new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(223, 141, 32, 96), -16, -48);
-				case 'B':
+				case 'B': // Past
 					return new Sprite(LevelData.GetSpriteSheet("R5/Objects3.gif").GetSection(132, 1, 32, 96), -16, -48);
-				case 'C':
+				case 'C': // Good Future
 					return new Sprite(LevelData.GetSpriteSheet("R5/Objects3.gif").GetSection(66, 1, 32, 96), -16, -48);
-				case 'D':
+				case 'D': // Bad Future
 					return new Sprite(LevelData.GetSpriteSheet("R5/Objects3.gif").GetSection(99, 1, 32, 96), -16, -48);
 			}
 		}
@@ -40,10 +40,10 @@ namespace SCDObjectDefinitions.R5
 	{
 		public override Sprite GetFrame()
 		{
-			if (LevelData.StageInfo.folder.EndsWith("B"))
-				return new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(1, 225, 32, 28), -4, -16);
+			if (LevelData.StageInfo.folder.EndsWith("B")) // Using a different sprite in the Past
+				return new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(1, 225, 32, 28), -4, -16); // Past frame
 			else
-				return new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(1, 18, 32, 28), -4, -16);
+				return new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(1, 18, 32, 28), -4, -16); // Present/Future frame
 		}
 	}
 	
@@ -53,13 +53,13 @@ namespace SCDObjectDefinitions.R5
 		{
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				case 'C': // half sure that the GF should use the frame next to the flowers? the base game makes the present and GF use the frames though, so let's just keep it like this..
 				default:
 					return new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(172, 207, 16, 48), -8, -24);
-				case 'B':
+				case 'B': // Past
 					return new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(189, 207, 16, 48), -8, -24);
-				case 'D':
+				case 'D': // Bad Future
 					return new Sprite(LevelData.GetSpriteSheet("R5/Objects.gif").GetSection(155, 207, 16, 48), -8, -24); ;
 			}
 		}

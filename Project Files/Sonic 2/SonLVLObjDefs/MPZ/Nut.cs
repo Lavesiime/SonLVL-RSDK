@@ -22,9 +22,13 @@ namespace S2ObjectDefinitions.MPZ
 			
 			// even if it's set by non-falling Nuts, it's only used by falling ones
 			properties[1] = new PropertySpec("Drop Distance", typeof(int), "Extended",
-				"Only used if Drop is true. How far down in pixels the Nut has to be in order to start falling.", null,
-				(obj) => (obj.PropertyValue & 0x7F) << 3,
-				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~0x7F) | (((int)value >> 3) & 0x7F)));
+				"Only used if Drop is true. How far down, in intervals of 8 pixels, the Nut has to be in order to start falling.", null,
+				(obj) => (obj.PropertyValue < 0x80) ? -1 : ((obj.PropertyValue & 0x7F) << 3),
+				(obj, value) => {
+						if (obj.PropertyValue >= 0x80) // don't set it if we don't allow dropping
+							obj.PropertyValue = (byte)((obj.PropertyValue & ~0x7F) | (((int)value >> 3) & 0x7F));
+					}
+				);
 		}
 
 		public override ReadOnlyCollection<byte> Subtypes

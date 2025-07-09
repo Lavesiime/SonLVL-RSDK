@@ -15,17 +15,17 @@ namespace SCDObjectDefinitions.R4
 			
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects.gif").GetSection(163, 1, 32, 32));
 					break;
-				case 'B':
+				case 'B': // Past
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects2.gif").GetSection(1, 157, 32, 32));
 					break;
-				case 'C':
+				case 'C': // Good Future
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects2.gif").GetSection(1, 190, 32, 32));
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects2.gif").GetSection(1, 223, 32, 32));
 					break;
 			}
@@ -51,17 +51,17 @@ namespace SCDObjectDefinitions.R4
 			
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects.gif").GetSection(163, 1, 32, 32));
 					break;
-				case 'B':
+				case 'B': // Past
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects2.gif").GetSection(1, 157, 32, 32));
 					break;
-				case 'C':
+				case 'C': // Good Future
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects2.gif").GetSection(1, 190, 32, 32));
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					block = new Sprite(LevelData.GetSpriteSheet("R4/Objects2.gif").GetSection(1, 223, 32, 32));
 					break;
 			}
@@ -85,7 +85,7 @@ namespace SCDObjectDefinitions.R4
 			
 			// technically it should just be shown as a normal int to the user.. but this is cleaner imo
 			properties[0] = new PropertySpec("Start From", typeof(int), "Extended",
-				"Which position this block should start from and which direction it should be moving.", null, new Dictionary<string, int>
+				"Which position this block should start from and which direction it should be moving towards.", null, new Dictionary<string, int>
 				{
 					{ "Middle (-> Right)", 0xc0 },
 					{ "Middle Right (-> Right)", 0xe0 },

@@ -17,7 +17,7 @@ namespace SCDObjectDefinitions.R4
 			if (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1] <= 'B')
 				sprite = new Sprite(LevelData.GetSpriteSheet("R4/Objects.gif").GetSection(18, 69, 128, 16), -64, -8); // past/present frame
 			else
-				sprite = new Sprite(LevelData.GetSpriteSheet("R4/Objects3.gif").GetSection(62, 211, 128, 16), -64, -8); // past/present frame
+				sprite = new Sprite(LevelData.GetSpriteSheet("R4/Objects3.gif").GetSection(62, 211, 128, 16), -64, -8); // good/bad future frame
 			
 			BitmapBits bitmap = new BitmapBits(129, 17);
 			bitmap.DrawRectangle(6, 0, 0, 127, 15); // LevelData.ColorWhite
@@ -34,7 +34,7 @@ namespace SCDObjectDefinitions.R4
 				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~1) | (int)value));
 			
 			properties[1] = new PropertySpec("Close Height", typeof(int), "Extended",
-				"Origins only. How high the player should be for the door to close.", null, new Dictionary<string, int>
+				"Origins only. How far above the player should be for the door to close.", null, new Dictionary<string, int>
 				{
 					{ "48px", 0 },
 					{ "20px", 2 } // the box is -400, -100, 400, -20, but the only relevant bit is the 20px bit (and even then it's actually a bit less, cause it's a hitbox check and not a normal ypos check)

@@ -65,10 +65,21 @@ namespace S2ObjectDefinitions.HPZ
 					}
 				);
 			
+			/*
 			properties[2] = new PropertySpec("Spiked Ball", typeof(bool), "Extended",
 				"If this object should be a Spiked Ball, as opposed to a Platform.", null,
 				(obj) => (obj.PropertyValue & 0x80) == 0x80,
 				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~0x80) | ((bool)value ? 0x80 : 0x00)));
+			*/
+			
+			properties[2] = new PropertySpec("Item", typeof(bool), "Extended",
+				"What should be attached to this object.", null, new Dictionary<string, int>
+				{
+					{ "Platform", 0 },
+					{ "Spike Ball", 0x80 }
+				},
+				(obj) => obj.PropertyValue & 0x80,
+				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~0x80) | (int)value));
 			
 			properties[3] = new PropertySpec("Dynamic", typeof(bool), "Extended",
 				"If this platform's radius should expand and contract.", null,

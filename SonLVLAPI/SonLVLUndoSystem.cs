@@ -55,16 +55,16 @@ namespace SonicRetro.SonLVL.API
 					{
 						for (int i = 0; i < 8; i++)
 						{
-							var listCount = ds.ReadByte();
+							var listCount = reader.ReadInt32();
 							LevelData.BGScroll[i] = new List<ScrollData>(listCount);
 
 							for (int j = 0; j < listCount; j++)
 							{
 								var scrollData = new ScrollData();
 								scrollData.StartPos = reader.ReadUInt16();
-								scrollData.Deform = ds.ReadByte() == 1;
-								scrollData.ParallaxFactor = (decimal)reader.ReadDouble();
-								scrollData.ScrollSpeed = (decimal)reader.ReadDouble();
+								scrollData.Deform = reader.ReadBoolean();
+								scrollData.ParallaxFactor = reader.ReadDecimal();
+								scrollData.ScrollSpeed = reader.ReadDecimal();
 								LevelData.BGScroll[i].Add(scrollData);
 							}
 						}
@@ -111,16 +111,19 @@ namespace SonicRetro.SonLVL.API
 				// (Alternatively we could write all the data using RSDKv4.Backgrounds.ScrollInfo, but then we'd lose on decimal precision a little?)
 				ms.WriteDeflateBlock(ds =>
 				{
-					for (int i = 0; i < 8; i++)
+					using (var writer = new RSDKv3_4.Writer(ds))
 					{
-						ds.WriteByte((byte)(LevelData.BGScroll[i].Count));
-						
-						foreach (var scroll in LevelData.BGScroll[i])
+						for (int i = 0; i < 8; i++)
 						{
-							ds.Write(BitConverter.GetBytes(scroll.StartPos), 0, sizeof(ushort));
-							ds.WriteByte((byte)(scroll.Deform ? 1 : 0));
-							ds.Write(BitConverter.GetBytes((double)scroll.ParallaxFactor), 0, sizeof(double)); // (we can't seralize decimals directly, so..)
-							ds.Write(BitConverter.GetBytes((double)scroll.ScrollSpeed), 0, sizeof(double));
+							writer.Write(LevelData.BGScroll[i].Count);
+
+							foreach (var scroll in LevelData.BGScroll[i])
+							{
+								writer.Write(scroll.StartPos);
+								writer.Write(scroll.Deform);
+								writer.Write(scroll.ParallaxFactor);
+								writer.Write(scroll.ScrollSpeed);
+							}
 						}
 					}
 				});

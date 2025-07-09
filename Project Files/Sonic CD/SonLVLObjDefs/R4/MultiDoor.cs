@@ -17,23 +17,23 @@ namespace SCDObjectDefinitions.R4
 			
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					BitmapBits sheet = LevelData.GetSpriteSheet("R4/Objects.gif");
 					blocks[0] = new Sprite(sheet.GetSection(163, 1, 32, 32));
 					blocks[1] = new Sprite(sheet.GetSection(196, 1, 32, 32));
 					break;
-				case 'B':
+				case 'B': // Past
 					sheet = LevelData.GetSpriteSheet("R4/Objects2.gif");
 					blocks[0] = new Sprite(sheet.GetSection(1, 157, 32, 32));
 					blocks[1] = new Sprite(sheet.GetSection(34, 157, 32, 32));
 					break;
-				case 'C':
+				case 'C': // Good Future
 					sheet = LevelData.GetSpriteSheet("R4/Objects2.gif");
 					blocks[0] = new Sprite(sheet.GetSection(1, 190, 32, 32));
 					blocks[1] = new Sprite(sheet.GetSection(34, 190, 32, 32));
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					sheet = LevelData.GetSpriteSheet("R4/Objects2.gif");
 					blocks[0] = new Sprite(sheet.GetSection(1, 223, 32, 32));
 					blocks[1] = new Sprite(sheet.GetSection(34, 223, 32, 32));

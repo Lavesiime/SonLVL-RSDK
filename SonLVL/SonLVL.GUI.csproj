@@ -66,6 +66,12 @@
     <Compile Include="ChunkBlockEditor.Designer.cs">
       <DependentUpon>ChunkBlockEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="CopyCollisionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CopyCollisionDialog.Designer.cs">
+      <DependentUpon>CopyCollisionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="FileSelectDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -219,6 +225,9 @@
     <Compile Include="TileRemappingDialog.Designer.cs">
       <DependentUpon>TileRemappingDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToolStripCheckBoxButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <EmbeddedResource Include="AddGroupDialog.resx">
       <DependentUpon>AddGroupDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -230,6 +239,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ChunkBlockSearchControl.resx">
       <DependentUpon>ChunkBlockSearchControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CopyCollisionDialog.resx">
+      <DependentUpon>CopyCollisionDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DrawTileDialog.resx">
       <DependentUpon>DrawTileDialog.cs</DependentUpon>

@@ -13,8 +13,8 @@ namespace SCDObjectDefinitions.R1
 			if (length == 0)
 				return sprite;
 			
-			List<Sprite> sprites = new List<Sprite>();
-			int sx = -((length * 16) / 2) + 8;
+			List<Sprite> sprites = new List<Sprite>(length);
+			int sx = -(length * 8) + 8;
 			for (int i = 0; i < length; i++)
 				sprites.Add(new Sprite(sprite, sx + (i * 16), 0));
 			
@@ -24,6 +24,8 @@ namespace SCDObjectDefinitions.R1
 	
 	class TileTriggerL : R1.TileTriggerV
 	{
+		public override bool enteranceProperty { get { return false; } }
+		
 		public override Sprite GetFrame()
 		{
 			return new Sprite(LevelData.GetSpriteSheet("Global/Display.gif").GetSection(156, 67, 16, 16), -8, -8);
@@ -32,9 +34,11 @@ namespace SCDObjectDefinitions.R1
 	
 	class TileTriggerV : ObjectDefinition
 	{
-		private PropertySpec[] properties = new PropertySpec[1];
+		private PropertySpec[] properties;
 		public Sprite sprite;
 		private Sprite debug;
+		
+		public virtual bool enteranceProperty { get { return true; } }
 		
 		public virtual Sprite GetFrame()
 		{
@@ -49,12 +53,50 @@ namespace SCDObjectDefinitions.R1
 			bitmap.DrawRectangle(6, 0, 0, 255, 255);
 			debug = new Sprite(bitmap);
 			
-			properties[0] = new PropertySpec("Size", typeof(int), "Extended",
-				"How long the Tile Trigger will be.", null,
-				(obj) => (int)obj.PropertyValue,
-				(obj, value) => obj.PropertyValue = (byte)((int)value));
-			
-			// Not only should Object[+1] should be a Blank Object, but its prop val is also (sometimes) used by the blank object too.. now how do we even show that in the editor? i'm not too sure..
+			if (enteranceProperty)
+			{
+				// We're either a Tile Trigger V or H, so let's show the 2nd "Exit" property
+				properties = new PropertySpec[2];
+				
+				properties[0] = new PropertySpec("Size", typeof(int), "Extended",
+					"How long the Tile Trigger will be.", null,
+					(obj) => (int)obj.PropertyValue,
+					(obj, value) => obj.PropertyValue = (byte)((int)value));
+				
+				properties[1] = new PropertySpec("Exit", typeof(bool), "Extended",
+					"If this Tile Trigger is the exit of the loop. Note that this object needs to be followed by a Blank Object on the object list in order to function properly.", null,
+					(obj) => {
+							int index = LevelData.Objects.IndexOf(obj) + 1;
+							if (index >= LevelData.Objects.Count)
+								return false;
+							
+							ObjectEntry other = LevelData.Objects[index];
+							return (other.Type == 0 && other.PropertyValue != 0); // Is it a Blank Object with a non-zero PropertyValue?
+						},
+					(obj, value) => {
+							int index = LevelData.Objects.IndexOf(obj) + 1;
+							if (index >= LevelData.Objects.Count)
+								return;
+							
+							ObjectEntry other = LevelData.Objects[index];
+							if (other.Type > 0) return; // Don't change it if it's not a Blank Object
+							
+							other.PropertyValue = (byte)((bool)value ? 1 : 0);
+						}
+					);
+					
+				// Not only should Object[+1] should be a Blank Object, but its prop val is also (sometimes) used by the blank object too.. now how do we even show that in the editor? i'm not too sure..
+			}
+			else
+			{
+				// We're a Tile Trigger L, so we only need to show the Size property
+				properties = new PropertySpec[1];
+				
+				properties[0] = new PropertySpec("Size", typeof(int), "Extended",
+					"How long the Tile Trigger will be.", null,
+					(obj) => (int)obj.PropertyValue,
+					(obj, value) => obj.PropertyValue = (byte)((int)value));
+			}
 		}
 		
 		public override ReadOnlyCollection<byte> Subtypes
@@ -102,8 +144,8 @@ namespace SCDObjectDefinitions.R1
 			if (length == 0)
 				return sprite;
 			
-			List<Sprite> sprites = new List<Sprite>();
-			int sy = -((length * 16) / 2) + 8;
+			List<Sprite> sprites = new List<Sprite>(length);
+			int sy = -(length * 8) + 8;
 			for (int i = 0; i < length; i++)
 				sprites.Add(new Sprite(sprite, 0, sy + (i * 16)));
 			

@@ -223,7 +223,7 @@
             // useGameXml
             // 
             this.useGameXml.AutoSize = true;
-            this.useGameXml.Location = new System.Drawing.Point(373, 228);
+            this.useGameXml.Location = new System.Drawing.Point(345, 228);
             this.useGameXml.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.useGameXml.Name = "useGameXml";
             this.useGameXml.Size = new System.Drawing.Size(115, 20);

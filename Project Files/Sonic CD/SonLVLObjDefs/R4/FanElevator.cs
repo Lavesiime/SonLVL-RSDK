@@ -15,13 +15,15 @@ namespace SCDObjectDefinitions.R4
 			BitmapBits sheet = LevelData.GetSpriteSheet("R4/Objects3.gif");
 			Sprite[] sprites = new Sprite[4];
 			
-			if (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1] < 'C')
+			if (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1] <= 'B')
 			{
+				// Present/Past frames
 				sprites[0] = new Sprite(sheet.GetSection(84, 46, 32, 48), -32, -32);
 				sprites[1] = new Sprite(sheet.GetSection(110, 144, 32, 16), -32, 16);
 			}
 			else
 			{
+				// Good/bad Future frames
 				sprites[0] = new Sprite(sheet.GetSection(84, 46, 32, 48), -32, -32);
 				sprites[1] = new Sprite(sheet.GetSection(126, 228, 32, 16), -32, 16);
 			}

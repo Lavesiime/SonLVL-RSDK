@@ -28,7 +28,7 @@ namespace S2ObjectDefinitions.Special
 			sprite = GetFrame();
 			
 			properties[0] = new PropertySpec("Rings - 2P", typeof(int), "Extended",
-				"How many rings the player should need to past the next checkpoint when two players are active (S&T, K&T, A&T).", null,
+				"How many rings the player should need to past the next checkpoint when two players are active (S&&T, K&&T, A&&T).", null,
 				(obj) => ((V4ObjectEntry)obj).Value0,
 				(obj, value) => ((V4ObjectEntry)obj).Value0 = (int)value);
 			

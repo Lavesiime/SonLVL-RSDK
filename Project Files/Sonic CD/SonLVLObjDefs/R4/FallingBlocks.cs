@@ -19,26 +19,26 @@ namespace SCDObjectDefinitions.R4
 			
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
+				case 'A': // Present
 				default:
 					sheet = LevelData.GetSpriteSheet("R4/Objects.gif");
 					sprx1 = 163;
 					sprx2 = 163;
 					spry = 1;
 					break;
-				case 'B':
+				case 'B': // Past
 					sheet = LevelData.GetSpriteSheet("R4/Objects2.gif");
 					sprx1 = 1;
 					sprx2 = 34;
 					spry = 157;
 					break;
-				case 'C':
+				case 'C': // Good Future
 					sheet = LevelData.GetSpriteSheet("R4/Objects2.gif");
 					sprx1 = 1;
 					sprx2 = 1;
 					spry = 190;
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					sheet = LevelData.GetSpriteSheet("R4/Objects2.gif");
 					sprx1 = 1;
 					sprx2 = 1;
@@ -49,7 +49,7 @@ namespace SCDObjectDefinitions.R4
 			frames[0] = new Sprite(sheet.GetSection(sprx1, spry, 32, 32), -16, -64);
 			frames[1] = new Sprite(sheet.GetSection(sprx1, spry, 32, 32), -16, -32);
 			frames[2] = new Sprite(sheet.GetSection(sprx2, spry, 32, 32), -16,   0);
-			frames[3] = new Sprite(LevelData.GetSpriteSheet("Global/Items3.gif").GetSection(50, 100, 32, 32), -16, 32);
+			frames[3] = new Sprite(LevelData.GetSpriteSheet("Global/Items3.gif").GetSection(50, 100, 32, 32), -16, 32); // (downward spikes frame)
 			
 			sprite = new Sprite(frames);
 			

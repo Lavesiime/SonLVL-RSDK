@@ -867,7 +867,7 @@ namespace SonicRetro.SonLVL.API
 		}
 	}
 
-	public class ScrollData
+	public class ScrollData : ICloneable
 	{
 		public ushort StartPos { get; set; }
 		public bool Deform { get; set; }
@@ -891,6 +891,10 @@ namespace SonicRetro.SonLVL.API
 		public RSDKv3.Backgrounds.ScrollInfo GetInfoV3() => new RSDKv3.Backgrounds.ScrollInfo() { deform = Deform, parallaxFactor = (ushort)(ParallaxFactor * 256), scrollSpeed = (byte)(ScrollSpeed * 64) };
 
 		public RSDKv4.Backgrounds.ScrollInfo GetInfoV4() => new RSDKv4.Backgrounds.ScrollInfo() { deform = Deform, parallaxFactor = (ushort)(ParallaxFactor * 256), scrollSpeed = (byte)(ScrollSpeed * 64) };
+
+		public ScrollData Clone() => new ScrollData(StartPos) { Deform = this.Deform, ParallaxFactor = this.ParallaxFactor, ScrollSpeed = this.ScrollSpeed };
+
+		object ICloneable.Clone() => Clone();
 	}
 
 	public class ModInfo

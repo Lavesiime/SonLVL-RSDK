@@ -41,5 +41,11 @@ namespace SonicRetro.SonLVL.GUI
 			if (a.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
 				System.IO.File.WriteAllLines(a.FileName, MainForm.Instance.LogFile.ToArray());
 		}
+
+		private void copyButton_Click(object sender, EventArgs e)
+		{
+			if (MainForm.Instance.LogFile != null)
+				Clipboard.SetText(string.Join(Environment.NewLine, MainForm.Instance.LogFile));
+		}
 	}
 }

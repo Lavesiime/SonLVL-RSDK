@@ -12,7 +12,7 @@ namespace SCDObjectDefinitions.R7
 		
 		public override void Init(ObjectData data)
 		{
-			if (LevelData.StageInfo.folder.EndsWith("C"))
+			if (LevelData.StageInfo.folder.EndsWith("C")) // Using a different sprite for the Good Future
 				sprites[0] = new Sprite(LevelData.GetSpriteSheet("R7/Objects.gif").GetSection(117, 219, 32, 32), -16, -16);
 			else
 				sprites[0] = new Sprite(LevelData.GetSpriteSheet("R7/Objects.gif").GetSection(1, 1, 32, 32), -16, -16);

@@ -21,12 +21,12 @@ namespace S2ObjectDefinitions.OOZ
 			bitmap.DrawLine(6, 0, 0, 208, 0); // LevelData.ColorWhite
 			debug = new Sprite(bitmap, -104, 0);
 			
-			properties[0] = new PropertySpec("Behaviour", typeof(int), "Extended",
-				"How these Moving Spikes should act. Range of distance is the same between all variants.", null, new Dictionary<string, int>
+			properties[0] = new PropertySpec("Start From", typeof(int), "Extended",
+				"Which side this platform should start from. Total distance range is the same between all variants.", null, new Dictionary<string, int>
 				{
-					{ "Start From Left", 0 },
-					{ "Start From Right", 1 },
-					{ "Start From Middle", 2 }
+					{ "Left", 0 },
+					{ "Middle", 2 },
+					{ "Right", 1 }
 				},
 				(obj) => (obj.PropertyValue < 2) ? obj.PropertyValue : 2,
 				(obj, value) => obj.PropertyValue = (byte)((int)value));
@@ -34,7 +34,7 @@ namespace S2ObjectDefinitions.OOZ
 
 		public override ReadOnlyCollection<byte> Subtypes
 		{
-			get { return new ReadOnlyCollection<byte>(new byte[] {0, 1, 2}); }
+			get { return new ReadOnlyCollection<byte>(new byte[] {0, 2, 1}); }
 		}
 		
 		public override byte DefaultSubtype

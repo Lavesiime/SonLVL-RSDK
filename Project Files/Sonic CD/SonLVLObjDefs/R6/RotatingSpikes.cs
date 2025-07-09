@@ -25,10 +25,10 @@ namespace SCDObjectDefinitions.R6
 			{
 				// present (5) is the default value in the array
 				
-				case 'B':
+				case 'B': // Past
 					lengths[0] = 4; break;
-				case 'C':
-				case 'D':
+				case 'C': // Good Future
+				case 'D': // Bad Future
 					lengths[0] = 6; break;
 			}
 			

@@ -15,8 +15,8 @@ namespace SCDObjectDefinitions.R4
 		{
 			switch (LevelData.StageInfo.folder[LevelData.StageInfo.folder.Length-1])
 			{
-				case 'A':
-				case 'B':
+				case 'A': // Present
+				case 'B': // Past
 				default:
 					BitmapBits sheet = LevelData.GetSpriteSheet("R4/Objects.gif");
 					sprites[0] = new Sprite(sheet.GetSection(163, 35, 32, 16), -16, -8);
@@ -26,7 +26,7 @@ namespace SCDObjectDefinitions.R4
 					sprites[4] = new Sprite(sheet.GetSection(239, 136, 16, 32), -8, -16);
 					sprites[5] = new Sprite(sheet.GetSection(222, 169, 16, 24), -8, -12);
 					break;
-				case 'C':
+				case 'C': // Good Future
 					sheet = LevelData.GetSpriteSheet("R4/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(51, 67, 32, 16), -16, -8);
 					sprites[1] = new Sprite(sheet.GetSection(51, 84, 32, 16), -16, -8);
@@ -35,7 +35,7 @@ namespace SCDObjectDefinitions.R4
 					sprites[4] = new Sprite(sheet.GetSection(50, 101, 16, 32), -8, -16);
 					sprites[5] = new Sprite(sheet.GetSection(67, 101, 16, 32), -8, -16);
 					break;
-				case 'D':
+				case 'D': // Bad Future
 					sheet = LevelData.GetSpriteSheet("R4/Objects3.gif");
 					sprites[0] = new Sprite(sheet.GetSection(62, 228, 32, 16), -16, -8);
 					sprites[1] = new Sprite(sheet.GetSection(94, 228, 32, 16), -16, -8);

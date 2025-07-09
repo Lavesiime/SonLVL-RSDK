@@ -115,7 +115,7 @@ namespace S1ObjectDefinitions.MZ
 			return sprites[obj.PropertyValue & 7];
 		}
 		
-		// i'm kind of not sure.. maybe this one is too much? i'll leave it for now, but i might just remove this later, it feels a bit too much...
+		// for the Travel ones, maybe we could show lil arrows, but.. i think this is good already?
 		public override Sprite GetDebugOverlay(ObjectEntry obj)
 		{
 			return ((obj.PropertyValue & 7) < 4) ? debug[obj.PropertyValue & 7] : null;

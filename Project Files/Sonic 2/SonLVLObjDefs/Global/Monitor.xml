@@ -55,11 +55,29 @@
   </Images>
   <Properties>
     <Property name="Contents" description="The primary contents of this Monitor." type="Contents" startbit="0" length="4" />
-    <Property name="Alt Contents" description="The alternative contents of this Monitor. Used if Contents holds an elemental shield when the setting for them is off. Static Alt Contents mean that the Monitor should not appear at all when elemental shields are disabled." type="Contents" startbit="4" length="4" />
+    <Property name="Alt Contents" description="Used if Contents holds an elemental shield when the setting for them is off. None means that the Monitor should not appear at all when elemental shields are disabled." type="AltContents" startbit="4" length="4" />
   </Properties>
   <Enums>
     <Enum name="Contents">
       <EnumMember name="Static" />
+      <EnumMember name="Rings" />
+      <EnumMember name="Shield" />
+      <EnumMember name="Invincibility" />
+      <EnumMember name="Speed Shoes" />
+      <EnumMember name="Sonic 1UP" />
+      <EnumMember name="Tails 1UP" />
+      <EnumMember name="Knuckles 1UP" />
+      <EnumMember name="Super" />
+      <EnumMember name="Bubble Shield" />
+      <EnumMember name="Fire Shield" />
+      <EnumMember name="Lightning Shield" />
+      <EnumMember name="Eggman" />
+      <EnumMember name="Teleport" />
+      <EnumMember name="Random" />
+      <EnumMember name="Debug Shields" />
+    </Enum>
+    <Enum name="AltContents">
+      <EnumMember name="None" />
       <EnumMember name="Rings" />
       <EnumMember name="Shield" />
       <EnumMember name="Invincibility" />

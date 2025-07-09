@@ -9,13 +9,13 @@ namespace S2ObjectDefinitions.CNZ
 	class HBlock : CNZ.MovingBlock
 	{
 		public override Point offset { get { return new Point(96, 0); } }
-		public override Dictionary<string, int> names { get { return new Dictionary<string, int>{{ "Right", 0 }, { "Left", 1 }}; } }
+		public override Dictionary<string, int> names { get { return new Dictionary<string, int>{{ "Left", 0 }, { "Right", 1 }}; } }
 	}
 	
 	class VBlock : CNZ.MovingBlock
 	{
 		public override Point offset { get { return new Point(0, 96); } }
-		public override Dictionary<string, int> names { get { return new Dictionary<string, int>{{ "Bottom", 0 }, { "Top", 1 }}; } }
+		public override Dictionary<string, int> names { get { return new Dictionary<string, int>{{ "Top", 0 }, { "Bottom", 1 }}; } }
 	}
 	
 	abstract class MovingBlock : ObjectDefinition

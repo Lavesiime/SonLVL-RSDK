@@ -561,16 +561,28 @@ namespace SonicRetro.SonLVL
 		private void stageAddButton_Click(object sender, EventArgs e)
 		{
 			var info = new StageXML("STAGE", "Stage", "1", true);
-			stages[stageCategory.SelectedIndex].Add(info);
-			stageListBox.Items.Add(info.name);
-			stageListBox.SelectedIndex = stageListBox.Items.Count - 1;
+			if (stageListBox.SelectedIndex == -1)
+			{
+				stages[stageCategory.SelectedIndex].Add(info);
+				stageListBox.Items.Add(info.name);
+				stageListBox.SelectedIndex = stageListBox.Items.Count - 1;
+			}
+			else
+			{
+				stages[stageCategory.SelectedIndex].Insert(stageListBox.SelectedIndex + 1, info);
+				stageListBox.Items.Insert(stageListBox.SelectedIndex + 1, info.name);
+				stageListBox.SelectedIndex = stageListBox.SelectedIndex + 1;
+			}
 			stageAddButton.Enabled = stages[stageCategory.SelectedIndex].Count < 255;
 		}
 
 		private void stageDeleteButton_Click(object sender, EventArgs e)
 		{
+			int backupIndex = stageListBox.SelectedIndex;
 			stages[stageCategory.SelectedIndex].RemoveAt(stageListBox.SelectedIndex);
 			stageListBox.Items.RemoveAt(stageListBox.SelectedIndex);
+			if (stages[stageCategory.SelectedIndex].Count > 0)
+				stageListBox.SelectedIndex = Math.Min(backupIndex, stageListBox.Items.Count - 1);
 			stageAddButton.Enabled = stages[stageCategory.SelectedIndex].Count < 255;
 		}
 

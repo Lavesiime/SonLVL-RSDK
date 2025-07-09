@@ -60,7 +60,7 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			Log(e.Exception.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
 			File.WriteAllLines("SonLVL-RSDK.log", LogFile.ToArray());
-			using (ErrorDialog ed = new ErrorDialog("Unhandled Exception " + e.Exception.GetType().Name + "\nLog file has been saved.\n\nDo you want to try to continue running?", loaded))
+			using (ErrorDialog ed = new ErrorDialog("Unhandled Exception " + e.Exception.GetType().Name + "\nLog file has been saved.\n\nDo you want to try to continue running?", Enabled))
 			{
 				if (ed.ShowDialog(this) == DialogResult.Cancel)
 					Close();
@@ -89,6 +89,7 @@ namespace SonicRetro.SonLVL.GUI
 		byte ObjGrid = 0;
 		bool objdrag = false;
 		bool dragdrop = false;
+		internal Rectangle AddObjectsPreview = Rectangle.Empty;
 		byte dragobj;
 		Point dragpoint;
 		bool selecting = false;
@@ -160,21 +161,22 @@ namespace SonicRetro.SonLVL.GUI
 			objectsAboveHighPlaneToolStripMenuItem.Checked = Settings.ObjectsAboveHighPlane;
 			hUDToolStripMenuItem.Checked = Settings.ShowHUD;
 			//invertColorsToolStripMenuItem.Checked = Settings.InvertColors;
-			lowToolStripMenuItem.Checked = Settings.ViewLowPlane;
-			highToolStripMenuItem.Checked = Settings.ViewHighPlane;
+			chunkShowLowTilesCheckBox.Checked = lowToolStripMenuItem.Checked = Settings.ViewLowPlane;
+			chunkShowHighTilesCheckBox.Checked = highToolStripMenuItem.Checked = Settings.ViewHighPlane;
 			switch (Settings.ViewCollision)
 			{
 				case CollisionPath.Path1:
-					noneToolStripMenuItem1.Checked = false;
-					path1ToolStripMenuItem.Checked = true;
+					chunkColNoneRadioButton.Checked = noneToolStripMenuItem1.Checked = false;
+					chunkColARadioButton.Checked = path1ToolStripMenuItem.Checked = true;
 					break;
 				case CollisionPath.Path2:
-					noneToolStripMenuItem1.Checked = false;
-					path2ToolStripMenuItem.Checked = true;
+					chunkColNoneRadioButton.Checked = noneToolStripMenuItem1.Checked = false;
+					chunkColBRadioButton.Checked = path2ToolStripMenuItem.Checked = true;
 					break;
 			}
 			anglesToolStripMenuItem.Checked = Settings.ViewAngles;
-			enableGridToolStripMenuItem.Checked = Settings.ShowGrid;
+			chunkShowGridCheckBox.Checked = showGridToolStripCheckBoxButton.Checked = Settings.ShowGrid;
+			snapObjectsToolStripCheckBoxButton.Checked = Settings.SnapObjectsToGrid;
 			foreach (ToolStripMenuItem item in zoomToolStripMenuItem.DropDownItems)
 				if (item.Text == Settings.ZoomLevel)
 				{
@@ -184,10 +186,18 @@ namespace SonicRetro.SonLVL.GUI
 			objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[Settings.ObjectGridSize]));
 			transparentBackgroundToolStripMenuItem.Checked = Settings.TransparentBackgroundExport;
 			hideDebugObjectsToolStripMenuItem.Checked = Settings.HideDebugObjectsExport;
-			includeobjectsWithFGToolStripMenuItem.Checked = Settings.IncludeObjectsFG;
+			displayObjectsToolStripCheckBoxButton.Checked = Settings.IncludeObjectsFG;
 			exportArtcollisionpriorityToolStripMenuItem.Checked = Settings.ExportArtCollisionPriority;
 			CurrentTab = Settings.CurrentTab;
 			CurrentArtTab = Settings.CurrentArtTab;
+			useHexadecimalToolStripMenuItem.Checked = Settings.UseHexadecimalIndexesForArt;
+
+			if (!useHexadecimalToolStripMenuItem.Checked)
+			{
+				ChunkCount.Text = $"/ 511";
+				TileCount.Text = $"/ 1023";
+			}
+
 			switchMouseButtonsInChunkAndBlockEditorsToolStripMenuItem.Checked = Settings.SwitchChunkBlockMouseButtons;
 			switch (Settings.WindowMode)
 			{
@@ -227,6 +237,11 @@ namespace SonicRetro.SonLVL.GUI
 			recentModsToolStripMenuItem.Visible = false;
 			selectModToolStripMenuItem.Visible = false;
 			editGameConfigToolStripMenuItem.Visible = false;
+      
+			// SplitterDistance is relative to the left, but let's make it so that we can fit exactly two chunks in
+			splitContainer2.SplitterDistance = splitContainer2.Size.Width - 293;
+			splitContainer3.SplitterDistance = splitContainer3.Size.Width - 293;
+      
 			findObjectsDialog = new FindObjectsDialog();
 			findFGChunksDialog = new FindChunksDialog();
 			findBGChunksDialog = new FindChunksDialog();
@@ -287,7 +302,8 @@ namespace SonicRetro.SonLVL.GUI
 				else
 					Settings.ViewCollision = CollisionPath.None;
 				Settings.ViewAngles = anglesToolStripMenuItem.Checked;
-				Settings.ShowGrid = enableGridToolStripMenuItem.Checked;
+				Settings.ShowGrid = showGridToolStripCheckBoxButton.Checked;
+				Settings.SnapObjectsToGrid = snapObjectsToolStripCheckBoxButton.Checked;
 				Settings.ZoomLevel = zoomToolStripMenuItem.DropDownItems.Cast<ToolStripMenuItem>().Single((a) => a.Checked).Text;
 				Settings.ObjectGridSize = ObjGrid;
 				Settings.CurrentTab = CurrentTab;
@@ -660,7 +676,7 @@ namespace SonicRetro.SonLVL.GUI
 				levelNameBox2.Text = string.Empty;
 			levelNameBox.MaxLength = 255 - LevelData.Scene.title.Length;
 			levelNameBox2.MaxLength = 255 - LevelData.Scene.title.Length;
-			midpointBox.SelectedIndex = (int)LevelData.Scene.layerMidpoint;
+			midpointTrackBar.Value = 4 - (int)LevelData.Scene.layerMidpoint;
 			layer0Box.SelectedIndex = (int)LevelData.Scene.activeLayer0;
 			layer1Box.SelectedIndex = (int)LevelData.Scene.activeLayer1;
 			layer2Box.SelectedIndex = (int)LevelData.Scene.activeLayer2;
@@ -728,15 +744,11 @@ namespace SonicRetro.SonLVL.GUI
 			UpdateScrollControls();
 			ChunkID.Maximum = LevelData.NewChunks.chunkList.Length - 1;
 			TileID.Maximum = LevelData.NewTiles.Length - 1;
-			ChunkCount.Text = $"/ {(LevelData.NewChunks.chunkList.Length - 1):X}";
-			TileCount.Text = $"/ {(LevelData.NewTiles.Length - 1):X}";
-			deleteUnusedTilesToolStripButton.Enabled = deleteUnusedChunksToolStripButton.Enabled = ChunkID.Enabled = TileID.Enabled =
-				removeDuplicateTilesToolStripButton.Enabled = copyCollisionAllButton.Enabled = copyCollisionSingleButton.Enabled = calculateAngleButton.Enabled =
-				removeDuplicateChunksToolStripButton.Enabled = replaceChunkBlocksToolStripButton.Enabled = bgLayerDropDown.Enabled = reloadTilesToolStripButton.Enabled =
-				resizeBackgroundToolStripButton.Enabled = replaceBackgroundToolStripButton.Enabled = resizeForegroundToolStripButton.Enabled = importToolStripButton.Enabled =
-				deleteToolStripButton.Enabled = replaceForegroundToolStripButton.Enabled = clearBackgroundToolStripButton.Enabled = clearForegroundToolStripButton.Enabled =
+			useHexadecimalToolStripMenuItem_CheckedChanged(this, EventArgs.Empty);
+			tableLayoutPanel4.Enabled = importToolStripButton.Enabled = deleteToolStripButton.Enabled = fgToolStrip.Enabled = bgToolStrip.Enabled =
 				usageCountsToolStripMenuItem.Enabled = titleCardGroup.Enabled = layerSettingsGroup.Enabled = objectListGroup.Enabled = soundEffectsGroup.Enabled =
 				objectPanel.PanelAllowDrop = objectOrder.AllowDrop = TileSelector.AllowDrop = true;
+			
 			undoToolStripMenuItem.Enabled = false;
 			undoToolStripMenuItem.DropDownItems.Clear();
 			redoToolStripMenuItem.Enabled = false;
@@ -822,7 +834,7 @@ namespace SonicRetro.SonLVL.GUI
 				{
 					DefaultExt = "exe",
 					Filter = "EXE Files|*.exe|All Files|*.*",
-					Title = "Select your game's EXE",
+					Title = "Select your decompilation EXE",
 					InitialDirectory = Path.GetDirectoryName(path)
 				})
 					if (a.ShowDialog(this) == DialogResult.OK)
@@ -916,7 +928,7 @@ namespace SonicRetro.SonLVL.GUI
 				levelNameBox2.Text = string.Empty;
 			levelNameBox.MaxLength = 255 - LevelData.Scene.title.Length;
 			levelNameBox2.MaxLength = 255 - LevelData.Scene.title.Length;
-			midpointBox.SelectedIndex = (int)LevelData.Scene.layerMidpoint;
+			midpointTrackBar.Value = 4 - (int)LevelData.Scene.layerMidpoint;
 			layer0Box.SelectedIndex = (int)LevelData.Scene.activeLayer0;
 			layer1Box.SelectedIndex = (int)LevelData.Scene.activeLayer1;
 			layer2Box.SelectedIndex = (int)LevelData.Scene.activeLayer2;
@@ -1022,6 +1034,7 @@ namespace SonicRetro.SonLVL.GUI
 		ushort searchbgchunk;
 		private void findToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			if (!loaded) return;
 			switch (CurrentTab)
 			{
 				case Tab.Objects:
@@ -1066,6 +1079,7 @@ namespace SonicRetro.SonLVL.GUI
 					DrawLevel();
 					break;
 				case Tab.Foreground:
+					findFGChunksDialog.chunkSelect.Value = SelectedChunk;
 					switch (findFGChunksDialog.ShowDialog(this))
 					{
 						case DialogResult.Yes:
@@ -1107,6 +1121,7 @@ namespace SonicRetro.SonLVL.GUI
 					}
 					break;
 				case Tab.Background:
+					findBGChunksDialog.chunkSelect.Value = SelectedChunk;
 					switch (findBGChunksDialog.ShowDialog(this))
 					{
 						case DialogResult.Yes:
@@ -1151,8 +1166,8 @@ namespace SonicRetro.SonLVL.GUI
 			loaded = false;
 			objectPanel.HScrollValue = (int)Math.Max(objectPanel.HScrollMinimum, Math.Min(objectPanel.HScrollMaximum - objectPanel.HScrollLargeChange + 1, item.X - ((objectPanel.PanelWidth / 2) / ZoomLevel)));
 			objectPanel.VScrollValue = (int)Math.Max(objectPanel.VScrollMinimum, Math.Min(objectPanel.VScrollMaximum - objectPanel.VScrollLargeChange + 1, item.Y - ((objectPanel.PanelHeight / 2) / ZoomLevel)));
-			foregroundPanel.HScrollValue = (int)Math.Max(foregroundPanel.HScrollMinimum, Math.Min(foregroundPanel.HScrollMaximum - foregroundPanel.HScrollLargeChange + 1, item.X - ((foregroundPanel.PanelWidth / 2) / ZoomLevel)));
-			foregroundPanel.VScrollValue = (int)Math.Max(foregroundPanel.VScrollMinimum, Math.Min(foregroundPanel.VScrollMaximum - foregroundPanel.VScrollLargeChange + 1, item.Y - ((foregroundPanel.PanelHeight / 2) / ZoomLevel)));
+			foregroundPanel.HScrollValue = Math.Min(objectPanel.HScrollValue, foregroundPanel.HScrollMaximum - foregroundPanel.HScrollLargeChange + 1);
+			foregroundPanel.VScrollValue = Math.Min(objectPanel.VScrollValue, foregroundPanel.VScrollMaximum - foregroundPanel.VScrollLargeChange + 1);
 			loaded = true;
 		}
 
@@ -1310,6 +1325,12 @@ namespace SonicRetro.SonLVL.GUI
 			}
 		}
 
+		private void displayObjectsToolStripCheckBoxButton_CheckedChanged(object sender, EventArgs e)
+		{
+			Settings.IncludeObjectsFG = displayObjectsToolStripCheckBoxButton.Checked;
+			DrawLevel();
+		}
+
 		private void resizeLayerToolStripButton_Click(object sender, EventArgs e)
 		{
 			using (ResizeLevelDialog dg = new ResizeLevelDialog())
@@ -1379,7 +1400,7 @@ namespace SonicRetro.SonLVL.GUI
 					levelNameBox2.Text = levnam[1];
 				levelNameBox.MaxLength = 255 - LevelData.Scene.title.Length;
 				levelNameBox2.MaxLength = 255 - LevelData.Scene.title.Length;
-				midpointBox.SelectedIndex = (int)LevelData.Scene.layerMidpoint;
+				midpointTrackBar.Value = 4 - (int)LevelData.Scene.layerMidpoint;
 				layer0Box.SelectedIndex = (int)LevelData.Scene.activeLayer0;
 				layer1Box.SelectedIndex = (int)LevelData.Scene.activeLayer1;
 				layer2Box.SelectedIndex = (int)LevelData.Scene.activeLayer2;
@@ -1407,6 +1428,29 @@ namespace SonicRetro.SonLVL.GUI
 			}
 		}
 
+		private void useHexadecimalToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			Settings.UseHexadecimalIndexesForArt = useHexadecimalToolStripMenuItem.Checked;
+
+			chunkBlockEditor.Hexadecimal = TileID.Hexadecimal = ChunkID.Hexadecimal = useHexadecimalToolStripMenuItem.Checked;
+
+			if (!loaded) return;
+			
+			if (CurrentTab == Tab.Foreground || CurrentTab == Tab.Background)
+				DrawLevel();
+
+			if (useHexadecimalToolStripMenuItem.Checked)
+			{
+				ChunkCount.Text = $"/ {(LevelData.NewChunks.chunkList.Length - 1):X}";
+				TileCount.Text = $"/ {(LevelData.NewTiles.Length - 1):X}";
+			}
+			else
+			{
+				ChunkCount.Text = $"/ {(LevelData.NewChunks.chunkList.Length - 1)}";
+				TileCount.Text = $"/ {(LevelData.NewTiles.Length - 1)}";
+			}
+		}
+
 		private void switchMouseButtonsInChunkAndBlockEditorsToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
 			if (switchMouseButtonsInChunkAndBlockEditorsToolStripMenuItem.Checked)
@@ -1426,12 +1470,6 @@ namespace SonicRetro.SonLVL.GUI
 		#endregion
 
 		#region View Menu
-		private void includeObjectsWithFGToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			Settings.IncludeObjectsFG = includeobjectsWithFGToolStripMenuItem.Checked;
-			DrawLevel();
-		}
-
 		private void objectsAboveHighPlaneToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			objectsAboveHighPlaneToolStripMenuItem.Checked = !objectsAboveHighPlaneToolStripMenuItem.Checked;
@@ -1483,12 +1521,16 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void lowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			if (!loaded) return;
+
 			DrawLevel();
 			DrawChunkPicture();
 		}
 
 		private void highToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			if (!loaded) return;
+
 			DrawLevel();
 			DrawChunkPicture();
 		}
@@ -1529,7 +1571,7 @@ namespace SonicRetro.SonLVL.GUI
 			if (a.ShowDialog() == DialogResult.OK)
 			{
 				Settings.GridColor = a.Color;
-				if (loaded && enableGridToolStripMenuItem.Checked)
+				if (loaded && showGridToolStripCheckBoxButton.Checked)
 				{
 					DrawLevel();
 					DrawChunkPicture();
@@ -1564,7 +1606,10 @@ namespace SonicRetro.SonLVL.GUI
 			UpdateScrollBars();
 			loaded = true;
 			if (scrollPreviewButton.Checked)
-				backgroundPanel.PanelGraphics.Clear(LevelImgPalette.Entries[LevelData.ColorTransparent]);
+			{
+				backgroundPanel.GraphicsBuffer.Graphics.Clear(LevelImgPalette.Entries[LevelData.ColorTransparent]);
+				backgroundPanel.GraphicsBuffer.Render(backgroundPanel.PanelGraphics);
+			}
 			else
 				DrawLevel();
 		}
@@ -1642,7 +1687,7 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						if (exportArtcollisionpriorityToolStripMenuItem.Checked)
 						{
-							string pathBase = Path.Combine(a.SelectedPath, useHexadecimalIndexesToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString());
+							string pathBase = Path.Combine(a.SelectedPath, useHexadecimalToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString());
 							LevelData.NewTileBmps[i].Save(Path.Combine(pathBase + ".png"));
 							LevelData.NewColBmpBits[i][0].ToBitmap1bpp(Color.Magenta, Color.White).Save(pathBase + "_col1.png");
 							LevelData.NewColBmpBits[i][1].ToBitmap1bpp(Color.Magenta, Color.White).Save(pathBase + "_col2.png");
@@ -1650,7 +1695,7 @@ namespace SonicRetro.SonLVL.GUI
 						else
 							LevelData.NewTileBmps[i]
 								.Save(Path.Combine(a.SelectedPath,
-								(useHexadecimalIndexesToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
+								(useHexadecimalToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
 					}
 		}
 
@@ -1672,7 +1717,7 @@ namespace SonicRetro.SonLVL.GUI
 						pal.Entries[0] = Color.Transparent;
 					for (int i = 0; i < LevelData.NewChunks.chunkList.Length; i++)
 					{
-						string pathBase = Path.Combine(a.SelectedPath, useHexadecimalIndexesToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString());
+						string pathBase = Path.Combine(a.SelectedPath, useHexadecimalToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString());
 						if (exportArtcollisionpriorityToolStripMenuItem.Checked)
 						{
 							BitmapBits bits = new BitmapBits(128, 128);
@@ -1772,9 +1817,9 @@ namespace SonicRetro.SonLVL.GUI
 					for (int i = 0; i < LevelData.NewColBmpBits.Length; i++)
 					{
 						LevelData.NewColBmpBits[i][0].ToBitmap1bpp(Color.Transparent, Color.White).Save(Path.Combine(a.SelectedPath,
-							"0_" + (useHexadecimalIndexesToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
+							"0_" + (useHexadecimalToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
 						LevelData.NewColBmpBits[i][1].ToBitmap1bpp(Color.Transparent, Color.White).Save(Path.Combine(a.SelectedPath,
-							"1_" + (useHexadecimalIndexesToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
+							"1_" + (useHexadecimalToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
 					}
 		}
 
@@ -1856,13 +1901,13 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						if (path1ToolStripMenuItem.Checked || path2ToolStripMenuItem.Checked)
 						{
-							BitmapBits32 bmp = LevelData.DrawForeground32(null, transparentBackgroundToolStripMenuItem.Checked ? Color.Transparent : LevelImgPalette.Entries[LevelData.ColorTransparent], includeobjectsWithFGToolStripMenuItem.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
+							BitmapBits32 bmp = LevelData.DrawForeground32(null, transparentBackgroundToolStripMenuItem.Checked ? Color.Transparent : LevelImgPalette.Entries[LevelData.ColorTransparent], displayObjectsToolStripCheckBoxButton.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
 							using (Bitmap res = bmp.ToBitmap())
 								res.Save(a.FileName);
 						}
 						else
 						{
-							BitmapBits bmp = LevelData.DrawForeground(null, includeobjectsWithFGToolStripMenuItem.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
+							BitmapBits bmp = LevelData.DrawForeground(null, displayObjectsToolStripCheckBoxButton.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
 							Color[] palette;
 							if (transparentBackgroundToolStripMenuItem.Checked)
 							{
@@ -1942,11 +1987,6 @@ namespace SonicRetro.SonLVL.GUI
 			Settings.HideDebugObjectsExport = hideDebugObjectsToolStripMenuItem.Checked;
 		}
 
-		private void useHexadecimalIndexesToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			Settings.UseHexadecimalIndexesExport = useHexadecimalIndexesToolStripMenuItem.Checked;
-		}
-
 		private void exportArtcollisionpriorityToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
 			Settings.ExportArtCollisionPriority = exportArtcollisionpriorityToolStripMenuItem.Checked;
@@ -1972,7 +2012,7 @@ namespace SonicRetro.SonLVL.GUI
 			if (!loaded) return;
 			if (ObjectSelect.listView1.SelectedIndices.Count == 0) return;
 			if (ObjectSelect.listView2.SelectedIndices.Count == 0) return;
-			ObjectSelect.numericUpDown2.Value = (byte)ObjectSelect.listView2.SelectedItems[0].Tag;
+			ObjectSelect.propertyValue.Value = (byte)ObjectSelect.listView2.SelectedItems[0].Tag;
 		}
 
 		void ObjectSelect_listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -1980,8 +2020,8 @@ namespace SonicRetro.SonLVL.GUI
 			if (!loaded) return;
 			if (ObjectSelect.listView1.SelectedIndices.Count == 0) return;
 			byte ID = (byte)ObjectSelect.listView1.SelectedItems[0].Tag;
-			ObjectSelect.numericUpDown1.Value = ID;
-			ObjectSelect.numericUpDown2.Value = LevelData.ObjTypes[ID].DefaultSubtype;
+			ObjectSelect.typeValue.Value = ID;
+			ObjectSelect.propertyValue.Value = LevelData.ObjTypes[ID].DefaultSubtype;
 			ObjectSelect.listView2.Items.Clear();
 			ObjectSelect.imageList2.Images.Clear();
 			foreach (byte item in LevelData.ObjTypes[ID].Subtypes)
@@ -2013,12 +2053,36 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			foreach (var item in bgLayerDropDown.DropDownItems.OfType<ToolStripMenuItem>())
 				item.Checked = item == e.ClickedItem;
+			foreach (var item in bgDuplicateLayerOverToolStripButton.DropDownItems.OfType<ToolStripMenuItem>())
+				item.Visible = true;
 			bglayer = bgLayerDropDown.DropDownItems.IndexOf(e.ClickedItem);
+			bgDuplicateLayerOverToolStripButton.DropDownItems[bglayer].Visible = false;
 			bgLayerDropDown.Text = $"Layer: {bglayer + 1}";
 			BGSelection = Rectangle.Empty;
 			UpdateScrollControls();
 			UpdateScrollBars();
 			DrawLevel();
+		}
+
+		private void bgDuplicateLayerOverToolStripButton_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			bgDuplicateLayerOverToolStripButton.HideDropDown();
+
+			int destLayer = bgDuplicateLayerOverToolStripButton.DropDownItems.IndexOf(e.ClickedItem);
+			if (MessageBox.Show(this, $"This action will ENTIRELY replace both the chunk layout and parallax data of background layer {destLayer + 1}.\n\nAre you sure you want duplicate layer {bglayer + 1} over layer {destLayer + 1}?", "Duplicate Background Layer", MessageBoxButtons.OKCancel) != DialogResult.OK)
+				return;
+
+			LevelData.Background.layers[destLayer].type = LevelData.Background.layers[bglayer].type;
+			LevelData.Background.layers[destLayer].scrollSpeed = LevelData.Background.layers[bglayer].scrollSpeed;
+			LevelData.Background.layers[destLayer].parallaxFactor = LevelData.Background.layers[bglayer].parallaxFactor;
+			LevelData.ResizeBG(destLayer, LevelData.BGSize[bglayer]);
+			for (int y = 0; y < LevelData.BGHeight[bglayer]; y++)
+				for (int x = 0; x < LevelData.BGWidth[bglayer]; x++)
+					LevelData.Background.layers[destLayer].layout[y][x] = LevelData.Background.layers[bglayer].layout[y][x];
+
+			LevelData.BGScroll[destLayer] = LevelData.BGScroll[bglayer].Select(a => a.Clone()).ToList();
+
+			SaveState("Duplicate Background Layer");
 		}
 
 		BitmapBits32 LevelImg8bpp;
@@ -2058,113 +2122,16 @@ namespace SonicRetro.SonLVL.GUI
 				case Tab.Foreground:
 					lvlsize = LevelData.FGSize;
 					layout = LevelData.Scene.layout;
-					LevelImg8bpp = LevelData.DrawForeground32(dispRect, LevelImgPalette.Entries[LevelData.ColorTransparent], CurrentTab == Tab.Objects || includeobjectsWithFGToolStripMenuItem.Checked, true, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
+					LevelImg8bpp = LevelData.DrawForeground32(dispRect, LevelImgPalette.Entries[LevelData.ColorTransparent], CurrentTab == Tab.Objects || displayObjectsToolStripCheckBoxButton.Checked, true, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
 					break;
 				case Tab.Background:
 					lvlsize = LevelData.BGSize[bglayer];
 					layout = LevelData.Background.layers[bglayer].layout;
-					if (tabControl3.SelectedIndex == 2 && (scrollCamX.Value != 0 || scrollCamY.Value != 0 || scrollFrame.Value != 0) && LevelData.BGWidth[bglayer] != 0 && LevelData.BGHeight[bglayer] != 0)
-					{
-						decimal layerscrollpos = LevelData.Background.layers[bglayer].scrollSpeed / 64m * scrollFrame.Value;
-						int widthpx = LevelData.BGWidth[bglayer] * 128;
-						int heightpx = LevelData.BGHeight[bglayer] * 128;
-						BitmapBits32 tmpimg;
-						switch (LevelData.Background.layers[bglayer].type)
-						{
-							case RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll:
-								int yoff = (int)(scrollCamY.Value * (LevelData.Background.layers[bglayer].parallaxFactor / 256m) + layerscrollpos + camera.Y) % heightpx;
-								if (yoff < 0)
-									yoff += heightpx;
-								Rectangle rect = new Rectangle(0, yoff, widthpx, Math.Min(dispRect.Height, heightpx));
-								if (rect.Bottom <= heightpx)
-								{
-									tmpimg = LevelData.DrawBackground32(bglayer, rect, LevelImgPalette.Entries[LevelData.ColorTransparent], lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked);
-								}
-								else
-								{
-									tmpimg = LevelData.DrawBackground32(bglayer, new Rectangle(0, 0, widthpx, heightpx), LevelImgPalette.Entries[LevelData.ColorTransparent], lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked);
-									tmpimg.ScrollVertical(yoff);
-									tmpimg = tmpimg.GetSection(0, 0, tmpimg.Width, rect.Height);
-								}
-								LevelImg8bpp = new BitmapBits32(Math.Min(dispRect.Width, widthpx), rect.Height);
-								int[] linepos = new int[rect.Height];
-								int scrind = LevelData.BGScroll[bglayer].FindLastIndex(a => a.StartPos <= yoff);
-								int dstind = 0;
-								while (dstind < rect.Height)
-								{
-									int pos = (int)(scrollCamX.Value * LevelData.BGScroll[bglayer][scrind].ParallaxFactor + LevelData.BGScroll[bglayer][scrind].ScrollSpeed * scrollFrame.Value + camera.X);
-									int len;
-									if (scrind == LevelData.BGScroll[bglayer].Count - 1)
-									{
-										len = heightpx - yoff;
-										scrind = 0;
-										yoff = 0;
-									}
-									else
-									{
-										len = LevelData.BGScroll[bglayer][scrind + 1].StartPos - LevelData.BGScroll[bglayer][scrind].StartPos - (yoff - LevelData.BGScroll[bglayer][scrind].StartPos);
-										++scrind;
-										yoff += len;
-									}
-									len = Math.Min(rect.Height - dstind, len);
-									linepos.FastFill(pos, dstind, len);
-									dstind += len;
-								}
-								tmpimg.ScrollHV(LevelImg8bpp, 0, 0, linepos);
-								break;
-							case RSDKv3_4.Backgrounds.Layer.LayerTypes.VScroll:
-								int xoff = (int)(scrollCamX.Value * (LevelData.Background.layers[bglayer].parallaxFactor / 256m) + layerscrollpos + camera.X) % widthpx;
-								if (xoff < 0)
-									xoff += widthpx;
-								rect = new Rectangle(xoff, 0, Math.Min(dispRect.Width, widthpx), heightpx);
-								if (rect.Right <= widthpx)
-								{
-									tmpimg = LevelData.DrawBackground32(bglayer, rect, LevelImgPalette.Entries[LevelData.ColorTransparent], lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked);
-								}
-								else
-								{
-									tmpimg = LevelData.DrawBackground32(bglayer, new Rectangle(0, 0, widthpx, rect.Height), LevelImgPalette.Entries[LevelData.ColorTransparent], lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked);
-									tmpimg.ScrollHorizontal(xoff);
-									tmpimg = tmpimg.GetSection(0, 0, rect.Width, tmpimg.Height);
-								}
-								LevelImg8bpp = new BitmapBits32(rect.Width, Math.Min(dispRect.Height, heightpx));
-								linepos = new int[rect.Width];
-								scrind = LevelData.BGScroll[bglayer].FindLastIndex(a => a.StartPos <= xoff);
-								dstind = 0;
-								while (dstind < rect.Width)
-								{
-									int pos = (int)(scrollCamY.Value * LevelData.BGScroll[bglayer][scrind].ParallaxFactor + LevelData.BGScroll[bglayer][scrind].ScrollSpeed * scrollFrame.Value + camera.Y);
-									int len;
-									if (scrind == LevelData.BGScroll[bglayer].Count - 1)
-									{
-										len = widthpx - xoff;
-										scrind = 0;
-										xoff = 0;
-									}
-									else
-									{
-										len = LevelData.BGScroll[bglayer][scrind + 1].StartPos - LevelData.BGScroll[bglayer][scrind].StartPos - (xoff - LevelData.BGScroll[bglayer][scrind].StartPos);
-										++scrind;
-										xoff += len;
-									}
-									len = Math.Min(rect.Width - dstind, len);
-									linepos.FastFill(pos, dstind, len);
-									dstind += len;
-								}
-								tmpimg.ScrollVH(LevelImg8bpp, 0, 0, linepos);
-								break;
-						}
-						tmpimg = LevelImg8bpp;
-						LevelImg8bpp = new BitmapBits32(dispRect.Size);
-						LevelImg8bpp.Clear(LevelImgPalette.Entries[LevelData.ColorTransparent]);
-						LevelImg8bpp.DrawBitmap(tmpimg, 0, 0);
-					}
-					else
-						LevelImg8bpp = LevelData.DrawBackground32(bglayer, dispRect, LevelImgPalette.Entries[LevelData.ColorTransparent], lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked);
+					LevelImg8bpp = LevelData.DrawBackground32(bglayer, dispRect, LevelImgPalette.Entries[LevelData.ColorTransparent], lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked);
 					break;
 			}
 
-			if ((enableGridToolStripMenuItem.Checked) && ((CurrentTab != Tab.Objects) || (ObjGrid > 0)))
+			if (showGridToolStripCheckBoxButton.Checked && ((CurrentTab != Tab.Objects) || (ObjGrid > 0)))
 			{
 				int gs = (CurrentTab == Tab.Objects) ? 1 << ObjGrid : 128;
 
@@ -2234,8 +2201,15 @@ namespace SonicRetro.SonLVL.GUI
 							if (scrlind != LevelData.BGScroll[bglayer].Count - 1)
 								height = LevelData.BGScroll[bglayer][scrlind + 1].StartPos - scrollData.StartPos;
 							else
-								height = dispRect.Bottom - scrollData.StartPos;
-							LevelImg8bpp.DrawLine((scrollList.SelectedIndex == scrlind) ? Color.Blue : Color.Yellow, 0, scrollData.StartPos - camera.Y, dispRect.Width, scrollData.StartPos - camera.Y);
+								height = Math.Min(dispRect.Bottom, lvlsize.Height * 128) - scrollData.StartPos;
+
+							if (scrollList.SelectedIndex == scrlind)
+							{
+								LevelImg8bpp.DrawLine(Color.Blue, 0, scrollData.StartPos - camera.Y, dispRect.Width, scrollData.StartPos - camera.Y);
+								LevelImg8bpp.FillRectangle(Color.FromArgb(254, Color.Blue), 0, scrollData.StartPos - camera.Y, dispRect.Width, height);
+							}
+							else
+								LevelImg8bpp.DrawLine(Color.Yellow, 0, scrollData.StartPos - camera.Y, dispRect.Width, scrollData.StartPos - camera.Y);
 						}
 						break;
 					case RSDKv3_4.Backgrounds.Layer.LayerTypes.VScroll:
@@ -2251,8 +2225,15 @@ namespace SonicRetro.SonLVL.GUI
 							if (scrlind != LevelData.BGScroll[bglayer].Count - 1)
 								width = LevelData.BGScroll[bglayer][scrlind + 1].StartPos - scrollData.StartPos;
 							else
-								width = dispRect.Right - scrollData.StartPos;
-							LevelImg8bpp.DrawLine((scrollList.SelectedIndex == scrlind) ? Color.Blue : Color.Yellow, scrollData.StartPos - camera.X, 0, scrollData.StartPos - camera.X, dispRect.Height);
+								width = Math.Min(dispRect.Right, lvlsize.Width * 128) - scrollData.StartPos;
+
+							if (scrollList.SelectedIndex == scrlind)
+							{
+								LevelImg8bpp.DrawLine(Color.Blue, scrollData.StartPos - camera.X, 0, scrollData.StartPos - camera.X, dispRect.Height);
+								LevelImg8bpp.FillRectangle(Color.FromArgb(254, Color.Blue), scrollData.StartPos - camera.X, 0, width, dispRect.Height);
+							}
+							else
+								LevelImg8bpp.DrawLine(Color.Yellow, scrollData.StartPos - camera.X, 0, scrollData.StartPos - camera.X, dispRect.Height);
 						}
 						break;
 				}
@@ -2275,7 +2256,7 @@ namespace SonicRetro.SonLVL.GUI
 				{
 					tmpbnd = DrawHUDStr(hudbnd.Left, hudbnd.Bottom, "Chunk: ");
 					hudbnd = Rectangle.Union(hudbnd, tmpbnd);
-					hudbnd = Rectangle.Union(hudbnd, DrawHUDNum(tmpbnd.Right, tmpbnd.Top, SelectedChunk.ToString("X3")));
+					hudbnd = Rectangle.Union(hudbnd, DrawHUDNum(tmpbnd.Right, tmpbnd.Top, SelectedChunk.ToString(useHexadecimalToolStripMenuItem.Checked ? "X3" : "D3")));
 				}
 				
 				if (CurrentTab != Tab.Background)
@@ -2288,9 +2269,31 @@ namespace SonicRetro.SonLVL.GUI
 			}
 
 			Array.Copy(LevelData.NewPalette, 1, LevelImg8bpp.Palette, 1, 3);
-			
-			if (CurrentTab == Tab.Objects && dragdrop)
-				LevelImg8bpp.DrawSprite(LevelData.GetObjectDefinition(dragobj).Image, dragpoint);
+
+			if (CurrentTab == Tab.Objects)
+			{
+				if (dragdrop)
+					LevelImg8bpp.DrawSprite(LevelData.GetObjectDefinition(dragobj).Image, dragpoint);
+				else if (AddObjectsPreview != Rectangle.Empty)
+				{
+					double gs = snapObjectsToolStripCheckBoxButton.Checked ? 1 << ObjGrid : 1;
+					Point pt = new Point(
+						(short)(Math.Round((menuLoc.X / ZoomLevel + objectPanel.HScrollValue) / gs, MidpointRounding.AwayFromZero) * gs),
+						(short)(Math.Round((menuLoc.Y / ZoomLevel + objectPanel.VScrollValue) / gs, MidpointRounding.AwayFromZero) * gs)
+						);
+					int xst = pt.X;
+					for (int y = 0; y < AddObjectsPreview.Width; y++)
+					{
+						for (int x = 0; x < AddObjectsPreview.Height; x++)
+						{
+							LevelImg8bpp.DrawSprite(LevelData.GetObjectDefinition(dragobj).Image, pt.X - camera.X, pt.Y - camera.Y);
+							pt.X += AddObjectsPreview.X;
+						}
+						pt.X = xst;
+						pt.Y += AddObjectsPreview.Y;
+					}
+				}
+			}
 			LevelBmp = LevelImg8bpp.ToBitmap();
 			LevelGfx = Graphics.FromImage(LevelBmp);
 			LevelGfx.SetOptions();
@@ -2554,16 +2557,13 @@ namespace SonicRetro.SonLVL.GUI
 						selectAllObjectsToolStripMenuItem_Click(sender, EventArgs.Empty);
 					else
 					{
-						for (int i = 0; i < SelectedItems.Count; i++)
+						foreach (ObjectEntry obj in SelectedItems)
 						{
-							if (SelectedItems[i] is ObjectEntry oi)
-							{
-								oi.Type = (byte)(oi.Type == 0 ? 255 : oi.Type - 1);
-								var lvi = objectOrder.Items[LevelData.Objects.IndexOf(oi)];
-								lvi.Text = oi.Name;
-								lvi.ImageIndex = oi.Type < objectTypeImages.Images.Count ? oi.Type : 0;
-								SelectedItems[i].UpdateSprite();
-							}
+							obj.Type = (byte)(obj.Type == 0 ? 255 : obj.Type - 1);
+							var lvi = objectOrder.Items[LevelData.Objects.IndexOf(obj)];
+							lvi.Text = obj.Name;
+							lvi.ImageIndex = obj.Type < objectTypeImages.Images.Count ? obj.Type : 0;
+							obj.UpdateSprite();
 						}
 						DrawLevel();
 						ObjectProperties.Refresh();
@@ -2648,30 +2648,39 @@ namespace SonicRetro.SonLVL.GUI
 					break;
 				case Keys.D0:
 				case Keys.D1:
+					if (e.Control) return;
 					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[0]));
 					break;
 				case Keys.D2:
+					if (e.Control) return;
 					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[1]));
 					break;
 				case Keys.D3:
+					if (e.Control) return;
 					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[2]));
 					break;
 				case Keys.D4:
+					if (e.Control) return;
 					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[3]));
 					break;
 				case Keys.D5:
+					if (e.Control) return;
 					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[4]));
 					break;
 				case Keys.D6:
+					if (e.Control) return;
 					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[5]));
 					break;
 				case Keys.D7:
+					if (e.Control) return;
 					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[6]));
 					break;
 				case Keys.D8:
+					if (e.Control) return;
 					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[7]));
 					break;
 				case Keys.D9:
+					if (e.Control) return;
 					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[8]));
 					break;
 				case Keys.J:
@@ -2687,7 +2696,7 @@ namespace SonicRetro.SonLVL.GUI
 					if (!loaded) return;
 					if (!e.Control)
 					{
-						foreach (ObjectEntry item in SelectedItems.OfType<ObjectEntry>())
+						foreach (ObjectEntry item in SelectedItems)
 						{
 							unchecked
 							{
@@ -2717,7 +2726,7 @@ namespace SonicRetro.SonLVL.GUI
 					}
 					else
 					{
-						foreach (ObjectEntry item in SelectedItems.OfType<ObjectEntry>())
+						foreach (ObjectEntry item in SelectedItems)
 						{
 							++item.PropertyValue;
 							item.UpdateSprite();
@@ -2731,16 +2740,13 @@ namespace SonicRetro.SonLVL.GUI
 					if (!loaded) return;
 					if (!e.Control)
 					{
-						for (int i = 0; i < SelectedItems.Count; i++)
+						foreach (ObjectEntry obj in SelectedItems)
 						{
-							if (SelectedItems[i] is ObjectEntry oi)
-							{
-								oi.Type = (byte)(oi.Type == 255 ? 0 : oi.Type + 1);
-								var lvi = objectOrder.Items[LevelData.Objects.IndexOf(oi)];
-								lvi.Text = oi.Name;
-								lvi.ImageIndex = oi.Type < objectTypeImages.Images.Count ? oi.Type : 0;
-								SelectedItems[i].UpdateSprite();
-							}
+							obj.Type = (byte)(obj.Type == 255 ? 0 : obj.Type + 1);
+							var lvi = objectOrder.Items[LevelData.Objects.IndexOf(obj)];
+							lvi.Text = obj.Name;
+							lvi.ImageIndex = obj.Type < objectTypeImages.Images.Count ? obj.Type : 0;
+							obj.UpdateSprite();
 						}
 						DrawLevel();
 						ObjectProperties.Refresh();
@@ -2754,7 +2760,7 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						ent.X -= (short)gs;
 						ent.Y += (short)gs;
-						ent.AdjustSpritePosition(-gs, gs);
+						ent.UpdateSprite();
 					}
 					DrawLevel();
 					ObjectProperties.Refresh();
@@ -2766,7 +2772,7 @@ namespace SonicRetro.SonLVL.GUI
 					foreach (Entry ent in SelectedItems)
 					{
 						ent.Y += (short)gs;
-						ent.AdjustSpritePosition(0, gs);
+						ent.UpdateSprite();
 					}
 					DrawLevel();
 					ObjectProperties.Refresh();
@@ -2779,7 +2785,7 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						ent.X += (short)gs;
 						ent.Y += (short)gs;
-						ent.AdjustSpritePosition(gs, gs);
+						ent.UpdateSprite();
 					}
 					DrawLevel();
 					ObjectProperties.Refresh();
@@ -2791,7 +2797,7 @@ namespace SonicRetro.SonLVL.GUI
 					foreach (Entry ent in SelectedItems)
 					{
 						ent.X -= (short)gs;
-						ent.AdjustSpritePosition(-gs, 0);
+						ent.UpdateSprite();
 					}
 					DrawLevel();
 					ObjectProperties.Refresh();
@@ -2803,7 +2809,7 @@ namespace SonicRetro.SonLVL.GUI
 					foreach (Entry ent in SelectedItems)
 					{
 						ent.X += (short)gs;
-						ent.AdjustSpritePosition(gs, 0);
+						ent.UpdateSprite();
 					}
 					DrawLevel();
 					ObjectProperties.Refresh();
@@ -2816,7 +2822,7 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						ent.X -= (short)gs;
 						ent.Y -= (short)gs;
-						ent.AdjustSpritePosition(-gs, -gs);
+						ent.UpdateSprite();
 					}
 					DrawLevel();
 					ObjectProperties.Refresh();
@@ -2828,7 +2834,7 @@ namespace SonicRetro.SonLVL.GUI
 					foreach (Entry ent in SelectedItems)
 					{
 						ent.Y -= (short)gs;
-						ent.AdjustSpritePosition(0, -gs);
+						ent.UpdateSprite();
 					}
 					DrawLevel();
 					ObjectProperties.Refresh();
@@ -2841,7 +2847,7 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						ent.X += (short)gs;
 						ent.Y -= (short)gs;
-						ent.AdjustSpritePosition(gs, -gs);
+						ent.UpdateSprite();
 					}
 					DrawLevel();
 					ObjectProperties.Refresh();
@@ -2923,6 +2929,9 @@ namespace SonicRetro.SonLVL.GUI
 					if (e.Control)
 						replaceForegroundToolStripButton_Click(this, EventArgs.Empty);
 					break;
+				case Keys.P:
+					displayObjectsToolStripCheckBoxButton.Checked = !displayObjectsToolStripCheckBoxButton.Checked;
+					break;
 				case Keys.Escape:
 					if (!loaded) return;
 					FGSelection = Rectangle.Empty;
@@ -2939,16 +2948,16 @@ namespace SonicRetro.SonLVL.GUI
 				switch (e.KeyCode)
 				{
 					case Keys.Up:
-						scrolloff.Y--;
+						if (scrollCamY.Value > scrollCamY.Minimum) scrollCamY.Value--;
 						break;
 					case Keys.Down:
-						scrolloff.Y++;
+						if (scrollCamY.Value < scrollCamY.Maximum) scrollCamY.Value++;
 						break;
 					case Keys.Left:
-						scrolloff.X--;
+						if (scrollCamX.Value > scrollCamX.Minimum) scrollCamX.Value--;
 						break;
 					case Keys.Right:
-						scrolloff.X++;
+						if (scrollCamX.Value < scrollCamX.Maximum) scrollCamX.Value++;
 						break;
 				}
 			}
@@ -3024,6 +3033,9 @@ namespace SonicRetro.SonLVL.GUI
 						if (e.Control)
 							replaceBackgroundToolStripButton_Click(this, EventArgs.Empty);
 						break;
+					case Keys.P:
+						showScrollAreas.Checked = !showScrollAreas.Checked;
+						break;
 					case Keys.Escape:
 						if (!loaded) return;
 						BGSelection = Rectangle.Empty;
@@ -3088,11 +3100,11 @@ namespace SonicRetro.SonLVL.GUI
 					DrawLevel();
 					break;
 				case Keys.I:
-					enableGridToolStripMenuItem.Checked = !enableGridToolStripMenuItem.Checked;
+					showGridToolStripCheckBoxButton.Checked = !showGridToolStripCheckBoxButton.Checked;
 					DrawLevel();
 					break;
 				case Keys.K:
-					snapToolStripMenuItem.Checked = !snapToolStripMenuItem.Checked;
+					snapObjectsToolStripCheckBoxButton.Checked = !snapObjectsToolStripCheckBoxButton.Checked;
 					break;
 				case Keys.O:
 					if (!e.Control)
@@ -3100,9 +3112,6 @@ namespace SonicRetro.SonLVL.GUI
 						hUDToolStripMenuItem.Checked = !hUDToolStripMenuItem.Checked;
 						DrawLevel();
 					}
-					break;
-				case Keys.P:
-					includeobjectsWithFGToolStripMenuItem.Checked = !includeobjectsWithFGToolStripMenuItem.Checked;
 					break;
 				case Keys.OemMinus:
 				case Keys.Subtract:
@@ -3136,7 +3145,7 @@ namespace SonicRetro.SonLVL.GUI
 		private void objectPanel_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (!loaded) return;
-			double gs = snapToolStripMenuItem.Checked ? 1 << ObjGrid : 1;
+			double gs = snapObjectsToolStripCheckBoxButton.Checked ? 1 << ObjGrid : 1;
 			int curx = (int)(e.X / ZoomLevel) + objectPanel.HScrollValue;
 			int cury = (int)(e.Y / ZoomLevel) + objectPanel.VScrollValue;
 			short gridx = (short)(Math.Round(curx / gs, MidpointRounding.AwayFromZero) * gs);
@@ -3148,19 +3157,27 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						if (LevelData.Scene.entities.Count < RSDKv3_4.Scene.ENTITY_LIST_SIZE)
 						{
-							if (ObjectSelect.ShowDialog(this) == DialogResult.OK)
+							if ((ModifierKeys & Keys.Shift) == Keys.Shift)
 							{
-								ObjectEntry ent = LevelData.CreateObject((byte)ObjectSelect.numericUpDown1.Value);
-								objectOrder.Items.Add(ent.Name, ent.Type < objectTypeImages.Images.Count ? ent.Type : 0);
-								ent.PropertyValue = (byte)ObjectSelect.numericUpDown2.Value;
-								ent.X = gridx;
-								ent.Y = gridy;
-								ent.UpdateSprite();
-								SelectedItems.Clear();
-								SelectedItems.Add(ent);
-								SelectedObjectChanged();
-								DrawLevel();
-								SaveState("Add Object");
+								menuLoc = e.Location;
+								addGroupOfObjectsToolStripMenuItem_Click(this, EventArgs.Empty);
+							}
+							else
+							{
+								if (ObjectSelect.ShowDialog(this) == DialogResult.OK)
+								{
+									ObjectEntry ent = LevelData.CreateObject((byte)ObjectSelect.typeValue.Value);
+									objectOrder.Items.Add(ent.Name, ent.Type < objectTypeImages.Images.Count ? ent.Type : 0);
+									ent.PropertyValue = (byte)ObjectSelect.propertyValue.Value;
+									ent.X = gridx;
+									ent.Y = gridy;
+									ent.UpdateSprite();
+									SelectedItems.Clear();
+									SelectedItems.Add(ent);
+									SelectedObjectChanged();
+									DrawLevel();
+									SaveState("Add Object");
+								}
 							}
 							return;
 						}
@@ -3253,7 +3270,7 @@ namespace SonicRetro.SonLVL.GUI
 						{
 							item.X = (short)(item.X + difX);
 							item.Y = (short)(item.Y + difY);
-							item.AdjustSpritePosition(difX, difY);
+							item.UpdateSprite();
 						}
 						redraw = true;
 					}
@@ -3283,7 +3300,7 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			if (objdrag)
 			{
-				if (ObjGrid > 0 && snapToolStripMenuItem.Checked)
+				if (ObjGrid > 0 && snapObjectsToolStripCheckBoxButton.Checked)
 				{
 					double gs = 1 << ObjGrid;
 					foreach (Entry item in SelectedItems)
@@ -3417,6 +3434,31 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						pasteOnceToolStripMenuItem.Enabled = pasteRepeatingToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(LayoutSection).AssemblyQualifiedName);
 						pasteSectionOnceToolStripMenuItem.Enabled = pasteSectionRepeatingToolStripMenuItem.Enabled = layoutSectionListBox.SelectedIndex != -1;
+
+						/*
+						if (FGSelection.Height == 1)
+						{
+							insertRowsToolStripMenuItem.Text = "Insert 1 Row Above";
+							deleteRowsToolStripMenuItem.Text = "Delete Row";
+						}
+						else
+						{
+							insertRowsToolStripMenuItem.Text = $"Insert {FGSelection.Height} Rows Above";
+							deleteRowsToolStripMenuItem.Text = $"Delete {FGSelection.Height} Rows";
+						}
+
+						if (FGSelection.Width == 1)
+						{
+							insertColumnsToolStripMenuItem.Text = "Insert 1 Column Left";
+							deleteColumnsToolStripMenuItem.Text = "Delete Column";
+						}
+						else
+						{
+							insertColumnsToolStripMenuItem.Text = $"Insert {FGSelection.Width} Columns Left";
+							deleteColumnsToolStripMenuItem.Text = $"Delete {FGSelection.Width} Columns";
+						}
+						*/
+
 						layoutContextMenuStrip.Show(foregroundPanel, e.Location);
 					}
 					selecting = false;
@@ -3454,8 +3496,12 @@ namespace SonicRetro.SonLVL.GUI
 										scrollList.SelectedIndex = selectedScrollLine = i;
 									break;
 								case MouseButtons.Right:
-									LevelData.BGScroll[bglayer].RemoveAt(i);
-									scrollList.Items.RemoveAt(i);
+									int ind = scrollList.SelectedIndex;
+									LevelData.BGScroll[bglayer].RemoveAt(ind);
+									scrollList.Items.RemoveAt(ind);
+									if (ind == scrollList.Items.Count)
+										--ind;
+									scrollList.SelectedIndex = ind;
 									DrawLevel();
 									SaveState("Delete Scroll Line");
 									break;
@@ -3470,7 +3516,7 @@ namespace SonicRetro.SonLVL.GUI
 								ParallaxFactor = LevelData.BGScroll[bglayer][i].ParallaxFactor,
 								ScrollSpeed = LevelData.BGScroll[bglayer][i].ScrollSpeed
 							});
-							scrollList.Items.Insert(i + 1, mouse.Y.ToString("X4"));
+							scrollList.Items.Insert(i + 1, mouse.Y.ToString("D4"));
 							SaveState("Insert Scroll Line");
 							scrollList.SelectedIndex = i + 1;
 							DrawLevel();
@@ -3494,8 +3540,12 @@ namespace SonicRetro.SonLVL.GUI
 										scrollList.SelectedIndex = selectedScrollLine = i;
 									break;
 								case MouseButtons.Right:
-									LevelData.BGScroll[bglayer].RemoveAt(i);
-									scrollList.Items.RemoveAt(i);
+									int ind = scrollList.SelectedIndex;
+									LevelData.BGScroll[bglayer].RemoveAt(ind);
+									scrollList.Items.RemoveAt(ind);
+									if (ind == scrollList.Items.Count)
+										--ind;
+									scrollList.SelectedIndex = ind;
 									DrawLevel();
 									SaveState("Delete Scroll Line");
 									break;
@@ -3510,7 +3560,7 @@ namespace SonicRetro.SonLVL.GUI
 								ParallaxFactor = LevelData.BGScroll[bglayer][i].ParallaxFactor,
 								ScrollSpeed = LevelData.BGScroll[bglayer][i].ScrollSpeed
 							});
-							scrollList.Items.Insert(i + 1, mouse.X.ToString("X4"));
+							scrollList.Items.Insert(i + 1, mouse.X.ToString("D4"));
 							scrollList.SelectedIndex = i + 1;
 							DrawLevel();
 							SaveState("Insert Scroll Line");
@@ -3684,7 +3734,7 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				if (selectedScrollLine != -1)
 				{
-					scrollList.Items[selectedScrollLine] = LevelData.BGScroll[bglayer][selectedScrollLine].StartPos.ToString("X4");
+					scrollList.Items[selectedScrollLine] = LevelData.BGScroll[bglayer][selectedScrollLine].StartPos.ToString("D4");
 					scrollOffset.Value = LevelData.BGScroll[bglayer][selectedScrollLine].StartPos;
 					SaveState("Move Scroll Line");
 				}
@@ -3716,6 +3766,31 @@ namespace SonicRetro.SonLVL.GUI
 						{
 							pasteOnceToolStripMenuItem.Enabled = pasteRepeatingToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(LayoutSection).AssemblyQualifiedName);
 							pasteSectionOnceToolStripMenuItem.Enabled = pasteSectionRepeatingToolStripMenuItem.Enabled = layoutSectionListBox.SelectedIndex != -1;
+
+							/*
+							if (BGSelection.Height == 1)
+							{
+								insertRowsToolStripMenuItem.Text = "Insert 1 Row Above";
+								deleteRowsToolStripMenuItem.Text = "Delete Row";
+							}
+							else
+							{
+								insertRowsToolStripMenuItem.Text = $"Insert {BGSelection.Height} Rows Above";
+								deleteRowsToolStripMenuItem.Text = $"Delete {BGSelection.Height} Rows";
+							}
+
+							if (BGSelection.Width == 1)
+							{
+								insertColumnsToolStripMenuItem.Text = "Insert 1 Column Left";
+								deleteColumnsToolStripMenuItem.Text = "Delete Column";
+							}
+							else
+							{
+								insertColumnsToolStripMenuItem.Text = $"Insert {BGSelection.Width} Columns Left";
+								deleteColumnsToolStripMenuItem.Text = $"Delete {BGSelection.Width} Columns";
+							}
+							*/
+
 							layoutContextMenuStrip.Show(backgroundPanel, e.Location);
 						}
 						selecting = false;
@@ -3784,10 +3859,10 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			if (ObjectSelect.ShowDialog(this) == DialogResult.OK)
 			{
-				ObjectEntry ent = LevelData.CreateObject((byte)ObjectSelect.numericUpDown1.Value);
+				ObjectEntry ent = LevelData.CreateObject((byte)ObjectSelect.typeValue.Value);
 				objectOrder.Items.Add(ent.Name, ent.Type < objectTypeImages.Images.Count ? ent.Type : 0);
-				ent.PropertyValue = (byte)ObjectSelect.numericUpDown2.Value;
-				double gs = snapToolStripMenuItem.Checked ? 1 << ObjGrid : 1;
+				ent.PropertyValue = (byte)ObjectSelect.propertyValue.Value;
+				double gs = snapObjectsToolStripCheckBoxButton.Checked ? 1 << ObjGrid : 1;
 				ent.X = (short)(Math.Round((menuLoc.X / ZoomLevel + objectPanel.HScrollValue) / gs, MidpointRounding.AwayFromZero) * gs);
 				ent.Y = (short)(Math.Round((menuLoc.Y / ZoomLevel + objectPanel.VScrollValue) / gs, MidpointRounding.AwayFromZero) * gs);
 				ent.UpdateSprite();
@@ -3803,17 +3878,19 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			if (ObjectSelect.ShowDialog(this) == DialogResult.OK)
 			{
-				byte ID = (byte)ObjectSelect.numericUpDown1.Value;
-				byte sub = (byte)ObjectSelect.numericUpDown2.Value;
+				byte ID = dragobj = (byte)ObjectSelect.typeValue.Value;
+				byte sub = (byte)ObjectSelect.propertyValue.Value;
 				using (AddGroupDialog dlg = new AddGroupDialog())
 				{
 					dlg.Text = "Add Group of Objects";
+					dlg.XDist.Value = LevelData.GetObjectDefinition(ID).Image.Width + 8;
+					dlg.YDist.Value = LevelData.GetObjectDefinition(ID).Image.Height + 8;
 					if (dlg.ShowDialog(this) == DialogResult.OK)
 					{
-						double gs = snapToolStripMenuItem.Checked ? 1 << ObjGrid : 1;
+						double gs = snapObjectsToolStripCheckBoxButton.Checked ? 1 << ObjGrid : 1;
 						Point pt = new Point(
-							(ushort)(Math.Round((menuLoc.X / ZoomLevel + objectPanel.HScrollValue) / gs, MidpointRounding.AwayFromZero) * gs),
-							(ushort)(Math.Round((menuLoc.Y / ZoomLevel + objectPanel.VScrollValue) / gs, MidpointRounding.AwayFromZero) * gs)
+							(short)(Math.Round((menuLoc.X / ZoomLevel + objectPanel.HScrollValue) / gs, MidpointRounding.AwayFromZero) * gs),
+							(short)(Math.Round((menuLoc.Y / ZoomLevel + objectPanel.VScrollValue) / gs, MidpointRounding.AwayFromZero) * gs)
 							);
 						int xst = pt.X;
 						Size xsz = new Size((int)dlg.XDist.Value, 0);
@@ -3824,23 +3901,37 @@ namespace SonicRetro.SonLVL.GUI
 							for (int x = 0; x < dlg.Columns.Value; x++)
 							{
 								ObjectEntry ent = LevelData.CreateObject(ID);
-								objectOrder.Items.Add(ent.Name, ent.Type < objectTypeImages.Images.Count ? ent.Type : 0);
-								ent.PropertyValue = sub;
-								ent.X = (short)(pt.X);
-								ent.Y = (short)(pt.Y);
-								ent.UpdateSprite();
-								SelectedItems.Add(ent);
-								pt += xsz;
+
+								if (ent != null)
+								{
+									objectOrder.Items.Add(ent.Name, ent.Type < objectTypeImages.Images.Count ? ent.Type : 0);
+									ent.PropertyValue = sub;
+									ent.X = (short)(pt.X);
+									ent.Y = (short)(pt.Y);
+									ent.UpdateSprite();
+									SelectedItems.Add(ent);
+									pt += xsz;
+								}
+								else
+								{
+									y = (int)dlg.Rows.Value;
+									break;
+								}
 							}
 							pt.X = xst;
 							pt += ysz;
 						}
+						AddObjectsPreview = Rectangle.Empty;
 						SelectedObjectChanged();
 						DrawLevel();
 						SaveState("Add Objects");
+						return;
 					}
 				}
 			}
+
+			AddObjectsPreview = Rectangle.Empty;
+			DrawLevel();
 		}
 
 		private void cutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3880,15 +3971,40 @@ namespace SonicRetro.SonLVL.GUI
 			if (Clipboard.ContainsData(typeof(List<Entry>).AssemblyQualifiedName))
 			{
 				List<Entry> objs = (Clipboard.GetData(typeof(List<Entry>).AssemblyQualifiedName) as List<Entry>).Select(a => a.Clone()).ToList();
+				
+				// Let's make sure we aren't going over the entity limit
+				if (LevelData.Objects.Count + objs.Count > RSDKv3_4.Scene.ENTITY_LIST_SIZE)
+				{
+					int count = RSDKv3_4.Scene.ENTITY_LIST_SIZE - LevelData.Objects.Count;
+					if (count <= 0) return;
+					objs.RemoveRange(count, objs.Count - count);
+				}
+				
+				// Manual fixes for when pasting v3 entities into a v4 scene/vice versa..
+				// (Surely there's a better way to do this.. right?)
+				if (LevelData.Game.RSDKVer == EngineVersion.V4)
+				{
+					for (int i = 0; i < objs.Count; i++)
+						if (objs[i] is V3ObjectEntry v3obj)
+							objs[i] = new V4ObjectEntry(new RSDKv4.Scene.Entity(v3obj.Type, v3obj.PropertyValue, v3obj.X << 16, v3obj.Y << 16));
+				}
+				else
+				{
+					for (int i = 0; i < objs.Count; i++)
+						if (objs[i] is V4ObjectEntry v4obj)
+							objs[i] = new V3ObjectEntry(new RSDKv3.Scene.Entity(v4obj.Type, v4obj.PropertyValue, v4obj.X << 16, v4obj.Y << 16));
+				}
+				
 				Point upleft = new Point(int.MaxValue, int.MaxValue);
 				foreach (Entry item in objs)
 				{
 					upleft.X = Math.Min(upleft.X, item.X);
 					upleft.Y = Math.Min(upleft.Y, item.Y);
 				}
+				
 				Size off = new Size(((int)(menuLoc.X / ZoomLevel) + objectPanel.HScrollValue) - upleft.X, ((int)(menuLoc.Y / ZoomLevel) + objectPanel.VScrollValue) - upleft.Y);
 				SelectedItems = new List<Entry>(objs);
-				double gs = snapToolStripMenuItem.Checked ? 1 << ObjGrid : 1;
+				double gs = snapObjectsToolStripCheckBoxButton.Checked ? 1 << ObjGrid : 1;
 				foreach (Entry item in objs)
 				{
 					item.X += (short)off.Width;
@@ -3937,6 +4053,7 @@ namespace SonicRetro.SonLVL.GUI
 				case Tab.Objects:
 					gotoToolStripMenuItem.Enabled = findToolStripMenuItem.Enabled = true;
 					findNextToolStripMenuItem.Enabled = findPreviousToolStripMenuItem.Enabled = foundobjs != null;
+					objToolStrip.Items.Insert(1, showGridToolStripCheckBoxButton);
 					objectPanel.Focus();
 					break;
 				case Tab.Foreground:
@@ -3944,6 +4061,7 @@ namespace SonicRetro.SonLVL.GUI
 					findNextToolStripMenuItem.Enabled = findPreviousToolStripMenuItem.Enabled = lastfoundfgchunk.HasValue;
 					tabPage8.Controls.Add(ChunkSelector);
 					tabPage9.Controls.Add(layoutSectionSplitContainer);
+					fgToolStrip.Items.Insert(1, showGridToolStripCheckBoxButton);
 					ChunkSelector.AllowDrop = false;
 					foregroundPanel.Focus();
 					break;
@@ -3952,6 +4070,7 @@ namespace SonicRetro.SonLVL.GUI
 					findNextToolStripMenuItem.Enabled = findPreviousToolStripMenuItem.Enabled = lastfoundbgchunk.HasValue;
 					tabPage10.Controls.Add(ChunkSelector);
 					tabPage11.Controls.Add(layoutSectionSplitContainer);
+					bgToolStrip.Items.Insert(1, showGridToolStripCheckBoxButton);
 					ChunkSelector.AllowDrop = false;
 					backgroundPanel.Focus();
 					break;
@@ -4076,14 +4195,6 @@ namespace SonicRetro.SonLVL.GUI
 			RSDKv3_4.Tiles128x128.Block.Tile[] blocks = GetSelectedChunkBlocks();
 			switch (e.KeyCode)
 			{
-				case Keys.B:
-					foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
-						if (e.Shift)
-							item.tileIndex = (ushort)(item.tileIndex == 0 ? LevelData.NewTiles.Length - 1 : item.tileIndex - 1);
-						else
-							item.tileIndex = (ushort)((item.tileIndex + 1) % LevelData.NewTiles.Length);
-					SaveState("Change Chunk Tiles Index");
-					break;
 				case Keys.Down:
 					if (SelectedChunkBlock.Y < 7)
 					{
@@ -4139,7 +4250,7 @@ namespace SonicRetro.SonLVL.GUI
 					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
 						if (item is ToolStripMenuItem item1)
 							item1.Checked = false;
-					noneToolStripMenuItem1.Checked = true;
+					chunkColNoneRadioButton.Checked = noneToolStripMenuItem1.Checked = true;
 					anglesToolStripMenuItem.Checked = angles;
 					break;
 				case Keys.W:
@@ -4147,7 +4258,7 @@ namespace SonicRetro.SonLVL.GUI
 					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
 						if (item is ToolStripMenuItem item1)
 							item1.Checked = false;
-					path1ToolStripMenuItem.Checked = true;
+					chunkColARadioButton.Checked = path1ToolStripMenuItem.Checked = true;
 					anglesToolStripMenuItem.Checked = angles;
 					break;
 				case Keys.E:
@@ -4155,27 +4266,8 @@ namespace SonicRetro.SonLVL.GUI
 					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
 						if (item is ToolStripMenuItem item1)
 							item1.Checked = false;
-					path2ToolStripMenuItem.Checked = true;
+					chunkColBRadioButton.Checked = path2ToolStripMenuItem.Checked = true;
 					anglesToolStripMenuItem.Checked = angles;
-					break;
-				case Keys.S:
-					if (!e.Control)
-					{
-						foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
-							if (e.Shift)
-								item.solidityA = (item.solidityA == RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip ? RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAll : item.solidityA + 1);
-							else
-								item.solidityA = (item.solidityA == RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAll ? RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip : item.solidityA - 1);
-						SaveState("Change Chunk Tiles Solidity A");
-					}
-					break;
-				case Keys.T:
-					foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
-						if (e.Shift)
-							item.solidityB = (item.solidityB == RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip ? RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAll : item.solidityB + 1);
-						else
-							item.solidityB = (item.solidityB == RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAll ? RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip : item.solidityB - 1);
-					SaveState("Change Chunk Tiles Solidity B");
 					break;
 				case Keys.Up:
 					if (SelectedChunkBlock.Y > 0)
@@ -4189,12 +4281,42 @@ namespace SonicRetro.SonLVL.GUI
 					else
 						return;
 					break;
-				case Keys.X:
-					foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
-						item.direction ^= RSDKv3_4.Tiles128x128.Block.Tile.Directions.FlipX;
-					SaveState("Change Chunk Tiles X Flip");
-					break;
 				case Keys.Y:
+					if (!e.Control)
+					{
+						lowToolStripMenuItem.Checked = !lowToolStripMenuItem.Checked;
+						DrawLevel();
+					}
+					break;
+				case Keys.U:
+					highToolStripMenuItem.Checked = !highToolStripMenuItem.Checked;
+					DrawLevel();
+					break;
+				case Keys.I:
+					showGridToolStripCheckBoxButton.Checked = !showGridToolStripCheckBoxButton.Checked;
+					break;
+				case Keys.A: // Decrease all selected tile indexes
+					foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
+						item.tileIndex = (ushort)(item.tileIndex == 0 ? LevelData.NewTiles.Length - 1 : item.tileIndex - 1);
+					SaveState("Change Chunk Tiles Index");
+					break;
+				case Keys.Z: // Increase all selected tile indexes
+					if (!e.Control)
+					{
+						foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
+							item.tileIndex = (ushort)((item.tileIndex + 1) % LevelData.NewTiles.Length);
+						SaveState("Change Chunk Tiles Index");
+					}
+					break;
+				case Keys.S:
+					if (!e.Control)
+					{
+						foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
+							item.direction ^= RSDKv3_4.Tiles128x128.Block.Tile.Directions.FlipX;
+						SaveState("Change Chunk Tiles X Flip");
+					}
+					break;
+				case Keys.X:
 					if (!e.Control)
 					{
 						foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
@@ -4202,12 +4324,41 @@ namespace SonicRetro.SonLVL.GUI
 						SaveState("Change Chunk Tiles Y Flip");
 					}
 					break;
-				case Keys.I:
-					enableGridToolStripMenuItem.Checked = !enableGridToolStripMenuItem.Checked;
+				case Keys.D:
+					foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
+						if (e.Shift)
+							item.solidityA = (item.solidityA == RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip ? RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAll : item.solidityA + 1);
+						else
+							item.solidityA = (item.solidityA == RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAll ? RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip : item.solidityA - 1);
+					SaveState("Change Chunk Tiles Solidity A");
+					break;
+				case Keys.C:
+					if (e.Control)
+						copyChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
+					else
+					{
+						foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
+							if (e.Shift)
+								item.solidityB = (item.solidityB == RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip ? RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAll : item.solidityB + 1);
+							else
+								item.solidityB = (item.solidityB == RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidAll ? RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidTopNoGrip : item.solidityB - 1);
+						SaveState("Change Chunk Tiles Solidity B");
+					}
 					break;
 				case Keys.P:
+					chunkHighlightHighTilesCheckBox.Checked = !chunkHighlightHighTilesCheckBox.Checked;
+					break;
+				case Keys.F:
 					foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
 						item.visualPlane ^= RSDKv3_4.Tiles128x128.Block.Tile.VisualPlanes.High;
+					SaveState("Change Chunk Tiles Visual Plane");
+					break;
+				case Keys.V:
+					if (e.Control)
+						pasteChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
+					break;
+				case Keys.Delete:
+					clearChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
 					break;
 				default:
 					return;
@@ -4225,6 +4376,67 @@ namespace SonicRetro.SonLVL.GUI
 			DrawLevel();
 			DrawChunkPicture();
 			SaveState("Change Chunk Tiles Property");
+		}
+
+		private void chunkColNoneRadioButton_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!loaded || !chunkColNoneRadioButton.Checked) return;
+
+			bool angles = anglesToolStripMenuItem.Checked;
+			foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
+				if (item is ToolStripMenuItem toolStripMenuItem)
+					toolStripMenuItem.Checked = false;
+			noneToolStripMenuItem1.Checked = true;
+			anglesToolStripMenuItem.Checked = angles;
+			DrawChunkPicture();
+		}
+
+		private void chunkColARadioButton_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!loaded || !chunkColARadioButton.Checked) return;
+
+			bool angles = anglesToolStripMenuItem.Checked;
+			foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
+				if (item is ToolStripMenuItem toolStripMenuItem)
+					toolStripMenuItem.Checked = false;
+			path1ToolStripMenuItem.Checked = true;
+			anglesToolStripMenuItem.Checked = angles;
+			DrawChunkPicture();
+		}
+		private void chunkColBRadioButton_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!loaded || !chunkColBRadioButton.Checked) return;
+
+			bool angles = anglesToolStripMenuItem.Checked;
+			foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
+				if (item is ToolStripMenuItem toolStripMenuItem)
+					toolStripMenuItem.Checked = false;
+			path2ToolStripMenuItem.Checked = true;
+			anglesToolStripMenuItem.Checked = angles;
+			DrawChunkPicture();
+		}
+
+		private void chunkShowLowTilesCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			lowToolStripMenuItem.Checked = chunkShowLowTilesCheckBox.Checked;
+			DrawChunkPicture();
+		}
+
+		private void chunkShowHighTilesCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			highToolStripMenuItem.Checked = chunkShowHighTilesCheckBox.Checked;
+			DrawChunkPicture();
+		}
+
+		private void chunkShowGridCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			showGridToolStripCheckBoxButton.Checked = chunkShowGridCheckBox.Checked;
+			DrawChunkPicture();
+		}
+
+		private void chunkHighlightHighTilesCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			DrawChunkPicture();
 		}
 
 		private void DrawChunkPicture()
@@ -4251,7 +4463,7 @@ namespace SonicRetro.SonLVL.GUI
 				bmp.DrawBitmap(LevelData.ChunkColBmpBits[SelectedChunk][1], 0, 0);
 
 			bmp = bmp.Scale(2);
-			if (enableGridToolStripMenuItem.Checked)
+			if (showGridToolStripCheckBoxButton.Checked)
 			{
 				for (int i = 0; i < 256; i += 32)
 				{
@@ -4260,7 +4472,18 @@ namespace SonicRetro.SonLVL.GUI
 				}
 			}
 
-			bmp.DrawRectangle(Color.White, SelectedChunkBlock.X * 32, SelectedChunkBlock.Y * 32, SelectedChunkBlock.Width * 32, SelectedChunkBlock.Height * 32);
+			if (chunkHighlightHighTilesCheckBox.Checked)
+			{
+				Color c = Color.FromArgb(254, Settings.GridColor);
+				for (int by = 0; by < 8; by++)
+					for (int bx = 0; bx < 8; bx++)
+					{
+						if (LevelData.NewChunks.chunkList[SelectedChunk].tiles[by][bx].visualPlane == RSDKv3_4.Tiles128x128.Block.Tile.VisualPlanes.High)
+							bmp.FillRectangle(c, bx * 32, by * 32, 32, 32);
+					}
+			}
+
+			bmp.FillRectangle(Color.FromArgb(254, Color.White), SelectedChunkBlock.X * 32, SelectedChunkBlock.Y * 32, SelectedChunkBlock.Width * 32, SelectedChunkBlock.Height * 32);
 
 			using (Graphics gfx = ChunkPicture.CreateGraphics())
 			{
@@ -4691,7 +4914,28 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				case ArtTab.Chunks:
 					DataObject d = new DataObject(typeof(RSDKv3_4.Tiles128x128.Block).AssemblyQualifiedName, LevelData.NewChunks.chunkList[SelectedChunk]);
-					d.SetImage(LevelData.ChunkSprites[SelectedChunk].GetBitmap().ToBitmap(LevelImgPalette));
+
+					BitmapBits32 bmp = new BitmapBits32(128, 128);
+					LevelImgPalette.Entries.CopyTo(bmp.Palette, 0);
+					bmp.Clear(bmp.Palette[LevelData.ColorTransparent]);
+					if (lowToolStripMenuItem.Checked && highToolStripMenuItem.Checked)
+						bmp.DrawSprite(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+					else if (lowToolStripMenuItem.Checked)
+						bmp.DrawSpriteLow(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+					else if (highToolStripMenuItem.Checked)
+						bmp.DrawSpriteHigh(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+
+					bmp.Palette[LevelData.ColorWhite] = Color.White;
+					bmp.Palette[LevelData.ColorYellow] = Color.Yellow;
+					bmp.Palette[LevelData.ColorBlack] = Color.Black;
+					bmp.Palette[LevelData.ColorRed] = Color.Red;
+
+					if (path1ToolStripMenuItem.Checked)
+						bmp.DrawBitmap(LevelData.ChunkColBmpBits[SelectedChunk][0], 0, 0);
+					else if (path2ToolStripMenuItem.Checked)
+						bmp.DrawBitmap(LevelData.ChunkColBmpBits[SelectedChunk][1], 0, 0);
+
+					d.SetImage(bmp.ToBitmap());
 					Clipboard.SetDataObject(d);
 					DeleteChunk();
 					SaveState("Cut Chunk");
@@ -4734,7 +4978,29 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				case ArtTab.Chunks:
 					DataObject d = new DataObject(typeof(RSDKv3_4.Tiles128x128.Block).AssemblyQualifiedName, LevelData.NewChunks.chunkList[SelectedChunk]);
-					d.SetImage(LevelData.ChunkSprites[SelectedChunk].GetBitmap().ToBitmap(LevelImgPalette));
+
+					BitmapBits32 bmp = new BitmapBits32(128, 128);
+					LevelImgPalette.Entries.CopyTo(bmp.Palette, 0);
+					bmp.Clear(bmp.Palette[LevelData.ColorTransparent]);
+					if (lowToolStripMenuItem.Checked && highToolStripMenuItem.Checked)
+						bmp.DrawSprite(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+					else if (lowToolStripMenuItem.Checked)
+						bmp.DrawSpriteLow(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+					else if (highToolStripMenuItem.Checked)
+						bmp.DrawSpriteHigh(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+
+					bmp.Palette[LevelData.ColorWhite] = Color.White;
+					bmp.Palette[LevelData.ColorYellow] = Color.Yellow;
+					bmp.Palette[LevelData.ColorBlack] = Color.Black;
+					bmp.Palette[LevelData.ColorRed] = Color.Red;
+
+					if (path1ToolStripMenuItem.Checked)
+						bmp.DrawBitmap(LevelData.ChunkColBmpBits[SelectedChunk][0], 0, 0);
+					else if (path2ToolStripMenuItem.Checked)
+						bmp.DrawBitmap(LevelData.ChunkColBmpBits[SelectedChunk][1], 0, 0);
+
+					d.SetImage(bmp.ToBitmap());
+
 					Clipboard.SetDataObject(d);
 					break;
 				case ArtTab.Tiles:
@@ -5337,7 +5603,7 @@ namespace SonicRetro.SonLVL.GUI
 				layout = LevelData.Scene.layout;
 				selection = FGSelection;
 				area = new Rectangle(FGSelection.X * 128, FGSelection.Y * 128, FGSelection.Width * 128, FGSelection.Height * 128);
-				d.SetImage(LevelData.DrawForeground(area, includeobjectsWithFGToolStripMenuItem.Checked, true, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, false, false).ToBitmap(LevelImgPalette));
+				d.SetImage(LevelData.DrawForeground(area, displayObjectsToolStripCheckBoxButton.Checked, true, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, false, false).ToBitmap(LevelImgPalette));
 			}
 			ushort[,] layoutsection = new ushort[selection.Width, selection.Height];
 			for (int y = 0; y < selection.Height; y++)
@@ -5348,7 +5614,7 @@ namespace SonicRetro.SonLVL.GUI
 				}
 			List<Entry> objectselection = new List<Entry>();
 			List<Entry> objstodelete = new List<Entry>();
-			if (includeobjectsWithFGToolStripMenuItem.Checked && CurrentTab == Tab.Foreground)
+			if (displayObjectsToolStripCheckBoxButton.Checked && CurrentTab == Tab.Foreground)
 			{
 				int x = selection.Left * 128;
 				int y = selection.Top * 128;
@@ -5390,19 +5656,19 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void copyToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			DataObject d = new DataObject(typeof(LayoutSection).AssemblyQualifiedName, CreateLayoutSection(includeobjectsWithFGToolStripMenuItem.Checked));
+			DataObject d = new DataObject(typeof(LayoutSection).AssemblyQualifiedName, CreateLayoutSection(displayObjectsToolStripCheckBoxButton.Checked));
 			
 			Rectangle area;
 			
 			if (CurrentTab == Tab.Background)
 			{
 				area = new Rectangle(BGSelection.X * 128, BGSelection.Y * 128, BGSelection.Width * 128, BGSelection.Height * 128);
-				d.SetImage(LevelData.DrawBackground(bglayer, area, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked).ToBitmap(LevelImgPalette));
+				d.SetImage(LevelData.DrawBackground32(bglayer, area, LevelImgPalette.Entries[LevelData.ColorTransparent], lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked).ToBitmap());
 			}
 			else
 			{
 				area = new Rectangle(FGSelection.X * 128, FGSelection.Y * 128, FGSelection.Width * 128, FGSelection.Height * 128);
-				d.SetImage(LevelData.DrawForeground(area, includeobjectsWithFGToolStripMenuItem.Checked, true, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, false, false).ToBitmap(LevelImgPalette));
+				d.SetImage(LevelData.DrawForeground32(area, LevelImgPalette.Entries[LevelData.ColorTransparent], displayObjectsToolStripCheckBoxButton.Checked, true, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked).ToBitmap());
 			}
 			
 			Clipboard.SetDataObject(d);
@@ -5431,16 +5697,14 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				int x = selection.Left * 128;
 				int y = selection.Top * 128;
-				if (LevelData.Objects != null)
-					foreach (ObjectEntry item in LevelData.Objects)
-						if (item.Y >= y & item.Y < selection.Bottom * 128
-							& item.X >= x & item.X < selection.Right * 128)
-						{
-							Entry ent = item.Clone();
-							ent.X -= (short)x;
-							ent.Y -= (short)y;
-							objectselection.Add(ent);
-						}
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.Y >= y && item.Y < selection.Bottom * 128 && item.X >= x && item.X < selection.Right * 128)
+					{
+						Entry ent = item.Clone();
+						ent.X -= (short)x;
+						ent.Y -= (short)y;
+						objectselection.Add(ent);
+					}
 			}
 			return new LayoutSection(layoutsection, objectselection);
 		}
@@ -5486,16 +5750,31 @@ namespace SonicRetro.SonLVL.GUI
 			if (CurrentTab == Tab.Foreground)
 			{
 				Size off = new Size(menuLoc.X * 128, menuLoc.Y * 128);
-				foreach (Entry item in section.Objects)
+				foreach (ObjectEntry obj in section.Objects)
 				{
-					Entry newent = item.Clone();
+					ObjectEntry newent;
+
+					// Manual fixes for when pasting v3 entities into a v4 scene/vice versa..
+					// (Surely there's a better way to do this.. right?)
+					if (LevelData.Game.RSDKVer == EngineVersion.V4)
+					{
+						if (obj is V3ObjectEntry v3obj)
+							newent = new V4ObjectEntry(new RSDKv4.Scene.Entity(v3obj.Type, v3obj.PropertyValue, v3obj.X << 16, v3obj.Y << 16));
+						else
+							newent = (ObjectEntry)obj.Clone();
+					}
+					else
+					{
+						if (obj is V4ObjectEntry v4obj)
+							newent = new V3ObjectEntry(new RSDKv3.Scene.Entity(v4obj.Type, v4obj.PropertyValue, v4obj.X << 16, v4obj.Y << 16));
+						else
+							newent = (ObjectEntry)obj.Clone();
+					}
+					
 					newent.X = (short)(newent.X + off.Width);
 					newent.Y = (short)(newent.Y + off.Height);
-					if (newent is ObjectEntry oe)
-					{
-						LevelData.AddObject(oe);
-						objectOrder.Items.Add(oe.Name, oe.Type < objectTypeImages.Images.Count ? oe.Type : 0);
-					}
+					LevelData.AddObject(newent);
+					objectOrder.Items.Add(newent.Name, newent.Type < objectTypeImages.Images.Count ? newent.Type : 0);
 					newent.UpdateSprite();
 				}
 			}
@@ -5528,7 +5807,7 @@ namespace SonicRetro.SonLVL.GUI
 			for (int y = 0; y < selection.Height; y++)
 				for (int x = 0; x < selection.Width; x++)
 					layout[y + selection.Y][x + selection.X] = section.Layout[x % width, y % height];
-			if (includeobjectsWithFGToolStripMenuItem.Checked && CurrentTab == Tab.Foreground)
+			if (displayObjectsToolStripCheckBoxButton.Checked && CurrentTab == Tab.Foreground)
 			{
 				int w = (int)Math.Ceiling(selection.Width / (double)width);
 				int h = (int)Math.Ceiling(selection.Height / (double)height);
@@ -5574,14 +5853,12 @@ namespace SonicRetro.SonLVL.GUI
 			for (int y = selection.Top; y < selection.Bottom; y++)
 				for (int x = selection.Left; x < selection.Right; x++)
 					layout[y][x] = 0;
-			if (includeobjectsWithFGToolStripMenuItem.Checked && CurrentTab == Tab.Foreground)
+			if (displayObjectsToolStripCheckBoxButton.Checked && CurrentTab == Tab.Foreground)
 			{
 				List<Entry> objectselection = new List<Entry>();
-				if (LevelData.Objects != null)
-					foreach (ObjectEntry item in LevelData.Objects)
-						if (item.Y >= selection.Top * 128 & item.Y < selection.Bottom * 128
-							& item.X >= selection.Left * 128 & item.X < selection.Right * 128)
-							objectselection.Add(item);
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.Y >= selection.Top * 128 && item.Y < selection.Bottom * 128 && item.X >= selection.Left * 128 && item.X < selection.Right * 128)
+						objectselection.Add(item);
 				foreach (Entry item in objectselection)
 				{
 					if (item is ObjectEntry oe)
@@ -5675,7 +5952,7 @@ namespace SonicRetro.SonLVL.GUI
 			dragdrop = false;
 			if (e.Data.GetDataPresent("SonicRetro.SonLVLRSDK.GUI.ObjectDrop") && LevelData.Scene.entities.Count < RSDKv3_4.Scene.ENTITY_LIST_SIZE)
 			{
-				double gs = snapToolStripMenuItem.Checked ? 1 << ObjGrid : 1;
+				double gs = snapObjectsToolStripCheckBoxButton.Checked ? 1 << ObjGrid : 1;
 				Point clientPoint = objectPanel.PanelPointToClient(new Point(e.X, e.Y));
 				clientPoint = new Point((int)(clientPoint.X / ZoomLevel), (int)(clientPoint.Y / ZoomLevel));
 				ObjectEntry obj = LevelData.CreateObject((byte)e.Data.GetData("SonicRetro.SonLVLRSDK.GUI.ObjectDrop"));
@@ -5808,7 +6085,7 @@ namespace SonicRetro.SonLVL.GUI
 								if (LevelData.BGScroll[bglayer][i].StartPos > selection.Top * 128)
 								{
 									LevelData.BGScroll[bglayer][i].StartPos += (ushort)(selection.Height * 128);
-									scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("X4");
+									scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("D4");
 								}
 							}
 						}
@@ -5853,7 +6130,7 @@ namespace SonicRetro.SonLVL.GUI
 								if (LevelData.BGScroll[bglayer][i].StartPos > selection.Left * 128)
 								{
 									LevelData.BGScroll[bglayer][i].StartPos += (ushort)(selection.Width * 128);
-									scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("X4");
+									scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("D4");
 								}
 							}
 						}
@@ -5893,13 +6170,12 @@ namespace SonicRetro.SonLVL.GUI
 							layout[y][x] = 0;
 					if (dlg.moveObjects.Checked)
 					{
-						if (LevelData.Objects != null)
-							foreach (ObjectEntry item in LevelData.Objects)
-								if (item.Y >= selection.Top * 128 & item.Y < selection.Bottom * 128 & item.X >= selection.Right * 128)
-								{
-									item.X -= (short)(selection.Width * 128);
-									item.UpdateSprite();
-								}
+						foreach (ObjectEntry item in LevelData.Objects)
+							if (item.Y >= selection.Top * 128 && item.Y < selection.Bottom * 128 && item.X >= selection.Right * 128)
+							{
+								item.X -= (short)(selection.Width * 128);
+								item.UpdateSprite();
+							}
 					}
 				}
 				else if (dlg.shiftV.Checked)
@@ -5917,13 +6193,12 @@ namespace SonicRetro.SonLVL.GUI
 							layout[y][x] = 0;
 					if (dlg.moveObjects.Checked)
 					{
-						if (LevelData.Objects != null)
-							foreach (ObjectEntry item in LevelData.Objects)
-								if (item.X >= selection.Left * 128 & item.X < selection.Right * 128 & item.Y >= selection.Bottom * 128)
-								{
-									item.Y -= (short)(selection.Height * 128);
-									item.UpdateSprite();
-								}
+						foreach (ObjectEntry item in LevelData.Objects)
+							if (item.X >= selection.Left * 128 && item.X < selection.Right * 128 && item.Y >= selection.Bottom * 128)
+							{
+								item.Y -= (short)(selection.Height * 128);
+								item.UpdateSprite();
+							}
 					}
 				}
 				else if (dlg.entireRow.Checked)
@@ -5966,7 +6241,7 @@ namespace SonicRetro.SonLVL.GUI
 									if (LevelData.BGScroll[bglayer][i].StartPos >= selection.Bottom * 128)
 									{
 										LevelData.BGScroll[bglayer][i].StartPos -= (ushort)(selection.Height * 128);
-										scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("X4");
+										scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("D4");
 										
 										if (LevelData.BGScroll[bglayer][i].StartPos != LevelData.BGScroll[bglayer][i - 1].StartPos)
 											continue;
@@ -6030,7 +6305,7 @@ namespace SonicRetro.SonLVL.GUI
 									if (LevelData.BGScroll[bglayer][i].StartPos >= selection.Right * 128)
 									{
 										LevelData.BGScroll[bglayer][i].StartPos -= (ushort)(selection.Width * 128);
-										scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("X4");
+										scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("D4");
 
 										if (LevelData.BGScroll[bglayer][i].StartPos != LevelData.BGScroll[bglayer][i - 1].StartPos)
 											continue;
@@ -6064,6 +6339,386 @@ namespace SonicRetro.SonLVL.GUI
 				SaveState($"Delete {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")}");
 			}
 		}
+
+		/*
+		private void insertRowsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Rectangle selection = (CurrentTab == Tab.Background) ? BGSelection : FGSelection;
+			ushort[][] layout;
+			int width;
+			if (CurrentTab == Tab.Background)
+			{
+				width = LevelData.BGWidth[bglayer];
+				if (LevelData.BGHeight[bglayer] < 255)
+					LevelData.ResizeBG(bglayer, width, Math.Min(255, LevelData.BGHeight[bglayer] + selection.Height));
+				layout = LevelData.Background.layers[bglayer].layout;
+			}
+			else
+			{
+				width = LevelData.FGWidth;
+				if (LevelData.FGHeight < 255)
+					LevelData.ResizeFG(width, Math.Min(255, LevelData.FGHeight + selection.Height));
+				layout = LevelData.Scene.layout;
+			}
+			for (int x = 0; x < width; x++)
+				for (int y = layout.Length - selection.Height - 1; y >= selection.Top; y--)
+					layout[y + selection.Height][x] = layout[y][x];
+			for (int x = 0; x < width; x++)
+				for (int y = selection.Top; y < selection.Bottom; y++)
+					layout[y][x] = 0;
+			if (CurrentTab == Tab.Foreground)
+			{
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.Y >= selection.Top * 128)
+					{
+						item.Y += (short)(selection.Height * 128);
+						item.UpdateSprite();
+					}
+			}
+			else if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll)
+			{
+				for (int i = 1; i < LevelData.BGScroll[bglayer].Count; i++)
+				{
+					if (LevelData.BGScroll[bglayer][i].StartPos > selection.Top * 128)
+					{
+						LevelData.BGScroll[bglayer][i].StartPos += (ushort)(selection.Height * 128);
+						scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("D4");
+					}
+				}
+			}
+			if (CurrentTab == Tab.Background)
+				BGSelection = Rectangle.Empty;
+			else
+				FGSelection = Rectangle.Empty;
+			DrawLevel();
+			SaveState($"Insert {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Rows");
+		}
+
+		private void insertColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Rectangle selection = (CurrentTab == Tab.Background) ? BGSelection : FGSelection;
+			ushort[][] layout;
+			if (CurrentTab == Tab.Background)
+			{
+				if (LevelData.BGWidth[bglayer] < 255)
+					LevelData.ResizeBG(bglayer, Math.Min(255, LevelData.BGWidth[bglayer] + selection.Width), LevelData.BGHeight[bglayer]);
+				layout = LevelData.Background.layers[bglayer].layout;
+			}
+			else
+			{
+				if (LevelData.FGWidth < 255)
+					LevelData.ResizeFG(Math.Min(255, LevelData.FGWidth + selection.Width), LevelData.FGHeight);
+				layout = LevelData.Scene.layout;
+			}
+			for (int y = 0; y < layout.Length; y++)
+				for (int x = layout[y].Length - selection.Width - 1; x >= selection.Left; x--)
+					layout[y][x + selection.Width] = layout[y][x];
+			for (int y = 0; y < layout.Length; y++)
+				for (int x = selection.Left; x < selection.Right; x++)
+					layout[y][x] = 0;
+			if (CurrentTab == Tab.Foreground)
+			{
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.X >= selection.Left * 128)
+					{
+						item.X += (short)(selection.Width * 128);
+						item.UpdateSprite();
+					}
+			}
+			else if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.VScroll)
+			{
+				for (int i = 1; i < LevelData.BGScroll[bglayer].Count; i++)
+				{
+					if (LevelData.BGScroll[bglayer][i].StartPos > selection.Left * 128)
+					{
+						LevelData.BGScroll[bglayer][i].StartPos += (ushort)(selection.Width * 128);
+						scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("D4");
+					}
+				}
+			}
+			if (CurrentTab == Tab.Background)
+				BGSelection = Rectangle.Empty;
+			else
+				FGSelection = Rectangle.Empty;
+			DrawLevel();
+			SaveState($"Insert {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Columns");
+		}
+
+		private void deleteRowsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Rectangle selection = (CurrentTab == Tab.Background) ? BGSelection : FGSelection;
+			ushort[][] layout;
+			int width;
+			if (CurrentTab == Tab.Background)
+			{
+				layout = LevelData.Background.layers[bglayer].layout;
+				width = LevelData.BGWidth[bglayer];
+			}
+			else
+			{
+				layout = LevelData.Scene.layout;
+				width = LevelData.FGWidth;
+			}
+			for (int x = 0; x < width; x++)
+				for (int y = selection.Top; y < layout.Length - selection.Height; y++)
+					layout[y][x] = layout[y + selection.Height][x];
+			for (int x = 0; x < width; x++)
+				for (int y = layout.Length - selection.Height; y < layout.Length; y++)
+					layout[y][x] = 0;
+			if (CurrentTab == Tab.Foreground)
+			{
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.Y >= selection.Bottom * 128)
+					{
+						item.Y -= (short)(selection.Height * 128);
+						item.UpdateSprite();
+					}
+			}
+			else if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll)
+			{
+				for (int i = 1; i < LevelData.BGScroll[bglayer].Count; i++)
+				{
+					if (LevelData.BGScroll[bglayer][i].StartPos > selection.Top * 128)
+					{
+						if (LevelData.BGScroll[bglayer][i].StartPos >= selection.Bottom * 128)
+						{
+							LevelData.BGScroll[bglayer][i].StartPos -= (ushort)(selection.Height * 128);
+							scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("D4");
+
+							if (LevelData.BGScroll[bglayer][i].StartPos != LevelData.BGScroll[bglayer][i - 1].StartPos)
+								continue;
+						}
+
+						LevelData.BGScroll[bglayer].Remove(LevelData.BGScroll[bglayer][i]);
+						scrollList.Items.RemoveAt(i--);
+					}
+				}
+			}
+			if (CurrentTab == Tab.Background)
+			{
+				if (LevelData.BGHeight[bglayer] > selection.Height)
+				{
+					LevelData.ResizeBG(bglayer, LevelData.BGWidth[bglayer], LevelData.BGHeight[bglayer] - selection.Height);
+					UpdateScrollBars();
+				}
+			}
+			else
+			{
+				if (LevelData.FGHeight > selection.Height)
+				{
+					LevelData.ResizeFG(LevelData.FGWidth, LevelData.FGHeight - selection.Height);
+					UpdateScrollBars();
+				}
+			}
+			if (CurrentTab == Tab.Background)
+				BGSelection = Rectangle.Empty;
+			else
+				FGSelection = Rectangle.Empty;
+			DrawLevel();
+			SaveState($"Delete {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Rows");
+		}
+
+		private void deleteColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Rectangle selection = (CurrentTab == Tab.Background) ? BGSelection : FGSelection;
+			ushort[][] layout;
+			if (CurrentTab == Tab.Background)
+				layout = LevelData.Background.layers[bglayer].layout;
+			else
+				layout = LevelData.Scene.layout;
+			for (int y = 0; y < layout.Length; y++)
+				for (int x = selection.Left; x < layout[y].Length - selection.Width; x++)
+					layout[y][x] = layout[y][x + selection.Width];
+			for (int y = 0; y < layout.Length; y++)
+				for (int x = layout[y].Length - selection.Width; x < layout[y].Length; x++)
+					layout[y][x] = 0;
+			if (CurrentTab == Tab.Foreground)
+			{
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.X >= selection.Right * 128)
+					{
+						item.X -= (short)(selection.Width * 128);
+						item.UpdateSprite();
+					}
+			}
+			else if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.VScroll)
+			{
+				for (int i = 1; i < LevelData.BGScroll[bglayer].Count; i++)
+				{
+					if (LevelData.BGScroll[bglayer][i].StartPos > selection.Left * 128)
+					{
+						if (LevelData.BGScroll[bglayer][i].StartPos >= selection.Right * 128)
+						{
+							LevelData.BGScroll[bglayer][i].StartPos -= (ushort)(selection.Width * 128);
+							scrollList.Items[i] = LevelData.BGScroll[bglayer][i].StartPos.ToString("D4");
+
+							if (LevelData.BGScroll[bglayer][i].StartPos != LevelData.BGScroll[bglayer][i - 1].StartPos)
+								continue;
+						}
+
+						LevelData.BGScroll[bglayer].Remove(LevelData.BGScroll[bglayer][i]);
+						scrollList.Items.RemoveAt(i--);
+					}
+				}
+			}
+			if (CurrentTab == Tab.Background)
+			{
+				if (LevelData.BGWidth[bglayer] > selection.Width)
+				{
+					LevelData.ResizeBG(bglayer, LevelData.BGWidth[bglayer] - selection.Width, LevelData.BGHeight[bglayer]);
+					UpdateScrollBars();
+				}
+			}
+			else
+			{
+				if (LevelData.FGWidth > selection.Width)
+				{
+					LevelData.ResizeFG(LevelData.FGWidth - selection.Width, LevelData.FGHeight);
+					UpdateScrollBars();
+				}
+			}
+			if (CurrentTab == Tab.Background)
+				BGSelection = Rectangle.Empty;
+			else
+				FGSelection = Rectangle.Empty;
+			DrawLevel();
+			SaveState($"Delete {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Columns");
+		}
+
+		private void insertChunksAndShiftRightToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Rectangle selection = (CurrentTab == Tab.Background) ? BGSelection : FGSelection;
+			ushort[][] layout;
+			if (CurrentTab == Tab.Background)
+			{
+				if (LevelData.BGWidth[bglayer] < 255)
+					LevelData.ResizeBG(bglayer, Math.Min(255, LevelData.BGWidth[bglayer] + selection.Width), LevelData.BGHeight[bglayer]);
+				layout = LevelData.Background.layers[bglayer].layout;
+			}
+			else
+			{
+				if (LevelData.FGWidth < 255)
+					LevelData.ResizeFG(Math.Min(255, LevelData.FGWidth + selection.Width), LevelData.FGHeight);
+				layout = LevelData.Scene.layout;
+			}
+			for (int y = selection.Top; y < selection.Bottom; y++)
+				for (int x = layout[y].Length - selection.Width - 1; x >= selection.Left; x--)
+					layout[y][x + selection.Width] = layout[y][x];
+			for (int y = selection.Top; y < selection.Bottom; y++)
+				for (int x = selection.Left; x < selection.Right; x++)
+					layout[y][x] = 0;
+			if (CurrentTab == Tab.Foreground)
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.Y >= selection.Top * 128 && item.Y < selection.Bottom * 128 && item.X >= selection.Left * 128)
+					{
+						item.X += (short)(selection.Width * 128);
+						item.UpdateSprite();
+					}
+			if (CurrentTab == Tab.Background)
+				BGSelection = Rectangle.Empty;
+			else
+				FGSelection = Rectangle.Empty;
+			UpdateScrollBars();
+			DrawLevel();
+			SaveState($"Insert {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Chunks");
+		}
+
+		private void insertChunksAndShiftDownToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Rectangle selection = (CurrentTab == Tab.Background) ? BGSelection : FGSelection;
+			ushort[][] layout;
+			if (CurrentTab == Tab.Background)
+			{
+				if (LevelData.BGHeight[bglayer] < 255)
+					LevelData.ResizeBG(bglayer, LevelData.BGWidth[bglayer], Math.Min(255, LevelData.BGHeight[bglayer] + selection.Height));
+				layout = LevelData.Background.layers[bglayer].layout;
+			}
+			else
+			{
+				if (LevelData.FGHeight < 255)
+					LevelData.ResizeFG(LevelData.FGWidth, Math.Min(255, LevelData.FGHeight + selection.Height));
+				layout = LevelData.Scene.layout;
+			}
+			for (int x = selection.Left; x < selection.Right; x++)
+				for (int y = layout.Length - selection.Height - 1; y >= selection.Top; y--)
+					layout[y + selection.Height][x] = layout[y][x];
+			for (int x = selection.Left; x < selection.Right; x++)
+				for (int y = selection.Top; y < selection.Bottom; y++)
+					layout[y][x] = 0;
+			if (CurrentTab == Tab.Foreground)
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.X >= selection.Left * 128 && item.X < selection.Right * 128 && item.Y >= selection.Top * 128)
+					{
+						item.Y += (short)(selection.Height * 128);
+						item.UpdateSprite();
+					}
+			if (CurrentTab == Tab.Background)
+				BGSelection = Rectangle.Empty;
+			else
+				FGSelection = Rectangle.Empty;
+			UpdateScrollBars();
+			DrawLevel();
+			SaveState($"Insert {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Chunks");
+		}
+
+		private void deleteChunksAndShiftLeftToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Rectangle selection = (CurrentTab == Tab.Background) ? BGSelection : FGSelection;
+			ushort[][] layout;
+			if (CurrentTab == Tab.Background)
+				layout = LevelData.Background.layers[bglayer].layout;
+			else
+				layout = LevelData.Scene.layout;
+			for (int y = selection.Top; y < selection.Bottom; y++)
+				for (int x = selection.Left; x < layout[y].Length - selection.Width; x++)
+					layout[y][x] = layout[y][x + selection.Width];
+			for (int y = selection.Top; y < selection.Bottom; y++)
+				for (int x = layout[y].Length - selection.Width; x < layout[y].Length; x++)
+					layout[y][x] = 0;
+			if (CurrentTab == Tab.Foreground)
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.Y >= selection.Top * 128 & item.Y < selection.Bottom * 128 & item.X >= selection.Right * 128)
+					{
+						item.X -= (short)(selection.Width * 128);
+						item.UpdateSprite();
+					}
+			if (CurrentTab == Tab.Background)
+				BGSelection = Rectangle.Empty;
+			else
+				FGSelection = Rectangle.Empty;
+			DrawLevel();
+			SaveState($"Delete {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Chunks");
+		}
+
+		private void deleteChunksAndShiftUpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Rectangle selection = (CurrentTab == Tab.Background) ? BGSelection : FGSelection;
+			ushort[][] layout;
+			if (CurrentTab == Tab.Background)
+				layout = LevelData.Background.layers[bglayer].layout;
+			else
+				layout = LevelData.Scene.layout;
+			for (int x = selection.Left; x < selection.Right; x++)
+				for (int y = selection.Top; y < layout.Length - selection.Height; y++)
+					layout[y][x] = layout[y + selection.Height][x];
+			for (int x = selection.Left; x < selection.Right; x++)
+				for (int y = layout.Length - selection.Height; y < layout.Length; y++)
+					layout[y][x] = 0;
+			if (CurrentTab == Tab.Foreground)
+				foreach (ObjectEntry item in LevelData.Objects)
+					if (item.X >= selection.Left * 128 & item.X < selection.Right * 128 & item.Y >= selection.Bottom * 128)
+					{
+						item.Y -= (short)(selection.Height * 128);
+						item.UpdateSprite();
+					}
+			if (CurrentTab == Tab.Background)
+				BGSelection = Rectangle.Empty;
+			else
+				FGSelection = Rectangle.Empty;
+			DrawLevel();
+			SaveState($"Delete {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Chunks");
+		}
+		*/
 
 		private bool alignWall_common(int x, int y, bool top)
 		{
@@ -6100,13 +6755,22 @@ namespace SonicRetro.SonLVL.GUI
 					case RSDKv3_4.Tiles128x128.Block.Tile.Solidities.SolidNone:
 						return false;
 				}
-			var height = mask.heightMasks[colx];
-			if (!height.solid)
+
+			if (blk.direction.HasFlag(RSDKv3_4.Tiles128x128.Block.Tile.Directions.FlipX))
+				colx = 15 - colx;
+			
+			var heightMask = mask.heightMasks[colx];
+			if (!heightMask.solid)
 				return false;
-			if (mask.flipY)
-				return coly <= height.height;
+
+			int height = heightMask.height;
+			if (blk.direction.HasFlag(RSDKv3_4.Tiles128x128.Block.Tile.Directions.FlipY))
+				height = 15 - height;
+
+			if (mask.flipY ^ blk.direction.HasFlag(RSDKv3_4.Tiles128x128.Block.Tile.Directions.FlipY))
+				return coly <= height;
 			else
-				return coly >= height.height;
+				return coly >= height;
 		}
 
 		private void alignLeftWallToolStripButton_Click(object sender, EventArgs e)
@@ -6114,8 +6778,9 @@ namespace SonicRetro.SonLVL.GUI
 			foreach (Entry item in SelectedItems)
 			{
 				Rectangle bounds = item.Bounds;
-				int x = bounds.Left - 1;
+				int x = Math.Min(bounds.Left - 1, LevelData.FGWidth * 128 - 1);
 				int y = bounds.Top + (bounds.Height / 2);
+				if (x < 0 || y < 0 || y >= LevelData.FGHeight * 128) continue;
 				while (x > 0)
 				{
 					if (alignWall_common(x, y, false))
@@ -6138,7 +6803,8 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				Rectangle bounds = item.Bounds;
 				int x = bounds.Left + (bounds.Width / 2);
-				int y = bounds.Bottom;
+				int y = Math.Max(bounds.Bottom, 0);
+				if (x < 0 || x >= LevelData.FGWidth * 128 || y >= LevelData.FGHeight * 128) continue;
 				while (y < LevelData.FGHeight * 128 - 1)
 				{
 					if (alignWall_common(x, y, true))
@@ -6160,8 +6826,9 @@ namespace SonicRetro.SonLVL.GUI
 			foreach (Entry item in SelectedItems)
 			{
 				Rectangle bounds = item.Bounds;
-				int x = bounds.Right;
+				int x = Math.Max(bounds.Left - 1, 0);
 				int y = bounds.Top + (bounds.Height / 2);
+				if (x >= LevelData.FGWidth * 128 || y < 0 || y >= LevelData.FGHeight * 128) continue;
 				while (x < LevelData.FGWidth * 128 - 1)
 				{
 					if (alignWall_common(x, y, false))
@@ -6184,7 +6851,8 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				Rectangle bounds = item.Bounds;
 				int x = bounds.Left + (bounds.Width / 2);
-				int y = bounds.Top - 1;
+				int y = Math.Min(bounds.Top - 1, (LevelData.FGHeight * 128) - 1);
+				if (x < 0 || x >= LevelData.FGWidth * 128 || y < 0) continue;
 				while (y > 0)
 				{
 					if (alignWall_common(x, y, false))
@@ -6324,12 +6992,12 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void lowToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
-			Settings.ViewLowPlane = lowToolStripMenuItem.Checked;
+			Settings.ViewLowPlane = chunkShowLowTilesCheckBox.Checked = lowToolStripMenuItem.Checked;
 		}
 
 		private void highToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
-			Settings.ViewHighPlane = highToolStripMenuItem.Checked;
+			Settings.ViewHighPlane = chunkShowHighTilesCheckBox.Checked = highToolStripMenuItem.Checked;
 		}
 
 		private void objGridSizeDropDownButton_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -6340,6 +7008,21 @@ namespace SonicRetro.SonLVL.GUI
 			objGridSizeDropDownButton.Text = "Grid Size: " + (1 << (ObjGrid = (byte)objGridSizeDropDownButton.DropDownItems.IndexOf(e.ClickedItem)));
 			if (!loaded) return;
 			DrawLevel();
+		}
+
+		private void showGridToolStripCheckBoxButton_CheckedChanged(object sender, EventArgs e)
+		{
+			if (CurrentTab == Tab.Art)
+				DrawChunkPicture();
+			else
+				DrawLevel();
+
+			chunkShowGridCheckBox.Checked = showGridToolStripCheckBoxButton.Checked;
+		}
+
+		private void snapObjectsToolStripCheckBoxButton_CheckedChanged(object sender, EventArgs e)
+		{
+			Settings.SnapObjectsToGrid = snapObjectsToolStripCheckBoxButton.Checked;
 		}
 
 		private void ChunkSelector_ItemDrag(object sender, EventArgs e)
@@ -6675,7 +7358,7 @@ namespace SonicRetro.SonLVL.GUI
 				if (CurrentTab == Tab.Foreground)
 				{
 					dlg.includeObjects.Visible = true;
-					dlg.includeObjects.Checked = includeobjectsWithFGToolStripMenuItem.Checked;
+					dlg.includeObjects.Checked = displayObjectsToolStripCheckBoxButton.Checked;
 				}
 
 				if (dlg.ShowDialog(this) == DialogResult.OK)
@@ -6991,7 +7674,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void deleteUnusedTilesToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "Are you sure you want to clear all tiles not used in chunks?", "Delete Unused Tiles", MessageBoxButtons.OKCancel) != DialogResult.OK)
+			if (MessageBox.Show(this, "This action may break levels that alter tiles through scripts, such as animated tile patterns.\n\nAre you sure you want to clear all tiles not used in chunks?", "Delete Unused Tiles", MessageBoxButtons.OKCancel) != DialogResult.OK)
 				return;
 			int numdel = 0;
 			foreach (var i in Enumerable.Range(0, LevelData.NewTiles.Length).Select(a => (ushort)a).Except(LevelData.NewChunks.chunkList.SelectMany(a => a.tiles.SelectMany(b => b).Select(c => c.tileIndex))))
@@ -7012,7 +7695,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void deleteUnusedChunksToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "This action may break other levels that share the same chunk set, or levels that alter the level layout dynamically.\n\nAre you sure you want to clear all chunks not used in the layout?", "Delete Unused Chunks", MessageBoxButtons.OKCancel) != DialogResult.OK)
+			if (MessageBox.Show(this, "This action may break levels that alter the level layout through scripts.\n\nAre you sure you want to clear all chunks not used in the layout?", "Delete Unused Chunks", MessageBoxButtons.OKCancel) != DialogResult.OK)
 				return;
 			int numdel = 0;
 			foreach (var i in Enumerable.Range(0, LevelData.NewChunks.chunkList.Length).Select(a => (ushort)a).Except(LevelData.Scene.layout.SelectMany(a => a).Union(LevelData.Background.layers.SelectMany(a => a.layout.SelectMany(b => b))).Union(LevelData.AdditionalScenes.SelectMany(a => a.Scene.layout.SelectMany(b => b)))))
@@ -7055,7 +7738,7 @@ namespace SonicRetro.SonLVL.GUI
 				scrollList.BeginUpdate();
 				scrollList.Items.Clear();
 				foreach (var item in LevelData.BGScroll[bglayer])
-					scrollList.Items.Add(item.StartPos.ToString("X4"));
+					scrollList.Items.Add(item.StartPos.ToString("D4"));
 				scrollList.EndUpdate();
 				scrollList.SelectedIndex = 0;
 				SaveState($"Clear Background {bglayer + 1}");
@@ -7079,7 +7762,7 @@ namespace SonicRetro.SonLVL.GUI
 
 			LevelData.Collision.collisionMasks[collisionLayerSelector.SelectedIndex ^ 1][SelectedTile] = LevelData.Collision.collisionMasks[collisionLayerSelector.SelectedIndex][SelectedTile].Clone();
 			LevelData.RedrawCol(SelectedTile, true);
-			SaveState($"Copy Tile Collision to Path {(collisionLayerSelector.SelectedIndex ^ 1) + 1}");
+			SaveState($"Copy Tile Collision to Plane {(collisionLayerSelector.SelectedIndex ^ 1) + 1}");
 		}
 
 		private void usageCountsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -7195,7 +7878,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void removeDuplicateChunksToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "This action may break other levels that share the same chunk set, or levels that alter the level layout dynamically.\n\nAre you sure you want to remove all duplicate chunks?", "SonLVL-RSDK", MessageBoxButtons.OKCancel) != DialogResult.OK)
+			if (MessageBox.Show(this, "This action may break levels that alter the level layout through scripts.\n\nAre you sure you want to remove all duplicate chunks?", "SonLVL-RSDK", MessageBoxButtons.OKCancel) != DialogResult.OK)
 				return;
 			Dictionary<ushort, RSDKv3_4.Tiles128x128.Block> chunks = new Dictionary<ushort, RSDKv3_4.Tiles128x128.Block>(LevelData.NewChunks.chunkList.Length);
 			Dictionary<ushort, ushort> chunkMap = new Dictionary<ushort, ushort>(LevelData.NewChunks.chunkList.Length);
@@ -7344,7 +8027,7 @@ namespace SonicRetro.SonLVL.GUI
 						MessageBox.Show(this, "Cannot export chunk with nothing visible.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 						return;
 					}
-					using (SaveFileDialog a = new SaveFileDialog() { FileName = (useHexadecimalIndexesToolStripMenuItem.Checked ? SelectedChunk.ToString("X2") : SelectedChunk.ToString()) + ".png", Filter = "PNG Images|*.png" })
+					using (SaveFileDialog a = new SaveFileDialog() { FileName = (useHexadecimalToolStripMenuItem.Checked ? SelectedChunk.ToString("X2") : SelectedChunk.ToString()) + ".png", Filter = "PNG Images|*.png" })
 						if (a.ShowDialog() == DialogResult.OK)
 						{
 							string pathBase = Path.ChangeExtension(a.FileName, null);
@@ -7402,7 +8085,7 @@ namespace SonicRetro.SonLVL.GUI
 						}
 					break;
 				case ArtTab.Tiles:
-					using (SaveFileDialog a = new SaveFileDialog() { FileName = (useHexadecimalIndexesToolStripMenuItem.Checked ? SelectedTile.ToString("X2") : SelectedTile.ToString()) + ".png", Filter = "PNG Images|*.png" })
+					using (SaveFileDialog a = new SaveFileDialog() { FileName = (useHexadecimalToolStripMenuItem.Checked ? SelectedTile.ToString("X2") : SelectedTile.ToString()) + ".png", Filter = "PNG Images|*.png" })
 						if (a.ShowDialog() == DialogResult.OK)
 						{
 							if (exportArtcollisionpriorityToolStripMenuItem.Checked)
@@ -7468,13 +8151,13 @@ namespace SonicRetro.SonLVL.GUI
 							{
 								if (path1ToolStripMenuItem.Checked || path2ToolStripMenuItem.Checked)
 								{
-									BitmapBits32 bmp = LevelData.DrawForeground32(area, transparentBackgroundToolStripMenuItem.Checked ? Color.Transparent : LevelImgPalette.Entries[LevelData.ColorTransparent], includeobjectsWithFGToolStripMenuItem.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
+									BitmapBits32 bmp = LevelData.DrawForeground32(area, transparentBackgroundToolStripMenuItem.Checked ? Color.Transparent : LevelImgPalette.Entries[LevelData.ColorTransparent], displayObjectsToolStripCheckBoxButton.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
 									using (Bitmap res = bmp.ToBitmap())
 										res.Save(a.FileName);
 								}
 								else
 								{
-									BitmapBits bmp = LevelData.DrawForeground(area, includeobjectsWithFGToolStripMenuItem.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
+									BitmapBits bmp = LevelData.DrawForeground(area, displayObjectsToolStripCheckBoxButton.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked);
 									Color[] palette;
 									if (transparentBackgroundToolStripMenuItem.Checked)
 									{
@@ -7604,27 +8287,30 @@ namespace SonicRetro.SonLVL.GUI
 			if (LevelData.BGSize[bglayer].IsEmpty)
 			{
 				tabPage13.Hide();
+				replaceBackgroundToolStripButton.Enabled = clearBackgroundToolStripButton.Enabled = bgDuplicateLayerOverToolStripButton.Enabled = false;
 				return;
 			}
-			else
-				tabPage13.Show();
+			
+			tabPage13.Show();
+			replaceBackgroundToolStripButton.Enabled = clearBackgroundToolStripButton.Enabled = bgDuplicateLayerOverToolStripButton.Enabled = true;
+
 			layerScrollType.SelectedIndex = (int)LevelData.Background.layers[bglayer].type - 1;
 			switch (LevelData.Background.layers[bglayer].type)
 			{
 				case RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll:
 				case RSDKv3_4.Backgrounds.Layer.LayerTypes.VScroll:
-					scrollPreviewButton.Enabled = scrollEditPanel.Enabled = true;
+					previewGroupBox.Enabled = scrollEditPanel.Enabled = true;
 					layerParallaxFactor.Value = LevelData.Background.layers[bglayer].parallaxFactor / 256m;
 					layerScrollSpeed.Value = LevelData.Background.layers[bglayer].scrollSpeed / 64m;
 					scrollList.BeginUpdate();
 					scrollList.Items.Clear();
 					foreach (var item in LevelData.BGScroll[bglayer])
-						scrollList.Items.Add(item.StartPos.ToString("X4"));
+						scrollList.Items.Add(item.StartPos.ToString("D4"));
 					scrollList.EndUpdate();
 					scrollList.SelectedIndex = 0;
 					break;
 				default:
-					scrollPreviewButton.Enabled = scrollEditPanel.Enabled = false;
+					previewGroupBox.Enabled = scrollEditPanel.Enabled = false;
 					break;
 			}
 		}
@@ -7659,12 +8345,11 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			if (scrollPreviewButton.Checked)
 			{
-				frametarget = (double)(System.Diagnostics.Stopwatch.Frequency / scrollTargetFPS.Value);
 				layerscrollpos = 0;
 				linescrollpos = new double[LevelData.BGScroll[bglayer].Count];
-				scrolloff = new Point((int)scrollCamX.Value, (int)scrollCamY.Value);
-				scrollEditPanel.Enabled = false;
-				backgroundPanel.PanelGraphics.Clear(LevelImgPalette.Entries[LevelData.ColorTransparent]);
+				bgToolStrip.Enabled = scrollEditPanel.Enabled = false;
+				backgroundPanel.GraphicsBuffer.Graphics.Clear(LevelImgPalette.Entries[LevelData.ColorTransparent]);
+				backgroundPanel.GraphicsBuffer.Render(backgroundPanel.PanelGraphics);
 				backgroundPanel.FocusPanel();
 				if (dspact == null)
 					dspact = DrawScrollPreview;
@@ -7672,6 +8357,8 @@ namespace SonicRetro.SonLVL.GUI
 				bgscrolltoken = bgscrollcts.Token;
 				bgscrolltask = System.Threading.Tasks.Task.Run(bgscrollfunc, bgscrolltoken);
 				backgroundPanel.HScrollEnabled = backgroundPanel.VScrollEnabled = false;
+				scrollCamX.Enabled = scrollCamY.Enabled = moveCameraLabel.Visible = true;
+				backgroundPanel.PanelCursor = Cursors.Default;
 			}
 			else
 			{
@@ -7688,14 +8375,14 @@ namespace SonicRetro.SonLVL.GUI
 						scrollEditPanel.Enabled = false;
 						break;
 				}
-				backgroundPanel.HScrollEnabled = backgroundPanel.VScrollEnabled = true;
+				bgToolStrip.Enabled = backgroundPanel.HScrollEnabled = backgroundPanel.VScrollEnabled = true;
+				scrollCamX.Enabled = scrollCamY.Enabled = moveCameraLabel.Visible = false;
+				scrollCamX.Value = scrollCamY.Value = 0;
 				DrawLevel();
 			}
 		}
 
 		static readonly double frametime = System.Diagnostics.Stopwatch.Frequency / 60.0;
-		double frametarget = frametime;
-		Point scrolloff;
 		double layerscrollpos;
 		double[] linescrollpos;
 		private void bgscrollfunc()
@@ -7704,20 +8391,20 @@ namespace SonicRetro.SonLVL.GUI
 			double overrun = 0;
 			while (!bgscrolltoken.IsCancellationRequested)
 			{
-				overrun += stopwatch.ElapsedTicks - frametarget;
+				overrun += stopwatch.ElapsedTicks - frametime;
 				stopwatch.Restart();
-				double scrlmult = frametarget / frametime;
-				if (overrun >= frametarget)
+				double scrlmult = frametime / frametime;
+				if (overrun >= frametime)
 				{
 					scrlmult *= 2;
-					overrun -= frametarget;
+					overrun -= frametime;
 				}
 				layerscrollpos += LevelData.Background.layers[bglayer].scrollSpeed / (64d * scrlmult);
 				for (int i = 0; i < linescrollpos.Length; i++)
 					linescrollpos[i] += (double)LevelData.BGScroll[bglayer][i].ScrollSpeed * scrlmult;
 				int widthpx = LevelData.BGWidth[bglayer] * 128;
 				int heightpx = LevelData.BGHeight[bglayer] * 128;
-				Point scrloff = scrolloff;
+				Point scrloff = new Point((int)scrollCamX.Value, (int)scrollCamY.Value);
 				switch (LevelData.Background.layers[bglayer].type)
 				{
 					case RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll:
@@ -7806,7 +8493,7 @@ namespace SonicRetro.SonLVL.GUI
 				}
 				LevelBmp = LevelImg8bpp.ToBitmap();
 				Invoke(dspact);
-				while (stopwatch.ElapsedTicks + overrun < frametarget)
+				while (stopwatch.ElapsedTicks + overrun < frametime)
 					System.Threading.Thread.Sleep(1);
 			}
 		}
@@ -7814,22 +8501,19 @@ namespace SonicRetro.SonLVL.GUI
 		Action dspact;
 		private void DrawScrollPreview()
 		{
-			backgroundPanel.PanelGraphics.DrawImage(LevelBmp, 0, 0, (float)(LevelBmp.Width * ZoomLevel), (float)(LevelBmp.Height * ZoomLevel));
+			backgroundPanel.GraphicsBuffer.Graphics.DrawImage(LevelBmp, 0, 0, (float)(LevelBmp.Width * ZoomLevel), (float)(LevelBmp.Height * ZoomLevel));
+			backgroundPanel.GraphicsBuffer.Render(backgroundPanel.PanelGraphics);
 		}
 
 		private void layerParallaxFactor_ValueChanged(object sender, EventArgs e)
 		{
 			LevelData.Background.layers[bglayer].parallaxFactor = (ushort)(layerParallaxFactor.Value * 256);
-			if (scrollCamX.Value > 0 || scrollCamY.Value > 0)
-				DrawLevel();
 			SaveState($"Change BG {bglayer + 1} Parallax Factor");
 		}
 
 		private void layerScrollSpeed_ValueChanged(object sender, EventArgs e)
 		{
 			LevelData.Background.layers[bglayer].scrollSpeed = (byte)(layerScrollSpeed.Value * 64m);
-			if (scrollFrame.Value > 0)
-				DrawLevel();
 			SaveState($"Change BG {bglayer + 1} Scroll Speed");
 		}
 
@@ -7844,6 +8528,7 @@ namespace SonicRetro.SonLVL.GUI
 						max = LevelData.BGHeight[bglayer] * 128 - 1;
 						break;
 					case RSDKv3_4.Backgrounds.Layer.LayerTypes.VScroll:
+						// note: in S2's unused MBZ layer 2 bg, there's a line at 1537px... but the layer's only 1536px wide? not sure what we can even do about that..
 						max = LevelData.BGWidth[bglayer] * 128 - 1;
 						break;
 				}
@@ -7895,7 +8580,7 @@ namespace SonicRetro.SonLVL.GUI
 			if (LevelData.BGScroll[bglayer][scrollList.SelectedIndex].StartPos != max - 1)
 				max = LevelData.BGScroll[bglayer][scrollList.SelectedIndex].StartPos + ((max - LevelData.BGScroll[bglayer][scrollList.SelectedIndex].StartPos) / 2);
 			LevelData.BGScroll[bglayer].Insert(scrollList.SelectedIndex + 1, new ScrollData((ushort)max));
-			scrollList.Items.Insert(scrollList.SelectedIndex + 1, max.ToString("X4"));
+			scrollList.Items.Insert(scrollList.SelectedIndex + 1, max.ToString("D4"));
 			scrollList.SelectedIndex++;
 			SaveState("Insert Scroll Line");
 		}
@@ -7915,7 +8600,7 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			if (!loaded) return;
 			LevelData.BGScroll[bglayer][scrollList.SelectedIndex].StartPos = (ushort)scrollOffset.Value;
-			scrollList.Items[scrollList.SelectedIndex] = LevelData.BGScroll[bglayer][scrollList.SelectedIndex].StartPos.ToString("X4");
+			scrollList.Items[scrollList.SelectedIndex] = LevelData.BGScroll[bglayer][scrollList.SelectedIndex].StartPos.ToString("D4");
 			DrawLevel();
 			SaveState("Change Scroll Line Offset");
 		}
@@ -7929,16 +8614,12 @@ namespace SonicRetro.SonLVL.GUI
 		private void scrollParallaxFactor_ValueChanged(object sender, EventArgs e)
 		{
 			LevelData.BGScroll[bglayer][scrollList.SelectedIndex].ParallaxFactor = scrollParallaxFactor.Value;
-			if (scrollCamX.Value > 0 || scrollCamY.Value > 0)
-				DrawLevel();
 			SaveState("Change Scroll Line Parallax Factor");
 		}
 
 		private void scrollScrollSpeed_ValueChanged(object sender, EventArgs e)
 		{
 			LevelData.BGScroll[bglayer][scrollList.SelectedIndex].ScrollSpeed = scrollScrollSpeed.Value;
-			if (scrollFrame.Value > 0)
-				DrawLevel();
 			SaveState("Change Scroll Line Speed");
 		}
 
@@ -7953,27 +8634,14 @@ namespace SonicRetro.SonLVL.GUI
 				else
 					tabPage13.Show();
 			}
+			backgroundPanel.PanelCursor = Cursors.Default;
 			DrawLevel();
 		}
 
 		private void showScrollAreas_CheckedChanged(object sender, EventArgs e)
 		{
 			DrawLevel();
-		}
-
-		private void scrollCamX_ValueChanged(object sender, EventArgs e)
-		{
-			DrawLevel();
-		}
-
-		private void scrollCamY_ValueChanged(object sender, EventArgs e)
-		{
-			DrawLevel();
-		}
-
-		private void scrollFrame_ValueChanged(object sender, EventArgs e)
-		{
-			DrawLevel();
+			if (!showScrollAreas.Checked) backgroundPanel.PanelCursor = Cursors.Default;
 		}
 
 		private void levelNameBox_TextChanged(object sender, EventArgs e)
@@ -8060,10 +8728,24 @@ namespace SonicRetro.SonLVL.GUI
 			SaveState("Change Level Name");
 		}
 
-		private void midpointBox_SelectedIndexChanged(object sender, EventArgs e)
+		static readonly string[] midpointNames = new string[] {
+			"Midpoint: Before Layer 0",
+			"Midpoint: Between Layer 0 and Layer 1",
+			"Midpoint: Between Layer 1 and Layer 2",
+			"Midpoint: Between Layer 2 and Layer 3",
+			"Midpoint: After Layer 3"};
+
+		private void midpointTrackBar_ValueChanged(object sender, EventArgs e)
 		{
+			int midpoint = 4 - midpointTrackBar.Value;
+			midpointLabel.Text = midpointNames[midpoint];
+
+			lowTilesLabel.Text = "";
+			for (int i = 0; i < 4; i++)
+				lowTilesLabel.Text += $"Draw {((i < midpoint) ? "Low" : "High")} Tiles" + Environment.NewLine + Environment.NewLine;
+
 			if (!loaded) return;
-			LevelData.Scene.layerMidpoint = (RSDKv3_4.Scene.LayerMidpoints)midpointBox.SelectedIndex;
+			LevelData.Scene.layerMidpoint = (RSDKv3_4.Scene.LayerMidpoints)(midpoint);
 			SaveState("Change Layer Midpoint");
 		}
 
@@ -8482,43 +9164,68 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void copyCollisionAllButton_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "Are you sure you want to replace all of Path 2's collision with Path 1's?", "SonLVL-RSDK", MessageBoxButtons.OKCancel) != DialogResult.OK)
-				return;
-			
-			var redrawblocks = new SortedSet<int>();
-			for (int i = 0; i < LevelData.Collision.collisionMasks[0].Length; i++)
+			using (CopyCollisionDialog dialog = new CopyCollisionDialog())
 			{
-				if (!LevelData.Collision.collisionMasks[0][i].Equal(LevelData.Collision.collisionMasks[1][i]))
+				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					LevelData.Collision.collisionMasks[1][i] = LevelData.Collision.collisionMasks[0][i].Clone();
+					if (!dialog.tileCheckBox.Checked && !dialog.chunkCheckBox.Checked) return;
 
-					LevelData.RedrawCol(i, false);
-					redrawblocks.Add(i);
+					int src = dialog.planeBOverARadioButton.Checked ? 1 : 0;
+					int dst = dialog.planeBOverARadioButton.Checked ? 0 : 1;
+
+					string n = dialog.tileCheckBox.Checked ? (dialog.chunkCheckBox.Checked ? "chunk solidity and tile collision" : "tile collision") : "chunk solidity";
+
+					if (MessageBox.Show(this, $"This will overwrite ALL of Plane {(char)(dst + 'A')}'s {n} data.\n\nAre you sure you want to replace all of Plane {(char)(dst + 'A')}'s {n} with Plane {(char)(src + 'A')}'s?", "SonLVL-RSDK", MessageBoxButtons.OKCancel) != DialogResult.OK)
+						return;
+
+					var redrawblocks = new SortedSet<int>();
+
+					if (dialog.tileCheckBox.Checked)
+					{
+						for (int i = 0; i < LevelData.Collision.collisionMasks[0].Length; i++)
+						{
+							if (!LevelData.Collision.collisionMasks[src][i].Equal(LevelData.Collision.collisionMasks[dst][i]))
+							{
+								LevelData.Collision.collisionMasks[dst][i] = LevelData.Collision.collisionMasks[src][i].Clone();
+
+								LevelData.RedrawCol(i, false);
+								redrawblocks.Add(i);
+							}
+						}
+					}
+
+					if (dialog.chunkCheckBox.Checked)
+					{
+						for (int i = 0; i < LevelData.NewChunks.chunkList.Length; i++)
+						{
+							bool redraw = false;
+							foreach (RSDKv3_4.Tiles128x128.Block.Tile tile in LevelData.NewChunks.chunkList[i].tiles.SelectMany(a => a))
+							{
+								redraw |= redrawblocks.Contains(tile.tileIndex) || (tile.solidityA != tile.solidityB);
+								
+								if (dialog.planeAOverBRadioButton.Checked)
+									tile.solidityB = tile.solidityA;
+								else
+									tile.solidityA = tile.solidityB;
+							}
+
+							if (redraw)
+							{
+								LevelData.RedrawChunk(i);
+								if (i == SelectedChunk)
+									DrawChunkPicture();
+							}
+						}
+					}
+
+					SaveState($"Copy Plane {(char)(src + 'A')} Coll1ision to Plane {(char)(dst + 'A')}");
 				}
 			}
-
-			for (int i = 0; i < LevelData.NewChunks.chunkList.Length; i++)
-			{
-				bool redraw = false;
-				foreach (RSDKv3_4.Tiles128x128.Block.Tile tile in LevelData.NewChunks.chunkList[i].tiles.SelectMany(a => a))
-				{
-					redraw |= redrawblocks.Contains(tile.tileIndex) || (tile.solidityA != tile.solidityB);
-					tile.solidityB = tile.solidityA;
-				}
-
-				if (redraw)
-				{
-					LevelData.RedrawChunk(i);
-					if (i == SelectedChunk)
-						DrawChunkPicture();
-				}
-			}
-
-			SaveState("Copy Path 1 Collision to Path 2");
 		}
 
 		private void gotoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			if (!loaded) return;
 			using (GoToDialog dlg = new GoToDialog())
 			{
 				dlg.entityPos.Maximum = 31 + LevelData.Objects.Count;
@@ -8585,7 +9292,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void removeDuplicateTilesToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "Are you sure you want to remove all duplicate tiles?", "SonLVL-RSDK", MessageBoxButtons.OKCancel) != DialogResult.OK)
+			if (MessageBox.Show(this, "This action may break levels that alter tiles through scripts, such as animated tile patterns.\n\nAre you sure you want to remove all duplicate tiles?", "SonLVL-RSDK", MessageBoxButtons.OKCancel) != DialogResult.OK)
 				return;
 			Dictionary<ushort, TileData> tiles = new Dictionary<ushort, TileData>(LevelData.NewTiles.Length);
 			Dictionary<ushort, RSDKv3_4.Tiles128x128.Block.Tile> tileMap = new Dictionary<ushort, RSDKv3_4.Tiles128x128.Block.Tile>(LevelData.NewTiles.Length);
@@ -8680,12 +9387,6 @@ namespace SonicRetro.SonLVL.GUI
 				SaveState("Remove Duplicate Tiles");
 			}
 			MessageBox.Show(this, $"Removed {deleted} duplicate tiles.", "SonLVL-RSDK");
-		}
-
-		private void enableGridToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (CurrentTab == Tab.Art)
-				DrawChunkPicture();
 		}
 
 		private void importOverToolStripMenuItem_Click(object sender, EventArgs e)

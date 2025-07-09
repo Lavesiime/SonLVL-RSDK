@@ -60,7 +60,7 @@ namespace SonicRetro.SonLVL.API
 			Y = int.Parse(split[5]);
 		}
 
-		public override string ToString() => $"{OffX},{OffY},{Width},{Height},{X},{Y}";
+		public override string ToString() => $"{OffX}, {OffY}, {Width}, {Height}, {X}, {Y}";
 	}
 
 	public class SpriteFrameConverter : TypeConverter
