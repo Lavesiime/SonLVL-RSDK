@@ -8033,7 +8033,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void clearForegroundToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "Are you sure you want to clear the foreground layout?", "Clear Foreground", MessageBoxButtons.OKCancel) == DialogResult.OK)
+			if (MessageBox.Show(this, "Are you sure you want to clear all chunks from the foreground layout?", "Clear Foreground", MessageBoxButtons.OKCancel) == DialogResult.OK)
 			{
 				foreach (var row in LevelData.Scene.layout)
 					Array.Clear(row, 0, row.Length);
@@ -8043,24 +8043,27 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void clearBackgroundToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "Are you sure you want to clear the selected background layer?", "Clear Background", MessageBoxButtons.OKCancel) == DialogResult.OK)
+			if (MessageBox.Show(this, "Are you sure you want to clear all chunks and parallax data from the selected background layer?", "Clear Background", MessageBoxButtons.OKCancel) == DialogResult.OK)
 			{
+				// First, let's clear the layout of the layer
 				foreach (var row in LevelData.Background.layers[bglayer].layout)
 					Array.Clear(row, 0, row.Length);
-				LevelData.BGScroll[bglayer].Clear();
+
+				// Now, if necessary, clear the parallax data as well
 				switch (LevelData.Background.layers[bglayer].type)
 				{
 					case RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll:
 					case RSDKv3_4.Backgrounds.Layer.LayerTypes.VScroll:
+						LevelData.BGScroll[bglayer].Clear();
 						LevelData.BGScroll[bglayer].Add(new ScrollData());
+						scrollList.BeginUpdate();
+						scrollList.Items.Clear();
+						foreach (var item in LevelData.BGScroll[bglayer])
+							scrollList.Items.Add(item.StartPos.ToString("D4"));
+						scrollList.EndUpdate();
+						scrollList.SelectedIndex = 0;
 						break;
 				}
-				scrollList.BeginUpdate();
-				scrollList.Items.Clear();
-				foreach (var item in LevelData.BGScroll[bglayer])
-					scrollList.Items.Add(item.StartPos.ToString("D4"));
-				scrollList.EndUpdate();
-				scrollList.SelectedIndex = 0;
 				SaveState($"Clear Background {bglayer + 1}");
 			}
 		}
