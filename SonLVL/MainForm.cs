@@ -7750,7 +7750,28 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				case ArtTab.Chunks:
 					DataObject d = new DataObject(typeof(ChunkCopyData).AssemblyQualifiedName, new ChunkCopyData(LevelData.NewChunks.chunkList[SelectedChunk]));
-					d.SetImage(LevelData.ChunkSprites[SelectedChunk].GetBitmap().ToBitmap(LevelImgPalette));
+
+					BitmapBits32 bmp = new BitmapBits32(128, 128);
+					LevelImgPalette.Entries.CopyTo(bmp.Palette, 0);
+					bmp.Clear(bmp.Palette[LevelData.ColorTransparent]);
+					if (lowToolStripMenuItem.Checked && highToolStripMenuItem.Checked)
+						bmp.DrawSprite(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+					else if (lowToolStripMenuItem.Checked)
+						bmp.DrawSpriteLow(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+					else if (highToolStripMenuItem.Checked)
+						bmp.DrawSpriteHigh(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+
+					bmp.Palette[LevelData.ColorWhite] = Color.White;
+					bmp.Palette[LevelData.ColorYellow] = Color.Yellow;
+					bmp.Palette[LevelData.ColorBlack] = Color.Black;
+					bmp.Palette[LevelData.ColorRed] = Color.Red;
+
+					if (path1ToolStripMenuItem.Checked)
+						bmp.DrawBitmap(LevelData.ChunkColBmpBits[SelectedChunk][0], 0, 0);
+					else if (path2ToolStripMenuItem.Checked)
+						bmp.DrawBitmap(LevelData.ChunkColBmpBits[SelectedChunk][1], 0, 0);
+
+					d.SetImage(bmp.ToBitmap());
 					Clipboard.SetDataObject(d);
 					break;
 			}
