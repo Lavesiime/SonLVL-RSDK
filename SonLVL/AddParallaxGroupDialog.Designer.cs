@@ -193,13 +193,13 @@
             // 
             this.parallaxFactorStartingValue.DecimalPlaces = 5;
             this.parallaxFactorStartingValue.Increment = new decimal(new int[] {
-            1,
+            78125,
             0,
             0,
-            196608});
+            458752});
             this.parallaxFactorStartingValue.Location = new System.Drawing.Point(227, 115);
             this.parallaxFactorStartingValue.Maximum = new decimal(new int[] {
-            524288,
+            255,
             0,
             0,
             0});
@@ -207,6 +207,7 @@
             this.parallaxFactorStartingValue.Size = new System.Drawing.Size(120, 31);
             this.parallaxFactorStartingValue.TabIndex = 2;
             this.parallaxFactorStartingValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.parallaxFactorStartingValue.ValueChanged += new System.EventHandler(this.parallaxFactorStartingValue_ValueChanged);
             // 
             // label2
             // 
@@ -239,10 +240,10 @@
             // 
             this.scrollSpeedStartingValue.DecimalPlaces = 5;
             this.scrollSpeedStartingValue.Increment = new decimal(new int[] {
-            1,
+            3125,
             0,
             0,
-            65536});
+            327680});
             this.scrollSpeedStartingValue.Location = new System.Drawing.Point(227, 283);
             this.scrollSpeedStartingValue.Maximum = new decimal(new int[] {
             3984375,
@@ -252,6 +253,7 @@
             this.scrollSpeedStartingValue.Name = "scrollSpeedStartingValue";
             this.scrollSpeedStartingValue.Size = new System.Drawing.Size(120, 31);
             this.scrollSpeedStartingValue.TabIndex = 4;
+            this.scrollSpeedStartingValue.ValueChanged += new System.EventHandler(this.scrollSpeedStartingValue_ValueChanged);
             // 
             // label7
             // 
