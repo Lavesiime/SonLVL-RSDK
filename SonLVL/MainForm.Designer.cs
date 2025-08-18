@@ -387,6 +387,7 @@
             this.clearChunkBlocksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importProgressControl1 = new SonicRetro.SonLVL.ImportProgressControl();
             this.useHexadecimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             label4 = new System.Windows.Forms.Label();
@@ -576,6 +577,7 @@
             this.importChunksToolStripButton.Name = "importChunksToolStripButton";
             this.importChunksToolStripButton.Size = new System.Drawing.Size(104, 36);
             this.importChunksToolStripButton.Text = "Import...";
+			this.importChunksToolStripButton.ToolTipText = "Import a chunk from an image.";
             this.importChunksToolStripButton.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // drawChunkToolStripButton
@@ -585,6 +587,7 @@
             this.drawChunkToolStripButton.Name = "drawChunkToolStripButton";
             this.drawChunkToolStripButton.Size = new System.Drawing.Size(87, 36);
             this.drawChunkToolStripButton.Text = "Draw...";
+			this.drawChunkToolStripButton.ToolTipText = "Draw a chunk and import it into the stage.";
             this.drawChunkToolStripButton.Click += new System.EventHandler(this.drawToolStripButton_Click);
             // 
             // deleteUnusedChunksToolStripButton
@@ -593,6 +596,7 @@
             this.deleteUnusedChunksToolStripButton.Name = "deleteUnusedChunksToolStripButton";
             this.deleteUnusedChunksToolStripButton.Size = new System.Drawing.Size(176, 36);
             this.deleteUnusedChunksToolStripButton.Text = "Delete Unused";
+			this.deleteUnusedChunksToolStripButton.ToolTipText = "Delete all chunks not used in any act of this stage.";
             this.deleteUnusedChunksToolStripButton.Click += new System.EventHandler(this.deleteUnusedChunksToolStripButton_Click);
             // 
             // removeDuplicateChunksToolStripButton
@@ -601,6 +605,7 @@
             this.removeDuplicateChunksToolStripButton.Name = "removeDuplicateChunksToolStripButton";
             this.removeDuplicateChunksToolStripButton.Size = new System.Drawing.Size(222, 36);
             this.removeDuplicateChunksToolStripButton.Text = "Remove Duplicates";
+			this.removeDuplicateChunksToolStripButton.ToolTipText = "Removes all duplicate chunks in the chunk list.";
             this.removeDuplicateChunksToolStripButton.Click += new System.EventHandler(this.removeDuplicateChunksToolStripButton_Click);
             // 
             // replaceChunkBlocksToolStripButton
@@ -609,6 +614,7 @@
             this.replaceChunkBlocksToolStripButton.Name = "replaceChunkBlocksToolStripButton";
             this.replaceChunkBlocksToolStripButton.Size = new System.Drawing.Size(100, 36);
             this.replaceChunkBlocksToolStripButton.Text = "Replace";
+			this.replaceChunkBlocksToolStripButton.ToolTipText = "Replace all instances of a certain tile within the stage's chunks.";
             this.replaceChunkBlocksToolStripButton.Click += new System.EventHandler(this.replaceChunkBlocksToolStripButton_Click);
             // 
             // remapChunksButton
@@ -619,6 +625,7 @@
             this.remapChunksButton.Name = "remapChunksButton";
             this.remapChunksButton.Size = new System.Drawing.Size(266, 36);
             this.remapChunksButton.Text = "Advanced Remapping...";
+			this.remapChunksButton.ToolTipText = "Change the order of several chunks at a time.";
             this.remapChunksButton.Click += new System.EventHandler(this.remapChunksButton_Click);
             // 
             // enableDraggingChunksButton
@@ -631,6 +638,7 @@
             this.enableDraggingChunksButton.Name = "enableDraggingChunksButton";
             this.enableDraggingChunksButton.Size = new System.Drawing.Size(195, 36);
             this.enableDraggingChunksButton.Text = "Enable Dragging";
+			this.enableDraggingChunksButton.ToolTipText = "Toggle dragging chunks around to reorder them.";
             // 
             // tileListToolStrip
             // 
@@ -659,6 +667,7 @@
             this.importTilesToolStripButton.Name = "importTilesToolStripButton";
             this.importTilesToolStripButton.Size = new System.Drawing.Size(104, 36);
             this.importTilesToolStripButton.Text = "Import...";
+			this.importTilesToolStripButton.ToolTipText = "Import a tile from an image.";
             this.importTilesToolStripButton.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // drawTileToolStripButton
@@ -668,6 +677,7 @@
             this.drawTileToolStripButton.Name = "drawTileToolStripButton";
             this.drawTileToolStripButton.Size = new System.Drawing.Size(87, 36);
             this.drawTileToolStripButton.Text = "Draw...";
+			this.drawTileToolStripButton.ToolTipText = "Draw a tile and import it into the stage.";
             this.drawTileToolStripButton.Click += new System.EventHandler(this.drawToolStripButton_Click);
             // 
             // deleteUnusedTilesToolStripButton
@@ -676,6 +686,7 @@
             this.deleteUnusedTilesToolStripButton.Name = "deleteUnusedTilesToolStripButton";
             this.deleteUnusedTilesToolStripButton.Size = new System.Drawing.Size(176, 36);
             this.deleteUnusedTilesToolStripButton.Text = "Delete Unused";
+			this.deleteUnusedTilesToolStripButton.ToolTipText = "Delete all tiles not used in any chunks.";
             this.deleteUnusedTilesToolStripButton.Click += new System.EventHandler(this.deleteUnusedTilesToolStripButton_Click);
             // 
             // removeDuplicateTilesToolStripButton
@@ -684,6 +695,7 @@
             this.removeDuplicateTilesToolStripButton.Name = "removeDuplicateTilesToolStripButton";
             this.removeDuplicateTilesToolStripButton.Size = new System.Drawing.Size(222, 36);
             this.removeDuplicateTilesToolStripButton.Text = "Remove Duplicates";
+			this.removeDuplicateTilesToolStripButton.ToolTipText = "Removes all tiles with identical art and collision to other tiles.";
             this.removeDuplicateTilesToolStripButton.Click += new System.EventHandler(this.removeDuplicateTilesToolStripButton_Click);
             // 
             // reloadTilesToolStripButton
@@ -692,6 +704,7 @@
             this.reloadTilesToolStripButton.Name = "reloadTilesToolStripButton";
             this.reloadTilesToolStripButton.Size = new System.Drawing.Size(90, 36);
             this.reloadTilesToolStripButton.Text = "Reload";
+			this.reloadTilesToolStripButton.ToolTipText = "Reload the 16x16Tiles.gif.";
             this.reloadTilesToolStripButton.Click += new System.EventHandler(this.reloadTilesToolStripButton_Click);
             // 
             // copyCollisionAllButton
@@ -700,6 +713,7 @@
             this.copyCollisionAllButton.Name = "copyCollisionAllButton";
             this.copyCollisionAllButton.Size = new System.Drawing.Size(186, 36);
             this.copyCollisionAllButton.Text = "Copy Collision...";
+			this.copyCollisionAllButton.ToolTipText = "Copy collision of all tiles between layers.";
             this.copyCollisionAllButton.Click += new System.EventHandler(this.copyCollisionAllButton_Click);
             // 
             // remapTilesButton
@@ -710,6 +724,7 @@
             this.remapTilesButton.Name = "remapTilesButton";
             this.remapTilesButton.Size = new System.Drawing.Size(266, 36);
             this.remapTilesButton.Text = "Advanced Remapping...";
+			this.remapTilesButton.ToolTipText = "Change the order of several tiles at a time.";
             this.remapTilesButton.Click += new System.EventHandler(this.remapTilesButton_Click);
             // 
             // enableDraggingTilesButton
@@ -722,6 +737,7 @@
             this.enableDraggingTilesButton.Name = "enableDraggingTilesButton";
             this.enableDraggingTilesButton.Size = new System.Drawing.Size(195, 36);
             this.enableDraggingTilesButton.Text = "Enable Dragging";
+			this.enableDraggingTilesButton.ToolTipText = "Toggle dragging tiles around to reorder them.";
             // 
             // toolStripSeparator1
             // 
@@ -773,6 +789,7 @@
             this.flipTileHButton.Size = new System.Drawing.Size(247, 45);
             this.flipTileHButton.TabIndex = 9;
             this.flipTileHButton.Text = "Flip Tile Horizontally";
+            this.toolTip.SetToolTip(this.flipTileHButton, "Flip the tile's art and collision horizontally.");
             this.flipTileHButton.UseVisualStyleBackColor = true;
             this.flipTileHButton.Click += new System.EventHandler(this.flipTileHButton_Click);
             // 
@@ -786,6 +803,7 @@
             this.flipTileVButton.Size = new System.Drawing.Size(247, 45);
             this.flipTileVButton.TabIndex = 10;
             this.flipTileVButton.Text = "Flip Tile Vertically";
+            this.toolTip.SetToolTip(this.flipTileHButton, "Flip the tile's art and collision vertically.");
             this.flipTileVButton.UseVisualStyleBackColor = true;
             this.flipTileVButton.Click += new System.EventHandler(this.flipTileVButton_Click);
             // 
@@ -1114,6 +1132,7 @@
             this.copyCollisionSingleButton.Size = new System.Drawing.Size(240, 41);
             this.copyCollisionSingleButton.TabIndex = 18;
             this.copyCollisionSingleButton.Text = "Copy to Plane B";
+            this.toolTip.SetToolTip(this.copyCollisionSingleButton, "Copy the shown collision info to the other plane.");
             this.copyCollisionSingleButton.UseVisualStyleBackColor = true;
             this.copyCollisionSingleButton.Click += new System.EventHandler(this.copyCollisionSingleButton_Click);
             // 
@@ -1139,6 +1158,7 @@
             this.colFlags.Name = "colFlags";
             this.colFlags.Size = new System.Drawing.Size(82, 31);
             this.colFlags.TabIndex = 16;
+            this.toolTip.SetToolTip(this.colFlags, "A generic value, used by scripts for any purpose.");
             this.colFlags.ValueChanged += new System.EventHandler(this.colFlags_ValueChanged);
             // 
             // label7
@@ -1164,6 +1184,7 @@
             this.ceilingAngle.Name = "ceilingAngle";
             this.ceilingAngle.Size = new System.Drawing.Size(82, 31);
             this.ceilingAngle.TabIndex = 14;
+            this.toolTip.SetToolTip(this.ceilingAngle, "The angle of the tile when walking on its bottom.");
             this.ceilingAngle.ValueChanged += new System.EventHandler(this.ceilingAngle_ValueChanged);
             // 
             // label6
@@ -1189,6 +1210,7 @@
             this.rightAngle.Name = "rightAngle";
             this.rightAngle.Size = new System.Drawing.Size(82, 31);
             this.rightAngle.TabIndex = 12;
+            this.toolTip.SetToolTip(this.rightAngle, "The angle of the tile when walking on its right side.");
             this.rightAngle.ValueChanged += new System.EventHandler(this.rightAngle_ValueChanged);
             // 
             // label5
@@ -1214,6 +1236,7 @@
             this.leftAngle.Name = "leftAngle";
             this.leftAngle.Size = new System.Drawing.Size(82, 31);
             this.leftAngle.TabIndex = 10;
+            this.toolTip.SetToolTip(this.leftAngle, "The angle of the tile when walking on its left side.");
             this.leftAngle.ValueChanged += new System.EventHandler(this.leftAngle_ValueChanged);
             // 
             // collisionCeiling
@@ -1251,6 +1274,7 @@
             this.calculateAngleButton.Size = new System.Drawing.Size(240, 41);
             this.calculateAngleButton.TabIndex = 7;
             this.calculateAngleButton.Text = "Calculate Angles";
+            this.toolTip.SetToolTip(this.calculateAngleButton, "Calculate the collision angles of this tile.");
             this.calculateAngleButton.UseVisualStyleBackColor = true;
             this.calculateAngleButton.Click += new System.EventHandler(this.calculateAngleButton_Click);
             // 
@@ -1263,6 +1287,7 @@
             this.showBlockBehindCollisionCheckBox.Size = new System.Drawing.Size(138, 29);
             this.showBlockBehindCollisionCheckBox.TabIndex = 5;
             this.showBlockBehindCollisionCheckBox.Text = "Show Tile";
+            this.toolTip.SetToolTip(this.showBlockBehindCollisionCheckBox, "Show the art of the tile behind the collision visualisation.");
             this.showBlockBehindCollisionCheckBox.UseVisualStyleBackColor = true;
             this.showBlockBehindCollisionCheckBox.CheckedChanged += new System.EventHandler(this.showBlockBehindCollisionCheckBox_CheckedChanged);
             // 
@@ -1279,6 +1304,7 @@
             this.floorAngle.Name = "floorAngle";
             this.floorAngle.Size = new System.Drawing.Size(82, 31);
             this.floorAngle.TabIndex = 3;
+            this.toolTip.SetToolTip(this.floorAngle, "The angle of the tile when walking on its top.");
             this.floorAngle.ValueChanged += new System.EventHandler(this.floorAngle_ValueChanged);
             // 
             // ColPicture
@@ -2636,6 +2662,7 @@
             this.resizeForegroundToolStripButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
             this.resizeForegroundToolStripButton.Size = new System.Drawing.Size(84, 36);
             this.resizeForegroundToolStripButton.Text = "Resize";
+            this.resizeForegroundToolStripButton.ToolTipText = "Change the size of the Foreground.";
             this.resizeForegroundToolStripButton.Click += new System.EventHandler(this.resizeLayerToolStripButton_Click);
             // 
             // replaceForegroundToolStripButton
@@ -2644,6 +2671,7 @@
             this.replaceForegroundToolStripButton.Name = "replaceForegroundToolStripButton";
             this.replaceForegroundToolStripButton.Size = new System.Drawing.Size(100, 36);
             this.replaceForegroundToolStripButton.Text = "Replace";
+            this.replaceForegroundToolStripButton.ToolTipText = "Replace all instances of a certain chunk in the Foreground.";
             this.replaceForegroundToolStripButton.Click += new System.EventHandler(this.replaceForegroundToolStripButton_Click);
             // 
             // clearForegroundToolStripButton
@@ -2653,6 +2681,7 @@
             this.clearForegroundToolStripButton.Size = new System.Drawing.Size(72, 36);
             this.clearForegroundToolStripButton.Text = "Clear";
             this.clearForegroundToolStripButton.Click += new System.EventHandler(this.clearForegroundToolStripButton_Click);
+            this.clearForegroundToolStripButton.ToolTipText = "Clear all chunks in the Foreground.";
             // 
             // tabControl2
             // 
@@ -2861,6 +2890,7 @@
             this.resizeBackgroundToolStripButton.Name = "resizeBackgroundToolStripButton";
             this.resizeBackgroundToolStripButton.Size = new System.Drawing.Size(84, 36);
             this.resizeBackgroundToolStripButton.Text = "Resize";
+            this.resizeBackgroundToolStripButton.ToolTipText = "Change the size of the current layer.";
             this.resizeBackgroundToolStripButton.Click += new System.EventHandler(this.resizeLayerToolStripButton_Click);
             // 
             // replaceBackgroundToolStripButton
@@ -2869,6 +2899,7 @@
             this.replaceBackgroundToolStripButton.Name = "replaceBackgroundToolStripButton";
             this.replaceBackgroundToolStripButton.Size = new System.Drawing.Size(100, 36);
             this.replaceBackgroundToolStripButton.Text = "Replace";
+            this.replaceBackgroundToolStripButton.ToolTipText = "Replace all instances of a certain chunk in the current layer.";
             this.replaceBackgroundToolStripButton.Click += new System.EventHandler(this.replaceBackgroundToolStripButton_Click);
             // 
             // clearBackgroundToolStripButton
@@ -2878,6 +2909,7 @@
             this.clearBackgroundToolStripButton.Size = new System.Drawing.Size(72, 36);
             this.clearBackgroundToolStripButton.Text = "Clear";
             this.clearBackgroundToolStripButton.Click += new System.EventHandler(this.clearBackgroundToolStripButton_Click);
+            this.clearBackgroundToolStripButton.ToolTipText = "Clear all chunks and scrolling data for this layer.";
             // 
             // bgDuplicateLayerOverToolStripButton
             // 
@@ -3025,6 +3057,7 @@
             this.scrollCamX.Name = "scrollCamX";
             this.scrollCamX.Size = new System.Drawing.Size(156, 31);
             this.scrollCamX.TabIndex = 7;
+            this.toolTip.SetToolTip(this.scrollCamX, "The X component of the preview camera's position.");
             // 
             // scrollPreviewButton
             // 
@@ -3036,6 +3069,7 @@
             this.scrollPreviewButton.TabIndex = 3;
             this.scrollPreviewButton.Text = "Animate!";
             this.scrollPreviewButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.toolTip.SetToolTip(this.scrollCamX, "Preview the scrolling parallax of the layer!");
             this.scrollPreviewButton.UseVisualStyleBackColor = true;
             this.scrollPreviewButton.CheckedChanged += new System.EventHandler(this.scrollPreviewButton_CheckedChanged);
             // 
@@ -3074,6 +3108,7 @@
             this.scrollCamY.Name = "scrollCamY";
             this.scrollCamY.Size = new System.Drawing.Size(156, 31);
             this.scrollCamY.TabIndex = 8;
+            this.toolTip.SetToolTip(this.scrollCamY, "The Y component of the preview camera's position.");
             // 
             // scrollEditPanel
             // 
@@ -3131,6 +3166,7 @@
             this.scrollOffset.Name = "scrollOffset";
             this.scrollOffset.Size = new System.Drawing.Size(162, 31);
             this.scrollOffset.TabIndex = 13;
+            this.toolTip.SetToolTip(this.scrollOffset, "The position (in pixels) of this scroll area.");
             this.scrollOffset.ValueChanged += new System.EventHandler(this.scrollOffset_ValueChanged);
             // 
             // scrollList
@@ -3154,6 +3190,7 @@
             this.scrollEnableDeformation.Size = new System.Drawing.Size(233, 29);
             this.scrollEnableDeformation.TabIndex = 5;
             this.scrollEnableDeformation.Text = "Enable Deformation";
+            this.toolTip.SetToolTip(this.scrollEnableDeformation, "If this scroll area can be deformed on a per-line basis. Requires scripts to manage deformation.");
             this.scrollEnableDeformation.UseVisualStyleBackColor = true;
             this.scrollEnableDeformation.CheckedChanged += new System.EventHandler(this.scrollEnableDeformation_CheckedChanged);
             // 
@@ -3196,6 +3233,7 @@
             this.scrollScrollSpeed.Name = "scrollScrollSpeed";
             this.scrollScrollSpeed.Size = new System.Drawing.Size(162, 31);
             this.scrollScrollSpeed.TabIndex = 11;
+            this.toolTip.SetToolTip(this.scrollScrollSpeed, "How fast (in pixels) this scroll area will move automatically.");
             this.scrollScrollSpeed.ValueChanged += new System.EventHandler(this.scrollScrollSpeed_ValueChanged);
             // 
             // deleteScrollButton
@@ -3248,6 +3286,7 @@
             this.scrollParallaxFactor.Name = "scrollParallaxFactor";
             this.scrollParallaxFactor.Size = new System.Drawing.Size(162, 31);
             this.scrollParallaxFactor.TabIndex = 9;
+            this.toolTip.SetToolTip(this.scrollParallaxFactor, "How fast (in pixels) this scroll area moves with the camera.");
             this.scrollParallaxFactor.ValueChanged += new System.EventHandler(this.scrollParallaxFactor_ValueChanged);
             // 
             // layerScrollSpeed
@@ -3268,6 +3307,7 @@
             this.layerScrollSpeed.Name = "layerScrollSpeed";
             this.layerScrollSpeed.Size = new System.Drawing.Size(162, 31);
             this.layerScrollSpeed.TabIndex = 3;
+            this.toolTip.SetToolTip(this.layerScrollSpeed, "How fast (in pixels) this layer will move automatically.");
             this.layerScrollSpeed.ValueChanged += new System.EventHandler(this.layerScrollSpeed_ValueChanged);
             // 
             // label10
@@ -3298,6 +3338,7 @@
             this.layerParallaxFactor.Name = "layerParallaxFactor";
             this.layerParallaxFactor.Size = new System.Drawing.Size(162, 31);
             this.layerParallaxFactor.TabIndex = 1;
+            this.toolTip.SetToolTip(this.layerParallaxFactor, "How fast (in pixels) this layer moves with the camera.");
             this.layerParallaxFactor.ValueChanged += new System.EventHandler(this.layerParallaxFactor_ValueChanged);
             // 
             // label9
@@ -3524,6 +3565,7 @@
             this.colorHex.Size = new System.Drawing.Size(134, 31);
             this.colorHex.TabIndex = 7;
             this.colorHex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.colorHex, "The hexadecimal code of the currently selected color.");
             this.colorHex.ValueChanged += new System.EventHandler(this.colorHex_ValueChanged);
             // 
             // colorBlue
@@ -3539,6 +3581,7 @@
             this.colorBlue.Size = new System.Drawing.Size(106, 31);
             this.colorBlue.TabIndex = 5;
             this.colorBlue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.colorBlue, "The blue component of the currently selected color.");
             this.colorBlue.ValueChanged += new System.EventHandler(this.color_ValueChanged);
             // 
             // colorGreen
@@ -3554,6 +3597,7 @@
             this.colorGreen.Size = new System.Drawing.Size(106, 31);
             this.colorGreen.TabIndex = 3;
             this.colorGreen.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.colorGreen, "The green component of the currently selected color.");
             this.colorGreen.ValueChanged += new System.EventHandler(this.color_ValueChanged);
             // 
             // colorRed
@@ -3569,6 +3613,7 @@
             this.colorRed.Size = new System.Drawing.Size(106, 31);
             this.colorRed.TabIndex = 1;
             this.colorRed.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.colorRed, "The red component of the currently selected color.");
             this.colorRed.ValueChanged += new System.EventHandler(this.color_ValueChanged);
             // 
             // paletteToolStrip
@@ -3597,6 +3642,7 @@
             this.enableDraggingPaletteButton.Name = "enableDraggingPaletteButton";
             this.enableDraggingPaletteButton.Size = new System.Drawing.Size(195, 36);
             this.enableDraggingPaletteButton.Text = "Enable &Dragging";
+			this.enableDraggingPaletteButton.ToolTipText = "Toggle dragging colors around to reorder them.";
             // 
             // exportPaletteToolStripButton
             // 
@@ -3604,6 +3650,7 @@
             this.exportPaletteToolStripButton.Name = "exportPaletteToolStripButton";
             this.exportPaletteToolStripButton.Size = new System.Drawing.Size(85, 36);
             this.exportPaletteToolStripButton.Text = "&Export";
+			this.exportPaletteToolStripButton.ToolTipText = "Export the stage's palette into a palette file.";
             this.exportPaletteToolStripButton.Click += new System.EventHandler(this.paletteToolStripMenuItem_Click);
             // 
             // importPaletteToolStripButton
@@ -3612,6 +3659,7 @@
             this.importPaletteToolStripButton.Name = "importPaletteToolStripButton";
             this.importPaletteToolStripButton.Size = new System.Drawing.Size(89, 36);
             this.importPaletteToolStripButton.Text = "&Import";
+			this.importPaletteToolStripButton.ToolTipText = "Import a palette from a palette file or image into the stage.";
             this.importPaletteToolStripButton.Click += new System.EventHandler(this.importPaletteToolStripButton_Click);
             // 
             // tabPage15
@@ -3663,6 +3711,7 @@
             this.sfxDownButton.Size = new System.Drawing.Size(33, 44);
             this.sfxDownButton.TabIndex = 19;
             this.sfxDownButton.Text = "↓";
+            this.toolTip.SetToolTip(this.objectDownButton, "Shift the current selection down.");
             this.sfxDownButton.UseVisualStyleBackColor = true;
             this.sfxDownButton.Click += new System.EventHandler(this.sfxDownButton_Click);
             // 
@@ -3675,6 +3724,7 @@
             this.sfxUpButton.Size = new System.Drawing.Size(33, 44);
             this.sfxUpButton.TabIndex = 18;
             this.sfxUpButton.Text = "↑";
+            this.toolTip.SetToolTip(this.sfxUpButton, "Shift the current selection up.");
             this.sfxUpButton.UseVisualStyleBackColor = true;
             this.sfxUpButton.Click += new System.EventHandler(this.sfxUpButton_Click);
             // 
@@ -3697,6 +3747,7 @@
             this.sfxBrowseButton.Size = new System.Drawing.Size(150, 44);
             this.sfxBrowseButton.TabIndex = 16;
             this.sfxBrowseButton.Text = "Browse...";
+            this.toolTip.SetToolTip(this.sfxBrowseButton, "Select from a list of all sound effects available.");
             this.sfxBrowseButton.UseVisualStyleBackColor = true;
             this.sfxBrowseButton.Click += new System.EventHandler(this.sfxBrowseButton_Click);
             // 
@@ -3711,6 +3762,7 @@
             this.sfxFileBox.Name = "sfxFileBox";
             this.sfxFileBox.Size = new System.Drawing.Size(296, 31);
             this.sfxFileBox.TabIndex = 15;
+            this.toolTip.SetToolTip(this.sfxFileBox, "The path to this sound's audio file.");
             this.sfxFileBox.TextChanged += new System.EventHandler(this.sfxFileBox_TextChanged);
             // 
             // label24
@@ -3732,6 +3784,7 @@
             this.sfxNameBox.Name = "sfxNameBox";
             this.sfxNameBox.Size = new System.Drawing.Size(296, 31);
             this.sfxNameBox.TabIndex = 13;
+            this.toolTip.SetToolTip(this.sfxNameBox, "The name of the sound, used for SfxName in scripts.");
             this.sfxNameBox.TextChanged += new System.EventHandler(this.sfxNameBox_TextChanged);
             // 
             // label25
@@ -3753,6 +3806,7 @@
             this.sfxDeleteButton.Size = new System.Drawing.Size(150, 44);
             this.sfxDeleteButton.TabIndex = 11;
             this.sfxDeleteButton.Text = "Delete";
+            this.toolTip.SetToolTip(this.sfxDeleteButton, "Delete the current stage sound effect.");
             this.sfxDeleteButton.UseVisualStyleBackColor = true;
             this.sfxDeleteButton.Click += new System.EventHandler(this.sfxDeleteButton_Click);
             // 
@@ -3764,6 +3818,7 @@
             this.sfxAddButton.Size = new System.Drawing.Size(150, 44);
             this.sfxAddButton.TabIndex = 10;
             this.sfxAddButton.Text = "Add";
+            this.toolTip.SetToolTip(this.sfxAddButton, "Add a new stage sound effect.");
             this.sfxAddButton.UseVisualStyleBackColor = true;
             this.sfxAddButton.Click += new System.EventHandler(this.sfxAddButton_Click);
             // 
@@ -3813,6 +3868,7 @@
             this.objectDownButton.Size = new System.Drawing.Size(33, 44);
             this.objectDownButton.TabIndex = 11;
             this.objectDownButton.Text = "↓";
+            this.toolTip.SetToolTip(this.objectDownButton, "Shift the current selection down.");
             this.objectDownButton.UseVisualStyleBackColor = true;
             this.objectDownButton.Click += new System.EventHandler(this.objectDownButton_Click);
             // 
@@ -3825,6 +3881,7 @@
             this.objectUpButton.Size = new System.Drawing.Size(33, 44);
             this.objectUpButton.TabIndex = 10;
             this.objectUpButton.Text = "↑";
+            this.toolTip.SetToolTip(this.objectUpButton, "Shift the current selection up.");
             this.objectUpButton.UseVisualStyleBackColor = true;
             this.objectUpButton.Click += new System.EventHandler(this.objectUpButton_Click);
             // 
@@ -3847,6 +3904,7 @@
             this.browseScriptButton.Size = new System.Drawing.Size(150, 44);
             this.browseScriptButton.TabIndex = 8;
             this.browseScriptButton.Text = "Browse...";
+            this.toolTip.SetToolTip(this.browseScriptButton, "Select from a list of all objects available.");
             this.browseScriptButton.UseVisualStyleBackColor = true;
             this.browseScriptButton.Click += new System.EventHandler(this.browseScriptButton_Click);
             // 
@@ -3861,6 +3919,7 @@
             this.objectScriptBox.Name = "objectScriptBox";
             this.objectScriptBox.Size = new System.Drawing.Size(296, 31);
             this.objectScriptBox.TabIndex = 7;
+            this.toolTip.SetToolTip(this.objectScriptBox, "The path to the object's script file.");
             this.objectScriptBox.TextChanged += new System.EventHandler(this.objectScriptBox_TextChanged);
             // 
             // label23
@@ -3882,6 +3941,7 @@
             this.objectNameBox.Name = "objectNameBox";
             this.objectNameBox.Size = new System.Drawing.Size(296, 31);
             this.objectNameBox.TabIndex = 5;
+            this.toolTip.SetToolTip(this.objectNameBox, "The name of the object, used for TypeName in scripts.");
             this.objectNameBox.TextChanged += new System.EventHandler(this.objectNameBox_TextChanged);
             // 
             // label22
@@ -3903,6 +3963,7 @@
             this.objectDeleteButton.Size = new System.Drawing.Size(150, 44);
             this.objectDeleteButton.TabIndex = 3;
             this.objectDeleteButton.Text = "Delete";
+            this.toolTip.SetToolTip(this.objectDeleteButton, "Delete the current stage object.");
             this.objectDeleteButton.UseVisualStyleBackColor = true;
             this.objectDeleteButton.Click += new System.EventHandler(this.objectDeleteButton_Click);
             // 
@@ -3914,6 +3975,7 @@
             this.objectAddButton.Size = new System.Drawing.Size(150, 44);
             this.objectAddButton.TabIndex = 2;
             this.objectAddButton.Text = "Add";
+            this.toolTip.SetToolTip(this.objectAddButton, "Add a new stage object.");
             this.objectAddButton.UseVisualStyleBackColor = true;
             this.objectAddButton.Click += new System.EventHandler(this.objectAddButton_Click);
             // 
@@ -3985,6 +4047,7 @@
             this.midpointTrackBar.Size = new System.Drawing.Size(90, 240);
             this.midpointTrackBar.TabIndex = 11;
             this.midpointTrackBar.TickFrequency = 0;
+            this.toolTip.SetToolTip(this.midpointTrackBar, "Which layers this stage's midpoint is between. Controls which layers draw low tiles and which ones draw high tiles.");
             this.midpointTrackBar.Value = 4;
             this.midpointTrackBar.ValueChanged += new System.EventHandler(this.midpointTrackBar_ValueChanged);
             // 
@@ -3996,6 +4059,7 @@
             this.foregroundDeformation.Size = new System.Drawing.Size(277, 29);
             this.foregroundDeformation.TabIndex = 10;
             this.foregroundDeformation.Text = "Foreground Deformation";
+            this.toolTip.SetToolTip(this.foregroundDeformation, "Whether or not the Foreground layer can be deformed on a per-line basis. Requires scripts to manage deformation.");
             this.foregroundDeformation.UseVisualStyleBackColor = true;
             this.foregroundDeformation.CheckedChanged += new System.EventHandler(this.foregroundDeformation_CheckedChanged);
             // 
@@ -4946,5 +5010,6 @@
 		private System.Windows.Forms.GroupBox previewGroupBox;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.ToolStripMenuItem useHexadecimalToolStripMenuItem;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }

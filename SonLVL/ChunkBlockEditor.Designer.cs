@@ -113,7 +113,7 @@ namespace SonicRetro.SonLVL
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(10, 42);
+            label2.Location = new System.Drawing.Point(19, 42);
             label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(70, 25);
@@ -123,7 +123,7 @@ namespace SonicRetro.SonLVL
             // xFlip
             // 
             this.xFlip.AutoSize = true;
-            this.xFlip.Location = new System.Drawing.Point(220, 42);
+            this.xFlip.Location = new System.Drawing.Point(253, 42);
             this.xFlip.Margin = new System.Windows.Forms.Padding(6);
             this.xFlip.Name = "xFlip";
             this.xFlip.Size = new System.Drawing.Size(99, 29);
@@ -135,7 +135,7 @@ namespace SonicRetro.SonLVL
             // yFlip
             // 
             this.yFlip.AutoSize = true;
-            this.yFlip.Location = new System.Drawing.Point(331, 42);
+            this.yFlip.Location = new System.Drawing.Point(364, 42);
             this.yFlip.Margin = new System.Windows.Forms.Padding(6);
             this.yFlip.Name = "yFlip";
             this.yFlip.Size = new System.Drawing.Size(100, 29);
@@ -147,7 +147,7 @@ namespace SonicRetro.SonLVL
             // highPlane
             // 
             this.highPlane.AutoSize = true;
-            this.highPlane.Location = new System.Drawing.Point(220, 83);
+            this.highPlane.Location = new System.Drawing.Point(253, 83);
             this.highPlane.Margin = new System.Windows.Forms.Padding(6);
             this.highPlane.Name = "highPlane";
             this.highPlane.Size = new System.Drawing.Size(149, 29);
@@ -178,7 +178,7 @@ namespace SonicRetro.SonLVL
             // block
             // 
             this.block.Hexadecimal = true;
-            this.block.Location = new System.Drawing.Point(92, 40);
+            this.block.Location = new System.Drawing.Point(101, 40);
             this.block.Margin = new System.Windows.Forms.Padding(6);
             this.block.Maximum = new decimal(new int[] {
             2047,
