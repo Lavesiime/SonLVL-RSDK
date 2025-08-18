@@ -3623,7 +3623,19 @@ namespace SonicRetro.SonLVL.GUI
 					else if (!selecting)
 					{
 						pasteOnceToolStripMenuItem.Enabled = pasteRepeatingToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(LayoutSection).AssemblyQualifiedName);
-						pasteSectionOnceToolStripMenuItem.Enabled = pasteSectionRepeatingToolStripMenuItem.Enabled = layoutSectionListBox.SelectedIndex != -1;
+
+						if (tabControl2.SelectedIndex == 0)
+						{
+							// If we have the chunks tab open, let's fill with chunks
+							fillToolStripMenuItem.Text = "&Fill With Selected Chunk";
+							fillToolStripMenuItem.Enabled = true;
+						}
+						else
+						{
+							// Alternatively, if we have the Layout Section tab open, fill with that section, instead
+							fillToolStripMenuItem.Text = "&Fill With Selected Section";
+							fillToolStripMenuItem.Enabled = (layoutSectionListBox.SelectedIndex != -1);
+						}
 
 						/*
 						if (FGSelection.Height == 1)
@@ -4080,7 +4092,19 @@ namespace SonicRetro.SonLVL.GUI
 						else if (!selecting)
 						{
 							pasteOnceToolStripMenuItem.Enabled = pasteRepeatingToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(LayoutSection).AssemblyQualifiedName);
-							pasteSectionOnceToolStripMenuItem.Enabled = pasteSectionRepeatingToolStripMenuItem.Enabled = layoutSectionListBox.SelectedIndex != -1;
+							
+							if (tabControl3.SelectedIndex == 0)
+							{
+								// If we have the chunks tab open, let's fill with chunks
+								fillToolStripMenuItem.Text = "&Fill With Selected Chunk";
+								fillToolStripMenuItem.Enabled = true;
+							}
+							else
+							{
+								// Alternatively, if we have the Layout Section tab open, fill with that section, instead
+								fillToolStripMenuItem.Text = "&Fill With Selected Section";
+								fillToolStripMenuItem.Enabled = (layoutSectionListBox.SelectedIndex != -1);
+							}
 
 							/*
 							if (BGSelection.Height == 1)
@@ -6184,28 +6208,35 @@ namespace SonicRetro.SonLVL.GUI
 				SelectedObjectChanged();
 			}
 			DrawLevel();
-			SaveState($"Delete {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")}");
+			SaveState($"Clear {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Area");
 		}
 
 		private void fillToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ushort[][] layout;
-			Rectangle selection;
-			if (CurrentTab == Tab.Background)
+			if ((CurrentTab == Tab.Foreground && tabControl2.SelectedIndex == 0) || (CurrentTab == Tab.Background && tabControl3.SelectedIndex == 0))
 			{
-				layout = LevelData.Background.layers[bglayer].layout;
-				selection = BGSelection;
+				// If we have the Chunks tab selected on the right hand, fill it with chunks
+				ushort[][] layout;
+				Rectangle selection;
+				if (CurrentTab == Tab.Background)
+				{
+					layout = LevelData.Background.layers[bglayer].layout;
+					selection = BGSelection;
+				}
+				else
+				{
+					layout = LevelData.Scene.layout;
+					selection = FGSelection;
+				}
+				for (int y = selection.Top; y < selection.Bottom; y++)
+					for (int x = selection.Left; x < selection.Right; x++)
+						layout[y][x] = SelectedChunk;
 			}
-			else
-			{
-				layout = LevelData.Scene.layout;
-				selection = FGSelection;
-			}
-			for (int y = selection.Top; y < selection.Bottom; y++)
-				for (int x = selection.Left; x < selection.Right; x++)
-					layout[y][x] = SelectedChunk;
+			else // Alternatively, if we have the layout section tab open, fill it with said layout section instead
+				PasteLayoutSectionRepeating(savedLayoutSections[layoutSectionListBox.SelectedIndex]);
+
 			DrawLevel();
-			SaveState($"Fill {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")}");
+			SaveState($"Fill {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Area");
 		}
 
 		private void objectTypeList_ItemDrag(object sender, ItemDragEventArgs e)
@@ -7730,18 +7761,6 @@ namespace SonicRetro.SonLVL.GUI
 				using (FileStream fs = File.Create(LevelData.StageInfo.folder + ".sls"))
 					new BinaryFormatter().Serialize(fs, savedLayoutSections);
 			}
-		}
-
-		private void pasteSectionOnceToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PasteLayoutSectionOnce(savedLayoutSections[layoutSectionListBox.SelectedIndex]);
-			SaveState("Paste Section Once");
-		}
-
-		private void pasteSectionRepeatingToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PasteLayoutSectionRepeating(savedLayoutSections[layoutSectionListBox.SelectedIndex]);
-			SaveState("Paste Section Repeating");
 		}
 
 		private void deepCopyToolStripMenuItem_Click(object sender, EventArgs e)
