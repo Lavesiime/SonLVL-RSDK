@@ -1520,7 +1520,6 @@ namespace SonicRetro.SonLVL.GUI
 				drawTileToolStripButton.Enabled = importTilesToolStripButton.Enabled;
 				TileSelector.Images = LevelData.NewTileBmps;
 				TileSelector.SelectedIndex = 0;
-				TileSelector.ChangeSize();
 				InitObjectTypes();
 				UpdateScrollBars();
 				string[] levnam = LevelData.Scene.title.Split('-');
@@ -5297,8 +5296,9 @@ namespace SonicRetro.SonLVL.GUI
 			TileSelector.Invalidate();
 			DrawTilePicture();
 			chunkBlockEditor.SelectedObjects = chunkBlockEditor.SelectedObjects;
-			LevelData.RedrawBlock(SelectedTile, true);
+			LevelData.RedrawBlock(SelectedTile, false);
 			LevelData.RedrawCol(SelectedTile, true);
+			DrawChunkPicture();
 			DrawColPicture();
 		}
 
@@ -7622,7 +7622,7 @@ namespace SonicRetro.SonLVL.GUI
 					Dictionary<ushort, ushort> bytedict = new Dictionary<ushort, ushort>(dlg.TileMap.Count);
 					foreach (KeyValuePair<int, int> item in dlg.TileMap)
 					{
-						LevelData.NewChunks.chunkList[item.Value] = oldchunks[item.Key];
+						LevelData.NewChunks.chunkList[item.Value] = oldchunks[item.Key].Clone();
 						LevelData.ChunkSprites[item.Value] = oldchunkbmpbits[item.Key];
 						LevelData.ChunkBmps[item.Value] = oldchunkbmps[item.Key];
 						LevelData.ChunkColBmpBits[item.Value] = oldchunkcolbmpbits[item.Key];
@@ -7635,9 +7635,10 @@ namespace SonicRetro.SonLVL.GUI
 						if (bytedict.ContainsKey(layout[y][x]))
 							layout[y][x] = bytedict[layout[y][x]];
 					});
-					ChunkSelector.ChangeSize();
-					ChunkSelector_SelectedIndexChanged(this, EventArgs.Empty);
 					SaveState("Remap Chunks");
+
+					ChunkSelector.Invalidate();
+					ChunkSelector_SelectedIndexChanged(this, EventArgs.Empty);
 				}
 			}
 		}
@@ -7659,11 +7660,12 @@ namespace SonicRetro.SonLVL.GUI
 					Dictionary<ushort, ushort> ushortdict = new Dictionary<ushort, ushort>(dlg.TileMap.Count);
 					foreach (KeyValuePair<int, int> item in dlg.TileMap)
 					{
-						LevelData.NewTiles[item.Value] = oldtiles[item.Key];
+						LevelData.NewTiles[item.Value] = new BitmapBits(oldtiles[item.Key]);
 						LevelData.NewTileBmps[item.Value] = oldimages[item.Key];
-						LevelData.Collision.collisionMasks[0][item.Value] = oldmasks1[item.Key];
-						LevelData.Collision.collisionMasks[1][item.Value] = oldmasks2[item.Key];
-						LevelData.NewColBmpBits[item.Value] = oldcolbmpbits[item.Key];
+						LevelData.Collision.collisionMasks[0][item.Value] = oldmasks1[item.Key].Clone();
+						LevelData.Collision.collisionMasks[1][item.Value] = oldmasks2[item.Key].Clone();
+						LevelData.NewColBmpBits[item.Value][0] = new BitmapBits(oldcolbmpbits[item.Key][0]);
+						LevelData.NewColBmpBits[item.Value][1] = new BitmapBits(oldcolbmpbits[item.Key][1]);
 						LevelData.NewColBmps[item.Value] = oldcolbmps[item.Key];
 						ushortdict.Add((ushort)item.Key, (ushort)item.Value);
 					}
@@ -7677,12 +7679,16 @@ namespace SonicRetro.SonLVL.GUI
 									redraw = true;
 									LevelData.NewChunks.chunkList[b].tiles[y][x].tileIndex = ushortdict[LevelData.NewChunks.chunkList[b].tiles[y][x].tileIndex];
 								}
+								else if (ushortdict.ContainsValue(LevelData.NewChunks.chunkList[b].tiles[y][x].tileIndex))
+									redraw = true;
 						if (redraw)
 							LevelData.RedrawChunk(b);
 					}
-					TileSelector.ChangeSize();
-					TileSelector_SelectedIndexChanged(this, EventArgs.Empty);
 					SaveState("Remap Tiles");
+
+					TileSelector.Invalidate();
+					DrawChunkPicture();
+					TileSelector_SelectedIndexChanged(this, EventArgs.Empty);
 				}
 			}
 		}

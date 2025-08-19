@@ -21,9 +21,14 @@ namespace SonicRetro.SonLVL
 			TileMap = new Dictionary<int, int>();
 		}
 
+		private string format;
 		public bool Hexadecimal
 		{
-			set => SourceTile.Hexadecimal = DestinationTile.Hexadecimal = value;
+			set
+			{
+				SourceTile.Hexadecimal = DestinationTile.Hexadecimal = value;
+				format = value ? "X3" : "D";
+			}
 		}
 
 		public Dictionary<int, int> TileMap { get; }
@@ -72,10 +77,10 @@ namespace SonicRetro.SonLVL
 			{
 				if (MessageBox.Show(this, "Source item is already in list! Do you want to replace it?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
 					return;
-				listBox1.Items[TileMap.Keys.ToList().IndexOf(src)] = src.ToString(SourceTile.Hexadecimal ? "X" : "D") + " -> " + dst.ToString(SourceTile.Hexadecimal ? "X" : "D");
+				listBox1.Items[TileMap.Keys.ToList().IndexOf(src)] = src.ToString(format) + " -> " + dst.ToString(format);
 			}
 			else
-				listBox1.Items.Add(src.ToString("X") + " -> " + dst.ToString("X"));
+				listBox1.Items.Add(src.ToString(format) + " -> " + dst.ToString(format));
 			TileMap[src] = dst;
 			UpdateDestinationTiles();
 		}
