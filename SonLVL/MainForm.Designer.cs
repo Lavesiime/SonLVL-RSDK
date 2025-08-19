@@ -174,7 +174,6 @@
             this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chunksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.solidityMapsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.foregroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transparentBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1949,7 +1948,6 @@
             this.paletteToolStripMenuItem,
             this.tilesToolStripMenuItem,
             this.chunksToolStripMenuItem,
-            this.solidityMapsToolStripMenuItem,
             this.foregroundToolStripMenuItem,
             this.backgroundToolStripMenuItem,
             toolStripSeparator1,
@@ -1981,13 +1979,6 @@
             this.chunksToolStripMenuItem.Size = new System.Drawing.Size(444, 44);
             this.chunksToolStripMenuItem.Text = "&Chunks";
             this.chunksToolStripMenuItem.Click += new System.EventHandler(this.chunksToolStripMenuItem_Click);
-            // 
-            // solidityMapsToolStripMenuItem
-            // 
-            this.solidityMapsToolStripMenuItem.Name = "solidityMapsToolStripMenuItem";
-            this.solidityMapsToolStripMenuItem.Size = new System.Drawing.Size(444, 44);
-            this.solidityMapsToolStripMenuItem.Text = "&Solidity Maps";
-            this.solidityMapsToolStripMenuItem.Click += new System.EventHandler(this.solidityMapsToolStripMenuItem_Click);
             // 
             // foregroundToolStripMenuItem
             // 
@@ -4770,7 +4761,6 @@
 		private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem findNextToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem findPreviousToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem solidityMapsToolStripMenuItem;
 		private System.Windows.Forms.Button flipChunkHButton;
 		private System.Windows.Forms.Button flipChunkVButton;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;

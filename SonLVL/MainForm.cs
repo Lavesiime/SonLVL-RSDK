@@ -219,7 +219,9 @@ namespace SonicRetro.SonLVL.GUI
 			CurrentArtTab = Settings.CurrentArtTab;
 			useHexadecimalToolStripMenuItem.Checked = Settings.UseHexadecimalIndexesForArt;
 
-			// Without a level loaded, we can't know the real chunk/tile max, so let's hardcode some default placeholder text
+			// The text on the form by default is hex, so let's change it to decimal if needed
+			// However, without a level loaded, we can't know the real chunk/tile max, so.. let's hardcode some default text
+			// (This text is just placeholder til a level gets loaded anyways, the real tile limits are in the RSDKv3_4 library, so this stuff doesn't really matter *that* much--)
 			if (!useHexadecimalToolStripMenuItem.Checked)
 			{
 				ChunkCount.Text = $"/ 511";
@@ -1824,9 +1826,7 @@ namespace SonicRetro.SonLVL.GUI
 							LevelData.NewColBmpBits[i][1].ToBitmap1bpp(Color.Magenta, Color.White).Save(pathBase + "_col2.png");
 						}
 						else
-							LevelData.NewTileBmps[i]
-								.Save(Path.Combine(a.SelectedPath,
-								(useHexadecimalToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
+							LevelData.NewTileBmps[i].Save(Path.Combine(a.SelectedPath, (useHexadecimalToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
 					}
 		}
 
@@ -1939,19 +1939,6 @@ namespace SonicRetro.SonLVL.GUI
 						}
 					}
 				}
-		}
-
-		private void solidityMapsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			using (FolderBrowserDialog a = new FolderBrowserDialog() { SelectedPath = Environment.CurrentDirectory })
-				if (a.ShowDialog() == DialogResult.OK)
-					for (int i = 0; i < LevelData.NewColBmpBits.Length; i++)
-					{
-						LevelData.NewColBmpBits[i][0].ToBitmap1bpp(Color.Transparent, Color.White).Save(Path.Combine(a.SelectedPath,
-							"0_" + (useHexadecimalToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
-						LevelData.NewColBmpBits[i][1].ToBitmap1bpp(Color.Transparent, Color.White).Save(Path.Combine(a.SelectedPath,
-							"1_" + (useHexadecimalToolStripMenuItem.Checked ? i.ToString("X3") : i.ToString()) + ".png"));
-					}
 		}
 
 		private void foregroundToolStripMenuItem_Click(object sender, EventArgs e)
