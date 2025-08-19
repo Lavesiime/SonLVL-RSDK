@@ -374,6 +374,14 @@ namespace SonicRetro.SonLVL.GUI
 				LevelData.LoadGame(filename);
 			}
 #if !DEBUG
+			catch (FormatException)
+			{
+				fileToolStripMenuItem.HideDropDown();
+
+				// If it's not a SonLVL-RSDK Project File in the first place, then tell the user that and point them in the proper direction
+				MessageBox.Show(this, "Not a valid SonLVL-RSDK Project File!\n\nFor information on how to properly set up SonLVL-RSDK, refer to Help>View Readme.", "SonLVL-RSDK", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 			catch (Exception ex)
 			{
 				fileToolStripMenuItem.HideDropDown();

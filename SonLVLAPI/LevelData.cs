@@ -90,6 +90,13 @@ namespace SonicRetro.SonLVL.API
 		public static void LoadGame(string filename)
 		{
 			Log($"Opening game \"{filename}\"...");
+			Game = GameInfo.Load(filename);
+
+			// For files where RSDKVer is missing entirely, it's likely not a valid Project File in the first place
+			// (the user might've just opened their settings.ini on accident instead or something)
+			if (Game.RSDKVer == EngineVersion.Invalid)
+				throw new FormatException("Game Version not found, is this a valid game ini?");
+
 			GamePath = Path.GetFullPath(filename);
 			Game = IniSerializer.Deserialize<GameInfo>(filename);
 			Directory.SetCurrentDirectory(Path.GetDirectoryName(GamePath));
