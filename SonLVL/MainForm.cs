@@ -5444,7 +5444,7 @@ namespace SonicRetro.SonLVL.GUI
 			}
 		}
 
-		private bool ImportImage(Bitmap bmp, Bitmap colbmp1, Bitmap colbmp2, Bitmap pribmp, ushort[,] layout)
+		private bool ImportImage(Bitmap bmp, Bitmap colbmp1, Bitmap colbmp2, Bitmap pribmp, ushort[,] layout, bool showMessageBox = true)
 		{
 			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 			sw.Start();
@@ -5452,11 +5452,14 @@ namespace SonicRetro.SonLVL.GUI
 			int h = bmp.Height;
 			Enabled = false;
 			UseWaitCursor = true;
-			importProgressControl1_SizeChanged(this, EventArgs.Empty);
 			importProgressControl1.CurrentProgress = 0;
 			importProgressControl1.MaximumProgress = (w / 16) * (h / 16);
-			importProgressControl1.BringToFront();
-			importProgressControl1.Show();
+			if (showMessageBox)
+			{
+				importProgressControl1_SizeChanged(this, EventArgs.Empty);
+				importProgressControl1.BringToFront();
+				importProgressControl1.Show();
+			}
 			Application.DoEvents();
 			BitmapInfo bmpi = new BitmapInfo(bmp);
 			Application.DoEvents();
@@ -5568,29 +5571,33 @@ namespace SonicRetro.SonLVL.GUI
 			else if (ir.Art.Count > 0)
 				chunkBlockEditor.SelectedObjects = chunkBlockEditor.SelectedObjects;
 			sw.Stop();
-			System.Text.StringBuilder msg = new System.Text.StringBuilder();
-			msg.AppendFormat("New tiles: {0}\n", ir.Art.Count);
-			msg.AppendFormat("New chunks: {0}\n", newChunks.Count);
-			msg.Append("\nCompleted in ");
-			if (sw.Elapsed.Hours > 0)
+
+			if (showMessageBox)
 			{
-				msg.AppendFormat("{0}:{1:00}:{2:00}", sw.Elapsed.Hours, sw.Elapsed.Minutes, sw.Elapsed.Seconds);
-				if (sw.Elapsed.Milliseconds > 0)
-					msg.AppendFormat(".{000}", sw.Elapsed.Milliseconds);
+				System.Text.StringBuilder msg = new System.Text.StringBuilder();
+				msg.AppendFormat("New tiles: {0}\n", ir.Art.Count);
+				msg.AppendFormat("New chunks: {0}\n", newChunks.Count);
+				msg.Append("\nCompleted in ");
+				if (sw.Elapsed.Hours > 0)
+				{
+					msg.AppendFormat("{0}:{1:00}:{2:00}", sw.Elapsed.Hours, sw.Elapsed.Minutes, sw.Elapsed.Seconds);
+					if (sw.Elapsed.Milliseconds > 0)
+						msg.AppendFormat(".{000}", sw.Elapsed.Milliseconds);
+				}
+				else if (sw.Elapsed.Minutes > 0)
+				{
+					msg.AppendFormat("{0}:{1:00}", sw.Elapsed.Minutes, sw.Elapsed.Seconds);
+					if (sw.Elapsed.Milliseconds > 0)
+						msg.AppendFormat(".{000}", sw.Elapsed.Milliseconds);
+				}
+				else
+				{
+					msg.AppendFormat("{0}", sw.Elapsed.Seconds);
+					if (sw.Elapsed.Milliseconds > 0)
+						msg.AppendFormat(".{000}", sw.Elapsed.Milliseconds);
+				}
+				MessageBox.Show(this, msg.ToString(), "Import Results");
 			}
-			else if (sw.Elapsed.Minutes > 0)
-			{
-				msg.AppendFormat("{0}:{1:00}", sw.Elapsed.Minutes, sw.Elapsed.Seconds);
-				if (sw.Elapsed.Milliseconds > 0)
-					msg.AppendFormat(".{000}", sw.Elapsed.Milliseconds);
-			}
-			else
-			{
-				msg.AppendFormat("{0}", sw.Elapsed.Seconds);
-				if (sw.Elapsed.Milliseconds > 0)
-					msg.AppendFormat(".{000}", sw.Elapsed.Milliseconds);
-			}
-			MessageBox.Show(this, msg.ToString(), "Import Results");
 			importProgressControl1.Hide();
 			Enabled = true;
 			UseWaitCursor = false;
@@ -5796,7 +5803,7 @@ namespace SonicRetro.SonLVL.GUI
 				}
 				if (dlg.ShowDialog(this) == DialogResult.OK)
 				{
-					ImportImage(dlg.tile.ToBitmap(LevelData.BmpPal), null, null, null, null);
+					ImportImage(dlg.tile.ToBitmap(LevelData.BmpPal), null, null, null, null, CurrentArtTab == ArtTab.Chunks);
 					SaveState($"Draw {(CurrentArtTab == ArtTab.Chunks ? "Chunk" : "Tile")}");
 				}
 			}

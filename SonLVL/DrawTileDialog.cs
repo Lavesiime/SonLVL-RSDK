@@ -7,9 +7,17 @@ namespace SonicRetro.SonLVL.GUI
 {
 	public partial class DrawTileDialog : Form
 	{
+		private Bitmap palette;
 		public DrawTileDialog()
 		{
 			InitializeComponent();
+
+			BitmapBits bitmap = new BitmapBits(256, 256);
+			for (int y = 0; y < 16; y++)
+				for (int x = 0; x < 16; x++)
+					bitmap.FillRectangle((byte)((y * 16) + x), x * 16, y * 16, 16, 16);
+			palette = bitmap.ToBitmap(LevelData.NewPalette);
+
 		}
 
 		private void okButton_Click(object sender, EventArgs e)
@@ -25,13 +33,8 @@ namespace SonicRetro.SonLVL.GUI
 		private Point selectedColor;
 		private void PalettePanel_Paint(object sender, PaintEventArgs e)
 		{
-			e.Graphics.Clear(Color.Black);
-			for (int y = 0; y < 16; y++)
-				for (int x = 0; x < 16; x++)
-				{
-					e.Graphics.FillRectangle(new SolidBrush(LevelData.NewPalette[y * 16 + x]), x * 16, y * 16, 16, 16);
-					e.Graphics.DrawRectangle(Pens.White, x * 16, y * 16, 15, 15);
-				}
+			e.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+			e.Graphics.DrawImage(palette, 0, 0, 256, 256);
 			e.Graphics.DrawRectangle(new Pen(Color.Yellow, 2), selectedColor.X * 16, selectedColor.Y * 16, 16, 16);
 		}
 
@@ -89,10 +92,12 @@ namespace SonicRetro.SonLVL.GUI
 		}
 
 		private Graphics tileGfx;
+		private BufferedGraphics tileGfxBuffer;
 		private void DrawTile()
 		{
-			tileGfx.Clear(LevelData.NewPalette[0]);
-			tileGfx.DrawImage(tile.Scale((int)numericUpDown1.Value).ToBitmap(LevelData.BmpPal), 0, 0, tile.Width * (int)numericUpDown1.Value, tile.Height * (int)numericUpDown1.Value);
+			tileGfxBuffer.Graphics.Clear(LevelData.NewPalette[0]);
+			tileGfxBuffer.Graphics.DrawImage(tile.Scale((int)numericUpDown1.Value).ToBitmap(LevelData.BmpPal), 0, 0, tile.Width * (int)numericUpDown1.Value, tile.Height * (int)numericUpDown1.Value);
+			tileGfxBuffer.Render(tileGfx);
 		}
 
 		private void numericUpDown1_ValueChanged(object sender, EventArgs e)
@@ -105,6 +110,10 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			tileGfx = TilePicture.CreateGraphics();
 			tileGfx.SetOptions();
+
+			tileGfxBuffer = BufferedGraphicsManager.Current.Allocate(tileGfx, new Rectangle(0, 0, TilePicture.Width, TilePicture.Height));
+			tileGfxBuffer.Graphics.SetOptions();
+
 			using (System.IO.MemoryStream ms = new System.IO.MemoryStream(Properties.Resources.pencilcur))
 				pencilcur = new Cursor(ms);
 			using (System.IO.MemoryStream ms = new System.IO.MemoryStream(Properties.Resources.fillcur))
@@ -117,6 +126,11 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			tileGfx = TilePicture.CreateGraphics();
 			tileGfx.SetOptions();
+
+			tileGfxBuffer = BufferedGraphicsManager.Current.Allocate(tileGfx, new Rectangle(0, 0, TilePicture.Width, TilePicture.Height));
+			tileGfxBuffer.Graphics.SetOptions();
+
+			DrawTile();
 		}
 
 		private void pencilToolStripButton_Click(object sender, EventArgs e)
