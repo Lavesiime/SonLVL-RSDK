@@ -795,14 +795,7 @@ namespace SonicRetro.SonLVL.GUI
 			backgroundPanel.VScrollEnabled = true;
 			colorEditingPanel.Enabled = true;
 			paletteToolStrip.Enabled = true;
-			string[] levnam = LevelData.Scene.title.Split('-');
-			levelNameBox.Text = levnam[0];
-			if (levnam.Length > 1)
-				levelNameBox2.Text = levnam[1];
-			else
-				levelNameBox2.Text = string.Empty;
-			levelNameBox.MaxLength = 255 - LevelData.Scene.title.Length;
-			levelNameBox2.MaxLength = 255 - LevelData.Scene.title.Length;
+			levelNameBox.Text = LevelData.Scene.title;
 			midpointTrackBar.Value = 4 - (int)LevelData.Scene.layerMidpoint;
 			layer0Box.SelectedIndex = (int)LevelData.Scene.activeLayer0;
 			layer1Box.SelectedIndex = (int)LevelData.Scene.activeLayer1;
@@ -1052,14 +1045,7 @@ namespace SonicRetro.SonLVL.GUI
 			drawTileToolStripButton.Enabled = importTilesToolStripButton.Enabled = LevelData.HasFreeTiles();
 			InitObjectTypes();
 			UpdateScrollBars();
-			string[] levnam = LevelData.Scene.title.Split('-');
-			levelNameBox.Text = levnam[0];
-			if (levnam.Length > 1)
-				levelNameBox2.Text = levnam[1];
-			else
-				levelNameBox2.Text = string.Empty;
-			levelNameBox.MaxLength = 255 - LevelData.Scene.title.Length;
-			levelNameBox2.MaxLength = 255 - LevelData.Scene.title.Length;
+			levelNameBox.Text = LevelData.Scene.title;
 			midpointTrackBar.Value = 4 - (int)LevelData.Scene.layerMidpoint;
 			layer0Box.SelectedIndex = (int)LevelData.Scene.activeLayer0;
 			layer1Box.SelectedIndex = (int)LevelData.Scene.activeLayer1;
@@ -1530,12 +1516,7 @@ namespace SonicRetro.SonLVL.GUI
 				TileSelector.SelectedIndex = 0;
 				InitObjectTypes();
 				UpdateScrollBars();
-				string[] levnam = LevelData.Scene.title.Split('-');
-				levelNameBox.Text = levnam[0];
-				if (levnam.Length > 1)
-					levelNameBox2.Text = levnam[1];
-				levelNameBox.MaxLength = 255 - LevelData.Scene.title.Length;
-				levelNameBox2.MaxLength = 255 - LevelData.Scene.title.Length;
+				levelNameBox.Text = LevelData.Scene.title;
 				midpointTrackBar.Value = 4 - (int)LevelData.Scene.layerMidpoint;
 				layer0Box.SelectedIndex = (int)LevelData.Scene.activeLayer0;
 				layer1Box.SelectedIndex = (int)LevelData.Scene.activeLayer1;
@@ -9037,12 +9018,21 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			if (!loaded) return;
 			loaded = false;
+
+			// Here, we wanna validate the text and make sure the user isn't typing in anything that RSDK doesn't support (like special characters)
+			// Some notes..
+			// On an engine level, RSDK supports numbers 0-9 as well, beyond just letters A-Z
+			// However.. on a script level, none of the games we have support it
+			// So, let's not support it here either (though it's not really hard to add, just chuck a (text[i] < '0' || text[i] > '9') check into there)
+			// Besides that, the only other thing of note is the dash, it's used as a line break in title cards (so we should only have one)
+
 			int selst = levelNameBox.SelectionStart;
 			int selend = levelNameBox.SelectionStart + levelNameBox.SelectionLength;
 			System.Text.StringBuilder text = new System.Text.StringBuilder(levelNameBox.Text);
 			bool modified = false;
+			int dashLoc = levelNameBox.Text.IndexOf('-');
 			for (int i = 0; i < text.Length; i++)
-				if (text[i] != ' ' && (text[i] < 'A' || text[i] > 'Z'))
+				if (text[i] != ' ' && !(text[i] == '-' && i == dashLoc) && (text[i] < 'A' || text[i] > 'Z'))
 				{
 					if (selst > i)
 						--selst;
@@ -9056,61 +9046,6 @@ namespace SonicRetro.SonLVL.GUI
 				levelNameBox.Text = text.ToString();
 				levelNameBox.SelectionStart = selst;
 				levelNameBox.SelectionLength = selend - selst;
-			}
-			levelNameBox2.MaxLength = 254 - text.Length;
-			if (levelNameBox2.TextLength > 0)
-			{
-				text.Append('-');
-				text.Append(levelNameBox2.Text);
-			}
-			LevelData.Scene.title = text.ToString();
-			loaded = true;
-			SaveState("Change Level Name");
-		}
-
-		private void levelNameBox2_TextChanged(object sender, EventArgs e)
-		{
-			if (!loaded) return;
-			loaded = false;
-			if (levelNameBox2.TextLength == 0)
-			{
-				LevelData.Scene.title = levelNameBox.Text;
-				levelNameBox.MaxLength = 255;
-				loaded = true;
-				return;
-			}
-			int selst = levelNameBox2.SelectionStart;
-			int selend = levelNameBox2.SelectionStart + levelNameBox2.SelectionLength;
-			System.Text.StringBuilder text = new System.Text.StringBuilder(levelNameBox2.Text);
-			bool modified = false;
-			for (int i = 0; i < text.Length; i++)
-				if (text[i] != ' ' && (text[i] < 'A' || text[i] > 'Z'))
-				{
-					if (selst > i)
-						--selst;
-					if (selend > i)
-						--selend;
-					text.Remove(i--, 1);
-					modified = true;
-				}
-			if (modified)
-			{
-				levelNameBox2.Text = text.ToString();
-				levelNameBox2.SelectionStart = selst;
-				levelNameBox2.SelectionLength = selend - selst;
-				if (levelNameBox2.TextLength == 0)
-				{
-					LevelData.Scene.title = levelNameBox.Text;
-					levelNameBox.MaxLength = 255;
-					loaded = true;
-					return;
-				}
-			}
-			levelNameBox.MaxLength = 254 - text.Length;
-			if (levelNameBox2.TextLength > 0)
-			{
-				text.Insert(0, '-');
-				text.Insert(0, levelNameBox.Text);
 			}
 			LevelData.Scene.title = text.ToString();
 			loaded = true;
