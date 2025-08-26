@@ -8398,7 +8398,7 @@ namespace SonicRetro.SonLVL.GUI
 						MessageBox.Show(this, "Cannot export chunk with nothing visible.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 						return;
 					}
-					using (SaveFileDialog a = new SaveFileDialog() { FileName = (useHexadecimalToolStripMenuItem.Checked ? SelectedChunk.ToString("X2") : SelectedChunk.ToString()) + ".png", Filter = "PNG Images|*.png" })
+					using (SaveFileDialog a = new SaveFileDialog() { FileName = (useHexadecimalToolStripMenuItem.Checked ? SelectedChunk.ToString("X3") : SelectedChunk.ToString()) + ".png", Filter = "PNG Images|*.png" })
 						if (a.ShowDialog() == DialogResult.OK)
 						{
 							string pathBase = Path.ChangeExtension(a.FileName, null);
@@ -8456,7 +8456,7 @@ namespace SonicRetro.SonLVL.GUI
 						}
 					break;
 				case ArtTab.Tiles:
-					using (SaveFileDialog a = new SaveFileDialog() { FileName = (useHexadecimalToolStripMenuItem.Checked ? SelectedTile.ToString("X2") : SelectedTile.ToString()) + ".png", Filter = "PNG Images|*.png" })
+					using (SaveFileDialog a = new SaveFileDialog() { FileName = (useHexadecimalToolStripMenuItem.Checked ? SelectedTile.ToString("X3") : SelectedTile.ToString()) + ".png", Filter = "PNG Images|*.png" })
 						if (a.ShowDialog() == DialogResult.OK)
 						{
 							if (exportArtcollisionpriorityToolStripMenuItem.Checked)

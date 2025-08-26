@@ -786,7 +786,7 @@
             this.flipTileHButton.Size = new System.Drawing.Size(247, 45);
             this.flipTileHButton.TabIndex = 9;
             this.flipTileHButton.Text = "Flip Tile Horizontally";
-            this.toolTip.SetToolTip(this.flipTileHButton, "Flip the tile\'s art and collision vertically.");
+            this.toolTip.SetToolTip(this.flipTileHButton, "Flip the tile\'s art and collision horizontally.");
             this.flipTileHButton.UseVisualStyleBackColor = true;
             this.flipTileHButton.Click += new System.EventHandler(this.flipTileHButton_Click);
             // 
@@ -800,6 +800,7 @@
             this.flipTileVButton.Size = new System.Drawing.Size(247, 45);
             this.flipTileVButton.TabIndex = 10;
             this.flipTileVButton.Text = "Flip Tile Vertically";
+            this.toolTip.SetToolTip(this.flipTileVButton, "Flip the tile\'s art and collision vertically.");
             this.flipTileVButton.UseVisualStyleBackColor = true;
             this.flipTileVButton.Click += new System.EventHandler(this.flipTileVButton_Click);
             // 
@@ -902,7 +903,8 @@
             this.chunkHighlightHighTilesCheckBox.Name = "chunkHighlightHighTilesCheckBox";
             this.chunkHighlightHighTilesCheckBox.Size = new System.Drawing.Size(290, 29);
             this.chunkHighlightHighTilesCheckBox.TabIndex = 8;
-            this.chunkHighlightHighTilesCheckBox.Text = "Highlight High Layer TIles";
+            this.chunkHighlightHighTilesCheckBox.Text = "Highlight High Layer Tiles";
+            this.toolTip.SetToolTip(this.chunkHighlightHighTilesCheckBox, "Highlight each High Plane tile with the selected grid color, while leaving Low Plane tiles alone.");
             this.chunkHighlightHighTilesCheckBox.UseVisualStyleBackColor = true;
             this.chunkHighlightHighTilesCheckBox.CheckedChanged += new System.EventHandler(this.chunkHighlightHighTilesCheckBox_CheckedChanged);
             // 
@@ -923,6 +925,7 @@
             this.chunkShowGridCheckBox.Size = new System.Drawing.Size(143, 29);
             this.chunkShowGridCheckBox.TabIndex = 6;
             this.chunkShowGridCheckBox.Text = "Show Grid";
+            this.toolTip.SetToolTip(this.chunkShowGridCheckBox, "Toggle grid visibility.");
             this.chunkShowGridCheckBox.UseVisualStyleBackColor = true;
             this.chunkShowGridCheckBox.CheckedChanged += new System.EventHandler(this.chunkShowGridCheckBox_CheckedChanged);
             // 
@@ -943,6 +946,7 @@
             this.chunkColBRadioButton.Size = new System.Drawing.Size(118, 29);
             this.chunkColBRadioButton.TabIndex = 4;
             this.chunkColBRadioButton.Text = "Plane B";
+            this.toolTip.SetToolTip(this.chunkColBRadioButton, "Show collision for Plane B.");
             this.chunkColBRadioButton.UseVisualStyleBackColor = true;
             this.chunkColBRadioButton.CheckedChanged += new System.EventHandler(this.chunkColBRadioButton_CheckedChanged);
             // 
@@ -954,6 +958,7 @@
             this.chunkColARadioButton.Size = new System.Drawing.Size(118, 29);
             this.chunkColARadioButton.TabIndex = 3;
             this.chunkColARadioButton.Text = "Plane A";
+            this.toolTip.SetToolTip(this.chunkColARadioButton, "Show collision for Plane A.");
             this.chunkColARadioButton.UseVisualStyleBackColor = true;
             this.chunkColARadioButton.CheckedChanged += new System.EventHandler(this.chunkColARadioButton_CheckedChanged);
             // 
@@ -967,6 +972,7 @@
             this.chunkColNoneRadioButton.TabIndex = 2;
             this.chunkColNoneRadioButton.TabStop = true;
             this.chunkColNoneRadioButton.Text = "None";
+            this.toolTip.SetToolTip(this.chunkColNoneRadioButton, "Hide collision visualizations.");
             this.chunkColNoneRadioButton.UseVisualStyleBackColor = true;
             this.chunkColNoneRadioButton.CheckedChanged += new System.EventHandler(this.chunkColNoneRadioButton_CheckedChanged);
             // 
@@ -980,6 +986,7 @@
             this.chunkShowLowTilesCheckBox.Size = new System.Drawing.Size(194, 29);
             this.chunkShowLowTilesCheckBox.TabIndex = 1;
             this.chunkShowLowTilesCheckBox.Text = "Show Low Tiles";
+            this.toolTip.SetToolTip(this.chunkShowLowTilesCheckBox, "Toggle visibilty of Low Plane tiles.");
             this.chunkShowLowTilesCheckBox.UseVisualStyleBackColor = true;
             this.chunkShowLowTilesCheckBox.CheckedChanged += new System.EventHandler(this.chunkShowLowTilesCheckBox_CheckedChanged);
             // 
@@ -993,6 +1000,7 @@
             this.chunkShowHighTilesCheckBox.Size = new System.Drawing.Size(199, 29);
             this.chunkShowHighTilesCheckBox.TabIndex = 0;
             this.chunkShowHighTilesCheckBox.Text = "Show High Tiles";
+            this.toolTip.SetToolTip(this.chunkShowHighTilesCheckBox, "Toggle visibilty of High Plane tiles.");
             this.chunkShowHighTilesCheckBox.UseVisualStyleBackColor = true;
             this.chunkShowHighTilesCheckBox.CheckedChanged += new System.EventHandler(this.chunkShowHighTilesCheckBox_CheckedChanged);
             // 
@@ -1016,6 +1024,7 @@
             this.flipChunkVButton.Size = new System.Drawing.Size(219, 35);
             this.flipChunkVButton.TabIndex = 6;
             this.flipChunkVButton.Text = "Flip Chunk Vertically";
+            this.toolTip.SetToolTip(this.flipChunkVButton, "Flip the chunk vertically.");
             this.flipChunkVButton.UseVisualStyleBackColor = true;
             this.flipChunkVButton.Click += new System.EventHandler(this.flipChunkVButton_Click);
             // 
@@ -1043,6 +1052,7 @@
             this.flipChunkHButton.Size = new System.Drawing.Size(244, 35);
             this.flipChunkHButton.TabIndex = 5;
             this.flipChunkHButton.Text = "Flip Chunk Horizontally";
+            this.toolTip.SetToolTip(this.flipChunkHButton, "Flip the chunk horizontally.");
             this.flipChunkHButton.UseVisualStyleBackColor = true;
             this.flipChunkHButton.Click += new System.EventHandler(this.flipChunkHButton_Click);
             // 
