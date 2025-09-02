@@ -8475,8 +8475,6 @@ namespace SonicRetro.SonLVL.GUI
 								string pathBase = Path.Combine(Path.GetDirectoryName(a.FileName), Path.GetFileNameWithoutExtension(a.FileName));
 								string pathExt = Path.GetExtension(a.FileName);
 								BitmapBits bmp = LevelData.DrawForegroundLayout(area);
-								if (transparentBackgroundToolStripMenuItem.Checked)
-									bmp.ReplaceColor(0, 160);
 								Bitmap res = bmp.ToBitmap();
 								ColorPalette pal = res.Palette;
 								LevelImgPalette.Entries.CopyTo(pal.Entries, 0);
