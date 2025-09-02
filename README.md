@@ -12,14 +12,6 @@ This editor is based on the original [SonLVL](https://github.com/sonicretro/SonL
 
 ---
 
-## Download
-
-The latest stable build can always be found in the [Releases tab](https://github.com/Lavesiime/SonLVL-RSDK/releases). Alternatively, for more experimental "nightly" versions of the editor, the repository features autobuilds that can be downloaded from the [_Actions_ tab](https://github.com/Lavesiime/SonLVL-RSDK/actions). However, do note that these versions may contain unfixed bugs or incomplete features, so use them at your own risk!
-
-## Documentation
-
-See the [wiki](https://github.com/Lavesiime/SonLVL-RSDK/wiki) for more information on the editor, from setup to guides and more. (Work in progress!)
-
 ## Building
 
 0. Install the **WinForms** workload in Visual Studio.
