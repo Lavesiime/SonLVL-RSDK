@@ -65,7 +65,7 @@ namespace SonicRetro.SonLVL
 			this.chunkSelect.Hexadecimal = true;
 			this.chunkSelect.Location = new System.Drawing.Point(0, 272);
 			this.chunkSelect.Maximum = new decimal(new int[] {
-            255,
+            511,
             0,
             0,
             0});
