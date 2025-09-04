@@ -102,6 +102,12 @@
     <Compile Include="ImportPalette.Designer.cs">
       <DependentUpon>ImportPalette.cs</DependentUpon>
     </Compile>
+    <Compile Include="ImportArtDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImportArtDialog.Designer.cs">
+      <DependentUpon>ImportArtDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoadErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -278,6 +284,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ImportProgressControl.resx">
       <DependentUpon>ImportProgressControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImportArtDialog.resx">
+      <DependentUpon>ImportArtDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InsertDeleteDialog.resx">
       <DependentUpon>InsertDeleteDialog.cs</DependentUpon>

@@ -1970,6 +1970,7 @@ namespace SonicRetro.SonLVL.API
 				&& src.visualPlane == other.visualPlane;
 		}
 
+		
 		public static bool HasFreeTiles()
 		{
 			return Enumerable.Range(0, NewTiles.Length).Except(NewChunks.chunkList.SelectMany(a => a.tiles.SelectMany(b => b).Select(c => c.tileIndex)).Select(a => (int)a))
@@ -1992,6 +1993,42 @@ namespace SonicRetro.SonLVL.API
 		{
 			return Enumerable.Range(0, NewChunks.chunkList.Length).Select(a => (ushort)a).Except(Scene.layout.SelectMany(a => a).Union(Background.layers.SelectMany(a => a.layout.SelectMany(b => b))))
 				.Where(c => NewChunks.chunkList[c].tiles.SelectMany(a => a).All(b => b.direction == Tiles128x128.Block.Tile.Directions.FlipNone && b.tileIndex == 0));
+		}
+
+		public static void GetLongestFreeTileStreak(out ushort start, out int length)
+		{
+			// This function is used for art importing, when tiles should be grouped together
+			// (ie you want all ani tiles to be in a straight line, rather than sprinkled across the tile list)
+
+			var freeTiles = GetFreeTiles().ToList();
+			ushort curStart = start = freeTiles[0];
+			int curLength = length = 1;
+
+			// Let's find the longest streak and where it starts
+			for (int i = 1; i < freeTiles.Count; i++)
+			{
+				if (freeTiles[i] == freeTiles[i - 1] + 1)
+					curLength++; // Still goin..
+				else
+				{
+					// Streak broke, let's see if we got a new best
+					if (curLength > length)
+					{
+						length = curLength;
+						start = curStart;
+					}
+
+					// Either way, we gotta reset..
+					curStart = freeTiles[i];
+					curLength = 1;
+				}
+			}
+
+			if (curLength > start)
+			{
+				length = curLength;
+				start = curStart;
+			}
 		}
 
 		public static void CalcAngles(this TileConfig.CollisionMask mask)

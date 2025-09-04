@@ -995,6 +995,7 @@ namespace SonicRetro.SonLVL.GUI
 		#endregion
 
 		#region Edit Menu
+		// TODO: Maybe add a cap..
 		private void SaveState(string name)
 		{
 			if (undoSystem.CreateState(name))
@@ -5380,6 +5381,7 @@ namespace SonicRetro.SonLVL.GUI
 				if (opendlg.ShowDialog(this) == DialogResult.OK)
 				{
 					Bitmap bmp = new Bitmap(opendlg.FileName);
+					
 					switch (CurrentArtTab)
 					{
 						case ArtTab.Chunks:
@@ -5400,42 +5402,52 @@ namespace SonicRetro.SonLVL.GUI
 							break;
 					}
 
-					Bitmap colbmp1 = null, colbmp2 = null, pribmp = null;
-					string fmt = Path.Combine(Path.GetDirectoryName(opendlg.FileName),
-						Path.GetFileNameWithoutExtension(opendlg.FileName) + "_{0}" + Path.GetExtension(opendlg.FileName));
-
-					if (File.Exists(string.Format(fmt, "col1")))
+					using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, CurrentArtTab == ArtTab.Tiles))
 					{
-						colbmp1 = new Bitmap(string.Format(fmt, "col1"));
-						if (File.Exists(string.Format(fmt, "col2")))
-							colbmp2 = new Bitmap(string.Format(fmt, "col2"));
-					}
-					else if (File.Exists(string.Format(fmt, "col")))
-						colbmp1 = new Bitmap(string.Format(fmt, "col"));
+						if (CurrentArtTab == ArtTab.Tiles)
+							importDialog.Text = "Import Tiles...";
+						else
+							importDialog.Text = "Import Chunks...";
 
-					if (CurrentArtTab == ArtTab.Chunks)
-					{
-						if (File.Exists(string.Format(fmt, "pri")))
-							pribmp = new Bitmap(string.Format(fmt, "pri"));
-					}
+						if (importDialog.ShowDialog(this) == DialogResult.OK)
+						{
+							ImportFlags flags = ImportFlags.Normal;
 
-					ImportImage(bmp, colbmp1, colbmp2, pribmp, null);
-					SaveState($"Import {(CurrentArtTab == ArtTab.Chunks ? "Chunks" : "Tiles")}");
+							if (CurrentArtTab == ArtTab.Tiles)
+							{
+								if (!importDialog.mergeDupesCheckBox.Checked) flags |= ImportFlags.DontOptimize;
+								if (importDialog.concurrentTilesCheckBox.Checked) flags |= ImportFlags.GroupTilesTogether;
+							}
+
+							ImportImage(bmp, importDialog.colABitmap, importDialog.colBBitmap, importDialog.priBitmap, null, flags);
+							SaveState($"Import {(CurrentArtTab == ArtTab.Chunks ? "Chunks" : "Tiles")}");
+						}
+					}
 				}
 			}
 		}
 
-		private bool ImportImage(Bitmap bmp, Bitmap colbmp1, Bitmap colbmp2, Bitmap pribmp, ushort[,] layout, bool showMessageBox = true)
+		// Beats making a billion extra params for ImportImage.. right?....
+		public enum ImportFlags
+		{
+			Normal = 0,
+			HideMessageBox = 1,
+			DontOptimize = 2,
+			GroupTilesTogether = 4,
+		}
+
+		private bool ImportImage(Bitmap bmp, Bitmap colbmp1, Bitmap colbmp2, Bitmap pribmp, ushort[,] layout, ImportFlags flags = ImportFlags.Normal)
 		{
 			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 			sw.Start();
+
 			int w = bmp.Width;
 			int h = bmp.Height;
 			Enabled = false;
 			UseWaitCursor = true;
 			importProgressControl1.CurrentProgress = 0;
 			importProgressControl1.MaximumProgress = (w / 16) * (h / 16);
-			if (showMessageBox)
+			if (!flags.HasFlag(ImportFlags.HideMessageBox))
 			{
 				importProgressControl1_SizeChanged(this, EventArgs.Empty);
 				importProgressControl1.BringToFront();
@@ -5460,24 +5472,73 @@ namespace SonicRetro.SonLVL.GUI
 			}
 			byte? forcepal = bmpi.PixelFormat == PixelFormat.Format1bppIndexed || bmpi.PixelFormat == PixelFormat.Format4bppIndexed ? (byte)SelectedColor.Y : (byte?)null;
 			Application.DoEvents();
+
 			List<BitmapBits> tiles = new List<BitmapBits>(LevelData.NewTiles);
 			List<RSDKv3_4.TileConfig.CollisionMask>[] cols = new[] { new List<RSDKv3_4.TileConfig.CollisionMask>(LevelData.Collision.collisionMasks[0]), new List<RSDKv3_4.TileConfig.CollisionMask>(LevelData.Collision.collisionMasks[1]) };
 			List<RSDKv3_4.Tiles128x128.Block> chunks = new List<RSDKv3_4.Tiles128x128.Block>(LevelData.NewChunks.chunkList);
 			Application.DoEvents();
-			ImportResult ir = LevelData.BitmapToTiles(bmpi, priority, blockcoldata, forcepal, tiles, cols, true, () =>
+			ImportResult ir = LevelData.BitmapToTiles(bmpi, priority, blockcoldata, forcepal, tiles, cols, !flags.HasFlag(ImportFlags.DontOptimize), () =>
 			{
 				importProgressControl1.CurrentProgress++;
 				Application.DoEvents();
 			});
-			List<ushort> freetiles = LevelData.GetFreeTiles().ToList();
+
+			List<ushort> freetiles;
+			if (flags.HasFlag(ImportFlags.GroupTilesTogether))
+			{
+				LevelData.GetLongestFreeTileStreak(out ushort start, out int count);
+				freetiles = Enumerable.Range(start, start + count).Select(x => (ushort)x).ToList();
+
+				// If we're trying to import more tiles than are available in the longest streak..
+				if (ir.Art.Count > count)
+				{
+					int baseCount = LevelData.GetFreeTiles().Count();
+
+					// Ignoring the concurrent bit, are we over the total free tile count?
+					if (ir.Art.Count > baseCount)
+					{
+						// If so, there's nothing we can really do, abort..
+
+						importProgressControl1.Hide();
+						Enabled = true;
+						UseWaitCursor = false;
+						MessageBox.Show(this, "There are " + (ir.Art.Count - count) + " tiles over the limit.\nImport cannot proceed.", "SonLVL-RSDK", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+						return false;
+					}
+					else
+					{
+						// Let's give the user the option of turning the setting off, if they still need to get their art in
+
+						if (MessageBox.Show(this, $"There are {ir.Art.Count} tiles trying to be imported, but the longest free tile streak is only {count} tiles (or {ir.Art.Count - count} tiles less). However, if tiles are imported in separate groups, is still enough room to fit all of them. Would you like to import the tiles wherever free space is available, instead?", "SonLVL-RSDK",
+							MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+						{
+							freetiles = LevelData.GetFreeTiles().ToList();
+						}
+						else
+						{
+							importProgressControl1.Hide();
+							Enabled = true;
+							UseWaitCursor = false;
+							return false;
+						}
+					}
+				}
+			}
+			else
+				freetiles = LevelData.GetFreeTiles().ToList();
+
+			// Applies both when GroupTilesTogether is false as well as a fallback just in case (though this *should* never pass when GroupTilesTogether is true, since we check for that above)
 			if (ir.Art.Count > freetiles.Count)
 			{
 				importProgressControl1.Hide();
 				Enabled = true;
 				UseWaitCursor = false;
+
 				MessageBox.Show(this, "There are " + (ir.Art.Count - freetiles.Count) + " tiles over the limit.\nImport cannot proceed.", "SonLVL-RSDK", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				
 				return false;
 			}
+
 			if (ir.Art.Count > 0)
 			{
 				for (int y = 0; y < ir.Mappings.GetLength(1); y++)
@@ -5553,7 +5614,7 @@ namespace SonicRetro.SonLVL.GUI
 				chunkBlockEditor.SelectedObjects = chunkBlockEditor.SelectedObjects;
 			sw.Stop();
 
-			if (showMessageBox)
+			if (!flags.HasFlag(ImportFlags.HideMessageBox))
 			{
 				System.Text.StringBuilder msg = new System.Text.StringBuilder();
 				msg.AppendFormat("New tiles: {0}\n", ir.Art.Count);
@@ -5784,7 +5845,7 @@ namespace SonicRetro.SonLVL.GUI
 				}
 				if (dlg.ShowDialog(this) == DialogResult.OK)
 				{
-					ImportImage(dlg.tile.ToBitmap(LevelData.BmpPal), null, null, null, null, CurrentArtTab == ArtTab.Chunks);
+					ImportImage(dlg.tile.ToBitmap(LevelData.BmpPal), null, null, null, null, (CurrentArtTab == ArtTab.Tiles) ? (ImportFlags.DontOptimize | ImportFlags.HideMessageBox) : ImportFlags.Normal);
 					SaveState($"Draw {(CurrentArtTab == ArtTab.Chunks ? "Chunk" : "Tile")}");
 				}
 			}
@@ -7926,40 +7987,36 @@ namespace SonicRetro.SonLVL.GUI
 							MessageBox.Show(this, $"The image you have selected is too small ({bmp.Width}x{bmp.Height}). It must be at least as large as one chunk (128x128)", "SonLVL-RSDK Layout Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 							return;
 						}
-						Bitmap colbmp1 = null, colbmp2 = null, pribmp = null;
-						string fmt = Path.Combine(Path.GetDirectoryName(opendlg.FileName),
-							Path.GetFileNameWithoutExtension(opendlg.FileName) + "_{0}" + Path.GetExtension(opendlg.FileName));
-						if (File.Exists(string.Format(fmt, "col1")))
+
+						using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, false))
 						{
-							colbmp1 = new Bitmap(string.Format(fmt, "col1"));
-							if (File.Exists(string.Format(fmt, "col2")))
-								colbmp2 = new Bitmap(string.Format(fmt, "col2"));
+							importDialog.Text = "Import Layout...";
+
+							if (importDialog.ShowDialog(this) == DialogResult.OK)
+							{
+								ushort[,] section = new ushort[bmp.Width / 128, bmp.Height / 128];
+								if (!ImportImage(bmp, importDialog.colABitmap, importDialog.colBBitmap, importDialog.priBitmap, section))
+									return;
+								ushort[][] layout;
+								int w, h;
+								if (CurrentTab == Tab.Background)
+								{
+									layout = LevelData.Background.layers[bglayer].layout;
+									w = Math.Min(section.GetLength(0), LevelData.BGWidth[bglayer] - menuLoc.X);
+									h = Math.Min(section.GetLength(1), LevelData.BGHeight[bglayer] - menuLoc.Y);
+								}
+								else
+								{
+									layout = LevelData.Scene.layout;
+									w = Math.Min(section.GetLength(0), LevelData.FGWidth - menuLoc.X);
+									h = Math.Min(section.GetLength(1), LevelData.FGHeight - menuLoc.Y);
+								}
+								for (int y = 0; y < h; y++)
+									for (int x = 0; x < w; x++)
+										layout[y + menuLoc.Y][x + menuLoc.X] = section[x, y];
+								SaveState($"Import {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")}");
+							}
 						}
-						else if (File.Exists(string.Format(fmt, "col")))
-							colbmp1 = new Bitmap(string.Format(fmt, "col"));
-						if (File.Exists(string.Format(fmt, "pri")))
-							pribmp = new Bitmap(string.Format(fmt, "pri"));
-						ushort[,] section = new ushort[bmp.Width / 128, bmp.Height / 128];
-						if (!ImportImage(bmp, colbmp1, colbmp2, pribmp, section))
-							return;
-						ushort[][] layout;
-						int w, h;
-						if (CurrentTab == Tab.Background)
-						{
-							layout = LevelData.Background.layers[bglayer].layout;
-							w = Math.Min(section.GetLength(0), LevelData.BGWidth[bglayer] - menuLoc.X);
-							h = Math.Min(section.GetLength(1), LevelData.BGHeight[bglayer] - menuLoc.Y);
-						}
-						else
-						{
-							layout = LevelData.Scene.layout;
-							w = Math.Min(section.GetLength(0), LevelData.FGWidth - menuLoc.X);
-							h = Math.Min(section.GetLength(1), LevelData.FGHeight - menuLoc.Y);
-						}
-						for (int y = 0; y < h; y++)
-							for (int x = 0; x < w; x++)
-								layout[y + menuLoc.Y][x + menuLoc.X] = section[x, y];
-						SaveState($"Import {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")}");
 					}
 		}
 
@@ -7979,40 +8036,36 @@ namespace SonicRetro.SonLVL.GUI
 							MessageBox.Show(this, $"The image you have selected is too small ({bmp.Width}x{bmp.Height}). It must be at least as large as one chunk (128x128)", "SonLVL-RSDK Layout Section Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 							return;
 						}
-						Bitmap colbmp1 = null, colbmp2 = null, pribmp = null;
-						string fmt = Path.Combine(Path.GetDirectoryName(opendlg.FileName),
-							Path.GetFileNameWithoutExtension(opendlg.FileName) + "_{0}" + Path.GetExtension(opendlg.FileName));
-						if (File.Exists(string.Format(fmt, "col1")))
+
+						using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, false))
 						{
-							colbmp1 = new Bitmap(string.Format(fmt, "col1"));
-							if (File.Exists(string.Format(fmt, "col2")))
-								colbmp2 = new Bitmap(string.Format(fmt, "col2"));
-						}
-						else if (File.Exists(string.Format(fmt, "col")))
-							colbmp1 = new Bitmap(string.Format(fmt, "col"));
-						if (File.Exists(string.Format(fmt, "pri")))
-							pribmp = new Bitmap(string.Format(fmt, "pri"));
-						ushort[,] layout = new ushort[bmp.Width / 128, bmp.Height / 128];
-						if (!ImportImage(bmp, colbmp1, colbmp2, pribmp, layout))
-							return;
-						LayoutSection section = new LayoutSection(layout, new List<Entry>());
-						using (LayoutSectionNameDialog dlg = new LayoutSectionNameDialog() { Value = Path.GetFileNameWithoutExtension(opendlg.FileName) })
-						{
-							if (dlg.ShowDialog(this) == DialogResult.OK)
+							importDialog.Text = "Import Layout Section...";
+
+							if (importDialog.ShowDialog(this) == DialogResult.OK)
 							{
-								section.Name = dlg.Value;
-								savedLayoutSections.Add(section);
-								savedLayoutSectionImages.Add(MakeLayoutSectionImage(section, true));
-								layoutSectionListBox.Items.Add(section.Name);
-								layoutSectionListBox.SelectedIndex = savedLayoutSections.Count - 1;
-								string levelname = this.levelname;
-								foreach (char c in Path.GetInvalidFileNameChars())
-									levelname = levelname.Replace(c, '_');
-								using (FileStream fs = File.Create(LevelData.StageInfo.folder + ".sls"))
-									new BinaryFormatter().Serialize(fs, savedLayoutSections);
+								ushort[,] layout = new ushort[bmp.Width / 128, bmp.Height / 128];
+								if (!ImportImage(bmp, importDialog.colABitmap, importDialog.colBBitmap, importDialog.priBitmap, layout))
+									return;
+								LayoutSection section = new LayoutSection(layout, new List<Entry>());
+								using (LayoutSectionNameDialog dlg = new LayoutSectionNameDialog() { Value = Path.GetFileNameWithoutExtension(opendlg.FileName) })
+								{
+									if (dlg.ShowDialog(this) == DialogResult.OK)
+									{
+										section.Name = dlg.Value;
+										savedLayoutSections.Add(section);
+										savedLayoutSectionImages.Add(MakeLayoutSectionImage(section, true));
+										layoutSectionListBox.Items.Add(section.Name);
+										layoutSectionListBox.SelectedIndex = savedLayoutSections.Count - 1;
+										string levelname = this.levelname;
+										foreach (char c in Path.GetInvalidFileNameChars())
+											levelname = levelname.Replace(c, '_');
+										using (FileStream fs = File.Create(LevelData.StageInfo.folder + ".sls"))
+											new BinaryFormatter().Serialize(fs, savedLayoutSections);
+									}
+								}
+								SaveState("Import Layout Section");
 							}
 						}
-						SaveState("Import Chunks");
 					}
 		}
 
