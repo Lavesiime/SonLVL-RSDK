@@ -7481,7 +7481,12 @@ namespace SonicRetro.SonLVL.GUI
 				Point clientPoint = ChunkSelector.PointToClient(new Point(e.X, e.Y));
 				ushort newindex = (ushort)ChunkSelector.GetItemAtPoint(clientPoint);
 				ushort oldindex = (ushort)(int)e.Data.GetData("SonLVLChunkIndex_" + pid);
-				if (newindex == oldindex) return;
+				if (newindex == oldindex)
+				{
+					ChunkSelector.Invalidate();
+					return;
+				}
+
 				if ((ModifierKeys & Keys.Control) == Keys.Control)
 				{
 					if (newindex == LevelData.NewChunks.chunkList.Length) return;
@@ -7605,7 +7610,12 @@ namespace SonicRetro.SonLVL.GUI
 				Point clientPoint = TileSelector.PointToClient(new Point(e.X, e.Y));
 				ushort newindex = (ushort)TileSelector.GetItemAtPoint(clientPoint);
 				ushort oldindex = (ushort)(int)e.Data.GetData("SonLVLTileIndex_" + pid);
-				if (newindex == oldindex) return;
+				if (newindex == oldindex)
+				{
+					TileSelector.Invalidate();
+					return;
+				}
+
 				if ((ModifierKeys & Keys.Control) == Keys.Control)
 				{
 					if (newindex == TileSelector.Images.Count) return;
