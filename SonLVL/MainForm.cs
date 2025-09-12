@@ -412,7 +412,7 @@ namespace SonicRetro.SonLVL.GUI
 				if (i > 0 && i % 10 == 0)
 					parent = (ToolStripMenuItem)selectModToolStripMenuItem.DropDownItems.Add($"Set {i / 10 + 1}");
 				ms = new ModStuff() { Path = mods[i] };
-				menuitem = new ToolStripMenuItem(IniSerializer.Deserialize<ModInfo>(mods[i]).Name ?? "Unknown Mod", null, new EventHandler(ModToolStripMenuItem_Clicked)) { Tag = ms };
+				menuitem = new ToolStripMenuItem(IniSerializer.Deserialize<ModInfo>(mods[i]).Name?.Replace("&", "&&") ?? "Unknown Mod", null, new EventHandler(ModToolStripMenuItem_Clicked)) { Tag = ms };
 				ms.MenuItem = menuitem;
 				parent.DropDownItems.Add(menuitem);
 				modMenuItems.Add(ms);
@@ -588,7 +588,7 @@ namespace SonicRetro.SonLVL.GUI
 			if (path == null)
 				modname = $"No Mod ({LevelData.GameTitle})";
 			else
-				modname = $"{IniSerializer.Deserialize<ModInfo>(path).Name ?? "Unknown Mod"} ({LevelData.GameTitle})";
+				modname = $"{IniSerializer.Deserialize<ModInfo>(path).Name?.Replace("&", "&&") ?? "Unknown Mod"} ({LevelData.GameTitle})";
 			Settings.RecentMods.Insert(0, new MRUModItem(modname, LevelData.GamePath, path));
 			recentModsToolStripMenuItem.DropDownItems.Insert(0, new ToolStripMenuItem(modname));
 			Text = "SonLVL-RSDK - " + LevelData.GameTitle;
