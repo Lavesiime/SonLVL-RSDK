@@ -2499,7 +2499,6 @@
             this.objectOrder.LargeImageList = this.objectTypeImages;
             this.objectOrder.Location = new System.Drawing.Point(6, 6);
             this.objectOrder.Margin = new System.Windows.Forms.Padding(6);
-            this.objectOrder.MultiSelect = false;
             this.objectOrder.Name = "objectOrder";
             this.objectOrder.Size = new System.Drawing.Size(335, 866);
             this.objectOrder.TabIndex = 0;

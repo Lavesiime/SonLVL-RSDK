@@ -4134,11 +4134,21 @@ namespace SonicRetro.SonLVL.GUI
 			alignBottomsToolStripButton.Enabled = alignCentersToolStripButton.Enabled = alignLeftsToolStripButton.Enabled =
 				alignMiddlesToolStripButton.Enabled = alignRightsToolStripButton.Enabled = alignTopsToolStripButton.Enabled =
 				SelectedItems.Count > 1;
+
+			loaded = false;
+			objectOrder.SelectedIndices.Clear();
+
 			if (SelectedItems.Count > 0)
 			{
-				objectOrder.SelectedIndices.Clear();
-				objectOrder.SelectedIndices.Add(LevelData.Objects.IndexOf((ObjectEntry)SelectedItems[0]));
+				foreach (ObjectEntry oe in SelectedItems)
+					objectOrder.SelectedIndices.Add(LevelData.Objects.IndexOf(oe));
+
+				// If we have the Object Order tab open, let's make sure whatever we're selecting is visible
+				if (tabControl5.SelectedIndex == 1 && objectOrder.SelectedIndices.Count > 0)
+					objectOrder.EnsureVisible(objectOrder.SelectedIndices[0]);
 			}
+
+			loaded = true;
 		}
 
 		private void ScrollBar_ValueChanged(object sender, EventArgs e)
@@ -8646,7 +8656,13 @@ namespace SonicRetro.SonLVL.GUI
 		private void objectOrder_DragOver(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent("SonicRetro.SonLVLRSDK.GUI.ObjectIndex"))
-				objectOrder.InsertionMark.Index = objectOrder.InsertionMark.NearestIndex(objectOrder.PointToClient(new Point(e.X, e.Y)));
+			{
+				Point p = objectOrder.PointToClient(new Point(e.X, e.Y));
+				var item = objectOrder.GetItemAt(p.X, p.Y);
+
+				if (item != null)
+					objectOrder.InsertionMark.Index = item.Index;
+			}
 		}
 
 		private void objectOrder_DragLeave(object sender, EventArgs e)
@@ -8661,6 +8677,13 @@ namespace SonicRetro.SonLVL.GUI
 				ListViewItem item = (ListViewItem)e.Data.GetData("SonicRetro.SonLVLRSDK.GUI.ObjectIndex");
 				int src = objectOrder.Items.IndexOf(item);
 				int dst = objectOrder.InsertionMark.Index;
+				
+				// (just some extra precautions..)
+				if (src == -1 || dst == -1) return;
+
+				if (dst > src)
+					dst++;
+
 				if (src != dst && dst != src + 1)
 				{
 					LevelData.Scene.entities.Move(src, dst);
@@ -8672,6 +8695,8 @@ namespace SonicRetro.SonLVL.GUI
 					objectOrder.Items.Remove(item);
 					objectOrder.EndUpdate();
 					item1.Selected = true;
+
+					ObjectProperties.Refresh();
 				}
 				SaveState("Change Object Order");
 			}
