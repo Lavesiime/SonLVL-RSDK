@@ -42,9 +42,6 @@ namespace SonicRetro.SonLVL.GUI
 				LevelImgPalette.Entries[LevelData.ColorTransparent] = LevelData.NewPalette[Settings.BackgroundColor.A];
 			else
 				LevelImgPalette.Entries[LevelData.ColorTransparent] = Settings.BackgroundColor;
-			if (invertColorsToolStripMenuItem.Checked)
-				for (int i = 0; i < 256; i++)
-					LevelImgPalette.Entries[i] = LevelImgPalette.Entries[i].Invert();
 			ChunkSelector.Invalidate();
 			DrawChunkPicture();
 			chunkBlockEditor.Invalidate();
@@ -182,7 +179,6 @@ namespace SonicRetro.SonLVL.GUI
 			// First, let's load settings
 			objectsAboveHighPlaneToolStripMenuItem.Checked = Settings.ObjectsAboveHighPlane;
 			hUDToolStripMenuItem.Checked = Settings.ShowHUD;
-			//invertColorsToolStripMenuItem.Checked = Settings.InvertColors;
 			chunkShowLowTilesCheckBox.Checked = lowToolStripMenuItem.Checked = Settings.ViewLowPlane;
 			chunkShowHighTilesCheckBox.Checked = highToolStripMenuItem.Checked = Settings.ViewHighPlane;
 			
@@ -338,7 +334,6 @@ namespace SonicRetro.SonLVL.GUI
 			if (Settings != null)
 			{
 				Settings.ShowHUD = hUDToolStripMenuItem.Checked;
-				//Settings.InvertColors = invertColorsToolStripMenuItem.Checked;
 				if (path1ToolStripMenuItem.Checked)
 					Settings.ViewCollision = CollisionPath.Path1;
 				else if (path2ToolStripMenuItem.Checked)
@@ -819,9 +814,6 @@ namespace SonicRetro.SonLVL.GUI
 			SelectedItems = new List<Entry>();
 			saveToolStripMenuItem.Enabled = LevelData.ModFolder != null;
 			editToolStripMenuItem.Enabled = exportToolStripMenuItem.Enabled = true;
-			if (invertColorsToolStripMenuItem.Checked)
-				for (int i = 0; i < 256; i++)
-					LevelImgPalette.Entries[i] = LevelImgPalette.Entries[i].Invert();
 			objectListBox_SelectedIndexChanged(this, EventArgs.Empty);
 			sfxListBox_SelectedIndexChanged(this, EventArgs.Empty);
 			findNextToolStripMenuItem.Enabled = findPreviousToolStripMenuItem.Enabled = false;
@@ -1531,9 +1523,6 @@ namespace SonicRetro.SonLVL.GUI
 				sfxAddButton.Enabled = true;
 				loaded = true;
 				SelectedItems = new List<Entry>();
-				if (invertColorsToolStripMenuItem.Checked)
-					for (int i = 0; i < 256; i++)
-						LevelImgPalette.Entries[i] = LevelImgPalette.Entries[i].Invert();
 				findNextToolStripMenuItem.Enabled = findPreviousToolStripMenuItem.Enabled = false;
 				savedLayoutSections = new List<LayoutSection>();
 				savedLayoutSectionImages = new List<Bitmap>();
@@ -1596,11 +1585,6 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			objectsAboveHighPlaneToolStripMenuItem.Checked = !objectsAboveHighPlaneToolStripMenuItem.Checked;
 			DrawLevel();
-		}
-
-		private void invertColorsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LevelData_PaletteChangedEvent();
 		}
 
 		private void bgColorToolStripMenuItem_Click(object sender, EventArgs e)

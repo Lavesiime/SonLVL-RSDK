@@ -147,7 +147,6 @@
             this.hUDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bgColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gridColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.invertColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.layersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.highToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1718,7 +1717,6 @@
             this.hUDToolStripMenuItem,
             this.bgColorToolStripMenuItem,
             this.gridColorToolStripMenuItem,
-            this.invertColorsToolStripMenuItem,
             this.layersToolStripMenuItem,
             this.collisionToolStripMenuItem,
             this.zoomToolStripMenuItem,
@@ -1761,15 +1759,6 @@
             this.gridColorToolStripMenuItem.Size = new System.Drawing.Size(447, 44);
             this.gridColorToolStripMenuItem.Text = "&Grid Color...";
             this.gridColorToolStripMenuItem.Click += new System.EventHandler(this.gridColorToolStripMenuItem_Click);
-            // 
-            // invertColorsToolStripMenuItem
-            // 
-            this.invertColorsToolStripMenuItem.CheckOnClick = true;
-            this.invertColorsToolStripMenuItem.Name = "invertColorsToolStripMenuItem";
-            this.invertColorsToolStripMenuItem.Size = new System.Drawing.Size(447, 44);
-            this.invertColorsToolStripMenuItem.Text = "I&nvert Colors";
-            this.invertColorsToolStripMenuItem.Visible = false;
-            this.invertColorsToolStripMenuItem.Click += new System.EventHandler(this.invertColorsToolStripMenuItem_Click);
             // 
             // layersToolStripMenuItem
             // 
@@ -4855,7 +4844,6 @@
 		private System.Windows.Forms.ToolStripMenuItem flipChunkBlocksHorizontallyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem flipChunkBlocksVerticallyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton enableDraggingPaletteButton;
-		private System.Windows.Forms.ToolStripMenuItem invertColorsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
 		private System.Windows.Forms.ToolStripMenuItem exportTileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportLayoutSectionToolStripMenuItem;
