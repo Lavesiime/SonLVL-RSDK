@@ -4332,6 +4332,8 @@ namespace SonicRetro.SonLVL.GUI
 				double gs = snapObjectsToolStripCheckBoxButton.Checked ? 1 << ObjGrid : 1;
 				foreach (Entry item in objs)
 				{
+					if (LevelData.Scene.entities.Count >= RSDKv3_4.Scene.ENTITY_LIST_SIZE) break;
+					
 					item.X += (short)off.Width;
 					item.Y += (short)off.Height;
 					item.X = (short)(Math.Round(item.X / gs, MidpointRounding.AwayFromZero) * gs);
@@ -6142,6 +6144,8 @@ namespace SonicRetro.SonLVL.GUI
 				Size off = new Size(menuLoc.X * 128, menuLoc.Y * 128);
 				foreach (ObjectEntry obj in section.Objects)
 				{
+					if (LevelData.Scene.entities.Count >= RSDKv3_4.Scene.ENTITY_LIST_SIZE) break;
+					
 					ObjectEntry newent;
 
 					// Manual fixes for when pasting v3 entities into a v4 scene/vice versa..
@@ -6208,6 +6212,8 @@ namespace SonicRetro.SonLVL.GUI
 						Size off = new Size((selection.X + (x * width)) * 128, (selection.Y + (y * height)) * 128);
 						foreach (Entry item in section.Objects)
 						{
+							if (LevelData.Scene.entities.Count >= RSDKv3_4.Scene.ENTITY_LIST_SIZE) break;
+							
 							Entry it2 = item.Clone();
 							it2.X = (short)(it2.X + off.Width);
 							it2.Y = (short)(it2.Y + off.Height);
