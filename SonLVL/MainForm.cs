@@ -623,7 +623,7 @@ namespace SonicRetro.SonLVL.GUI
 			fileToolStripMenuItem.DropDown.Hide();
 			if (loaded && LevelData.ModFolder != null && !saved)
 			{
-				switch (MessageBox.Show(this, "Do you want to save?", Text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+				switch (MessageBox.Show(this, "Editing the GameConfig will reload the currently open level. Do you want to save?", Text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
 				{
 					case DialogResult.Yes:
 						saveToolStripMenuItem_Click(this, EventArgs.Empty);
@@ -637,7 +637,8 @@ namespace SonicRetro.SonLVL.GUI
 				{
 					loaded = false;
 					LoadMod(Path.Combine(LevelData.ModFolder, "mod.ini"));
-					if (LevelData.StageInfo != null)
+					
+					if (LevelData.StageInfo != null && changeLevelToolStripMenuItem.Enabled)
 					{
 						LevelStuff stuff = levelMenuItems.FirstOrDefault(a => a.Stage.folder == LevelData.StageInfo.folder && a.Stage.actID == LevelData.StageInfo.actID);
 						if (stuff != null)
