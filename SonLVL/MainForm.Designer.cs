@@ -157,8 +157,6 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.anglesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.xToolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
-            this.xToolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.xToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.xToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -1845,8 +1843,6 @@
             // zoomToolStripMenuItem
             // 
             this.zoomToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.xToolStripMenuItem7,
-            this.xToolStripMenuItem6,
             this.xToolStripMenuItem,
             this.xToolStripMenuItem1,
             this.xToolStripMenuItem2,
@@ -1858,18 +1854,6 @@
             this.zoomToolStripMenuItem.Size = new System.Drawing.Size(447, 44);
             this.zoomToolStripMenuItem.Text = "&Zoom";
             this.zoomToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.zoomToolStripMenuItem_DropDownItemClicked);
-            // 
-            // xToolStripMenuItem7
-            // 
-            this.xToolStripMenuItem7.Name = "xToolStripMenuItem7";
-            this.xToolStripMenuItem7.Size = new System.Drawing.Size(193, 44);
-            this.xToolStripMenuItem7.Text = "1/8x";
-            // 
-            // xToolStripMenuItem6
-            // 
-            this.xToolStripMenuItem6.Name = "xToolStripMenuItem6";
-            this.xToolStripMenuItem6.Size = new System.Drawing.Size(193, 44);
-            this.xToolStripMenuItem6.Text = "1/4x";
             // 
             // xToolStripMenuItem
             // 
@@ -4779,8 +4763,6 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem9;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem10;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem11;
-		private System.Windows.Forms.ToolStripMenuItem xToolStripMenuItem7;
-		private System.Windows.Forms.ToolStripMenuItem xToolStripMenuItem6;
 		private System.Windows.Forms.ToolStripButton remapChunksButton;
 		private System.Windows.Forms.ToolStripButton remapTilesButton;
 		private System.Windows.Forms.TabPage tabPage8;

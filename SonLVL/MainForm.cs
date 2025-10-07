@@ -1695,21 +1695,10 @@ namespace SonicRetro.SonLVL.GUI
 			foreach (ToolStripMenuItem item in zoomToolStripMenuItem.DropDownItems)
 				item.Checked = false;
 			((ToolStripMenuItem)e.ClickedItem).Checked = true;
-			switch (zoomToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem))
-			{
-				case 0: // 1/8x
-					ZoomLevel = 0.125;
-					break;
-				case 1: // 1/4x
-					ZoomLevel = 0.25;
-					break;
-				case 2: // 1/2x
-					ZoomLevel = 0.5;
-					break;
-				default:
-					ZoomLevel = zoomToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem) - 2;
-					break;
-			}
+			if (zoomToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem) == 0)
+				ZoomLevel = 0.5; // 1/2x setting
+			else
+				ZoomLevel = zoomToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem); // Just a basic integer scale, nothing special needed
 			if (!loaded) return;
 			loaded = false;
 			UpdateScrollBars();
