@@ -119,7 +119,7 @@ namespace SonicRetro.SonLVL.GUI
 		Dictionary<int, int> objectTypeListMap = new Dictionary<int, int>();
 		readonly UndoSystem undoSystem = new SonLVLUndoSystem();
 
-		private const string scrollFormat = "Position: D4";
+		private const string scrollFormat = "Position: {0:D4}";
 
 		// (just a small workaround for CS1690, aka accessing AddGroupPreview's values directly from another form, namely the Add Parallax Series one)
 		public int PreviewLineSpacing
