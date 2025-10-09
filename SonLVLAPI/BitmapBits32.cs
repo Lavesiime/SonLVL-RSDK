@@ -147,26 +147,35 @@ namespace SonicRetro.SonLVL.API
 
 		public void DrawBitmap(BitmapBits source, int x, int y)
 		{
-			int srcl = 0;
-			if (x < 0)
-				srcl = -x;
-			int srct = 0;
-			if (y < 0)
-				srct = -y;
-			int srcr = source.Width;
-			if (srcr > Width - x)
-				srcr = Width - x;
-			int srcb = source.Height;
-			if (srcb > Height - y)
-				srcb = Height - y;
+			int srcl = Math.Max(0, -x);
+			int srct = Math.Max(0, -y);
+			int srcr = Math.Min(source.Width, Width - x);
+			int srcb = Math.Min(source.Height, Height - y);
+
+			// Nothing to draw, nope
+			if (srcl >= srcr || srct >= srcb)
+				return;
+
 			Color[] pal = palette;
-			for (int c = srct; c < srcb; c++)
+
+			// The this[] indexer isn't inherently slow, but calling it for every pixel in both images' area adds up very quickly
+			// So, instead, let's access Bits directly, and keep track of the indexes ourselves instead of recalcuating them for every pixel
+			for (int srcY = srct, destY = y + srct; srcY < srcb; srcY++, destY++)
 			{
-				if (y + c >= WaterHeight)
+				if (destY + y >= WaterHeight)
 					pal = waterPalette;
-				for (int r = srcl; r < srcr; r++)
-					if (source[r, c] != 0)
-						this[x + r, y + c] = pal[source[r, c]];
+
+				// Calculate base indexes for the row
+				int srcBase = srcY * source.Width;
+				int dstBase = destY * Width;
+
+				// Now, loop through every column within the row
+				for (int srcX = srcl, destX = x + srcl; srcX < srcr; srcX++, destX++)
+				{
+					var pixel = pal[source.Bits[srcBase + srcX]].ToArgb();
+					if (pixel != 0)
+						Bits[dstBase + destX] = pixel;
+				}
 			}
 		}
 
@@ -207,16 +216,12 @@ namespace SonicRetro.SonLVL.API
 			int sty = strip.Y + y;
 			if (sty < 0 || sty >= Height) return;
 			int stx = strip.X + x;
-			int srcl = 0;
-			if (stx < 0)
-				srcl = -stx;
-			int srcr = strip.Width;
-			if (srcr > Width - stx)
-				srcr = Width - stx;
+			int srcl = Math.Max(0, -stx);
+			int srcr = Math.Min(strip.Width, Width - stx);
 			Color[] pal = sty >= WaterHeight ? waterPalette : palette;
-			if (srcr > srcl)
-				for (int r = srcl; r < srcr; r++)
-					this[stx + r, sty] = pal[strip.Pixels[r]];
+			int dst = (sty * Width) + stx;
+			for (int r = srcl; r < srcr; r++)
+				Bits[dst + r] = pal[strip.Pixels[r]].ToArgb();
 		}
 
 		public void ClearSpriteLow(Sprite sprite, int x, int y)
@@ -820,22 +825,35 @@ namespace SonicRetro.SonLVL.API
 
 		public void ScrollVH(BitmapBits32 destination, int dstX, int srcX, params int[] srcY)
 		{
-			if (dstX < 0 || dstX >= destination.Width) return;
+			if (dstX < 0 || dstX >= destination.Width)
+				return;
+
 			for (int i = 0; i < srcY.Length; i++)
 			{
 				srcY[i] %= Height;
 				if (srcY[i] < 0)
 					srcY[i] += Height;
 			}
+
 			srcX %= Width;
 			if (srcX < 0)
 				srcX += Width;
-			for (int x = 0; x < destination.Width - dstX; x++)
+
+			int copyWidth = destination.Width - dstX;
+			for (int dx = 0; dx < copyWidth; dx++)
 			{
-				int amount = srcY[(srcX + x) % srcY.Length];
-				int xoff = (x + srcX) % Width;
+				int srcBase = srcX + dx;
+				if (srcBase >= Width)
+					srcBase -= Width;
+
+				int destBase = dx + dstX;
+				int sy = srcY[(srcX + dx) % srcY.Length];
 				for (int y = 0; y < destination.Height; y++)
-					destination[x + dstX, y] = this[xoff, (y + amount) % Height];
+				{
+					if (sy >= Height) sy -= Height;
+					destination.Bits[destBase + y * destination.Width] = Bits[srcBase + (sy * Width)];
+					sy++;
+				}
 			}
 		}
 
