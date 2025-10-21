@@ -58,6 +58,16 @@ namespace SonicRetro.SonLVL
             groupBox1.TabStop = false;
             groupBox1.Text = "Solidity";
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(19, 42);
+            label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(70, 25);
+            label2.TabIndex = 9;
+            label2.Text = "Index:";
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -86,10 +96,10 @@ namespace SonicRetro.SonLVL
             "Left/Right/Bottom Solid",
             "Not Solid",
             "Top Solid (No Grip)"});
-            this.solidity2.Location = new System.Drawing.Point(253, 176);
+            this.solidity2.Location = new System.Drawing.Point(214, 176);
             this.solidity2.Margin = new System.Windows.Forms.Padding(6);
             this.solidity2.Name = "solidity2";
-            this.solidity2.Size = new System.Drawing.Size(238, 33);
+            this.solidity2.Size = new System.Drawing.Size(277, 33);
             this.solidity2.TabIndex = 1;
             this.solidity2.SelectedIndexChanged += new System.EventHandler(this.solidity2_SelectedIndexChanged);
             // 
@@ -103,22 +113,12 @@ namespace SonicRetro.SonLVL
             "Left/Right/Bottom Solid",
             "Not Solid",
             "Top Solid (No Grip)"});
-            this.solidity1.Location = new System.Drawing.Point(253, 123);
+            this.solidity1.Location = new System.Drawing.Point(214, 123);
             this.solidity1.Margin = new System.Windows.Forms.Padding(6);
             this.solidity1.Name = "solidity1";
-            this.solidity1.Size = new System.Drawing.Size(238, 33);
+            this.solidity1.Size = new System.Drawing.Size(277, 33);
             this.solidity1.TabIndex = 0;
             this.solidity1.SelectedIndexChanged += new System.EventHandler(this.solidity1_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(19, 42);
-            label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(70, 25);
-            label2.TabIndex = 9;
-            label2.Text = "Index:";
             // 
             // xFlip
             // 
