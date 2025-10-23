@@ -14,7 +14,7 @@ This editor is based on the original [SonLVL](https://github.com/sonicretro/SonL
 
 ## Download
 
-The latest stable build can always be found in the [Releases tab](https://github.com/Lavesiime/SonLVL-RSDK/releases). Alternatively, for more experimental "nightly" versions of the editor, the repository features autobuilds that can be downloaded from the [_Actions_ tab](https://github.com/Lavesiime/SonLVL-RSDK/actions). However, do note that these versions may contain unfixed bugs or incomplete features, so use them at your own risk!
+The latest stable build can always be found on the editor's [GameBanana page](https://gamebanana.com/tools/8369). Alternatively, for more experimental "nightly" versions of the editor, the repository features autobuilds that can be downloaded from the [_Actions_ tab](https://github.com/Lavesiime/SonLVL-RSDK/actions). However, do note that these versions may contain bugs or incomplete/experimental features, so use them at your own risk!
 
 ## Documentation
 
