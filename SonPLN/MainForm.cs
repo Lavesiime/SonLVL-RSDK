@@ -726,6 +726,12 @@ namespace SonicRetro.SonLVL.SonPLN
 			a.Dispose();
 		}
 
+		private void enableGridToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (loaded)
+				DrawLevel();
+		}
+
 		private void zoomToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
 			foreach (ToolStripMenuItem item in zoomToolStripMenuItem.DropDownItems)
@@ -1086,7 +1092,10 @@ namespace SonicRetro.SonLVL.SonPLN
 					if (e.Control)
 						cutToolStripMenuItem1_Click(this, EventArgs.Empty);
 					else
+					{
 						xFlip.Checked = !xFlip.Checked;
+						DrawLevel();
+					}
 					break;
 				case Keys.V:
 					if (!loaded || !e.Control || FGSelection.IsEmpty) return;
@@ -1096,10 +1105,12 @@ namespace SonicRetro.SonLVL.SonPLN
 				case Keys.S:
 					if (!loaded || e.Control) return;
 					yFlip.Checked = !yFlip.Checked;
+					DrawLevel();
 					break;
 				case Keys.P:
 					if (!loaded || e.Control) return;
 					priority.Checked = !priority.Checked;
+					DrawLevel();
 					break;
 				case Keys.A:
 					if (!loaded) return;
