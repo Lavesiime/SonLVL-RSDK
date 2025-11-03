@@ -2205,6 +2205,43 @@ namespace SonicRetro.SonLVL.GUI
 						if (SelectedItems.Count > 0)
 							copyToolStripMenuItem_Click(sender, EventArgs.Empty);
 					break;
+				case Keys.D0:
+				case Keys.D1:
+					if (e.Control) return;
+					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[0]));
+					break;
+				case Keys.D2:
+					if (e.Control) return;
+					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[1]));
+					break;
+				case Keys.D3:
+					if (e.Control) return;
+					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[2]));
+					break;
+				case Keys.D4:
+					if (e.Control) return;
+					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[3]));
+					break;
+				case Keys.D5:
+					if (e.Control) return;
+					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[4]));
+					break;
+				case Keys.D6:
+					if (e.Control) return;
+					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[5]));
+					break;
+				case Keys.D7:
+					if (e.Control) return;
+					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[6]));
+					break;
+				case Keys.D8:
+					if (e.Control) return;
+					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[7]));
+					break;
+				case Keys.D9:
+					if (e.Control) return;
+					objGridSizeDropDownButton_DropDownItemClicked(this, new ToolStripItemClickedEventArgs(objGridSizeDropDownButton.DropDownItems[8]));
+					break;
 				case Keys.J:
 					int gs = ObjGrid + 1;
 					if (gs < objGridSizeDropDownButton.DropDownItems.Count)
@@ -2428,6 +2465,34 @@ namespace SonicRetro.SonLVL.GUI
 						DrawLevel();
 					}
 					break;
+				case Keys.C:
+					if (!loaded) return;
+					if (e.Control && !FGSelection.IsEmpty)
+						copyToolStripMenuItem1_Click(this, EventArgs.Empty);
+					break;
+				case Keys.V:
+					if (!loaded) return;
+					if (e.Control && !FGSelection.IsEmpty && Clipboard.ContainsData(typeof(LayoutSection).AssemblyQualifiedName))
+						pasteOnceToolStripMenuItem_Click(this, EventArgs.Empty);
+					break;
+				case Keys.X:
+					if (!loaded) return;
+					if (e.Control && !FGSelection.IsEmpty)
+						cutToolStripMenuItem1_Click(this, EventArgs.Empty);
+					break;
+				case Keys.H:
+					if (!loaded) return;
+					if (e.Control)
+						replaceForegroundToolStripButton_Click(this, EventArgs.Empty);
+					break;
+				case Keys.P:
+					includeobjectsWithFGToolStripMenuItem.Checked = !includeobjectsWithFGToolStripMenuItem.Checked;
+					break;
+				case Keys.Escape:
+					if (!loaded) return;
+					FGSelection = Rectangle.Empty;
+					DrawLevel();
+					break;
 			}
 			panel_KeyDown(sender, e);
 		}
@@ -2466,6 +2531,31 @@ namespace SonicRetro.SonLVL.GUI
 						SelectedChunk = (ushort)(SelectedChunk == LevelData.Chunks.Count - 1 ? 0 : SelectedChunk + 1);
 						DrawLevel();
 					}
+					break;
+				case Keys.C:
+					if (!loaded) return;
+					if (e.Control && !BGSelection.IsEmpty)
+						copyToolStripMenuItem1_Click(this, EventArgs.Empty);
+					break;
+				case Keys.V:
+					if (!loaded) return;
+					if (e.Control && !BGSelection.IsEmpty && Clipboard.ContainsData(typeof(LayoutSection).AssemblyQualifiedName))
+						pasteOnceToolStripMenuItem_Click(this, EventArgs.Empty);
+					break;
+				case Keys.X:
+					if (!loaded) return;
+					if (e.Control && !BGSelection.IsEmpty)
+						cutToolStripMenuItem1_Click(this, EventArgs.Empty);
+					break;
+				case Keys.H:
+					if (!loaded) return;
+					if (e.Control)
+						replaceBackgroundToolStripButton_Click(this, EventArgs.Empty);
+					break;
+				case Keys.Escape:
+					if (!loaded) return;
+					BGSelection = Rectangle.Empty;
+					DrawLevel();
 					break;
 			}
 			panel_KeyDown(sender, e);
@@ -3780,6 +3870,45 @@ namespace SonicRetro.SonLVL.GUI
 					else
 						return;
 					break;
+				case Keys.Q:
+					bool angles = anglesToolStripMenuItem.Checked;
+					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
+						if (item is ToolStripMenuItem)
+							((ToolStripMenuItem)item).Checked = false;
+					noneToolStripMenuItem1.Checked = true;
+					anglesToolStripMenuItem.Checked = angles;
+					DrawChunkPicture();
+					break;
+				case Keys.W:
+					angles = anglesToolStripMenuItem.Checked;
+					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
+						if (item is ToolStripMenuItem)
+							((ToolStripMenuItem)item).Checked = false;
+					path1ToolStripMenuItem.Checked = true;
+					anglesToolStripMenuItem.Checked = angles;
+					DrawChunkPicture();
+					break;
+				case Keys.E:
+					switch (LevelData.Level.ChunkFormat)
+					{
+						case EngineVersion.S1:
+						case EngineVersion.SCD:
+						case EngineVersion.SCDPC:
+							break;
+						case EngineVersion.S2:
+						case EngineVersion.S2NA:
+						case EngineVersion.S3K:
+						case EngineVersion.SKC:
+							angles = anglesToolStripMenuItem.Checked;
+							foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
+								if (item is ToolStripMenuItem)
+									((ToolStripMenuItem)item).Checked = false;
+							path2ToolStripMenuItem.Checked = true;
+							anglesToolStripMenuItem.Checked = angles;
+							DrawChunkPicture();
+							break;
+					}
+					break;
 				case Keys.S:
 					foreach (ChunkBlock item in blocks)
 						if (e.Shift)
@@ -3810,6 +3939,20 @@ namespace SonicRetro.SonLVL.GUI
 					}
 					else
 						return;
+					break;
+				case Keys.C:
+					if (e.Control)
+					{
+						chunkBlockMenuMode = ChunkBlockMenuMode.Chunks;
+						copyChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
+					}
+					break;
+				case Keys.V:
+					if (e.Control)
+					{
+						chunkBlockMenuMode = ChunkBlockMenuMode.Chunks;
+						pasteChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
+					}
 					break;
 				case Keys.X:
 					foreach (ChunkBlock item in blocks)
@@ -4056,13 +4199,6 @@ namespace SonicRetro.SonLVL.GUI
 			PatternIndex[] tiles = GetSelectedBlockTiles();
 			switch (e.KeyCode)
 			{
-				case Keys.C:
-					foreach (PatternIndex item in tiles)
-						if (e.Shift)
-							item.Palette--;
-						else
-							item.Palette++;
-					break;
 				case Keys.Down:
 					if (!LevelData.Level.TwoPlayerCompatible && SelectedBlockTile.Y < 1)
 					{
@@ -4140,6 +4276,28 @@ namespace SonicRetro.SonLVL.GUI
 					}
 					else
 						return;
+					break;
+				case Keys.C:
+					if (!e.Control)
+					{
+						foreach (PatternIndex item in tiles)
+							if (e.Shift)
+								item.Palette--;
+							else
+								item.Palette++;
+					}
+					else
+					{
+						chunkBlockMenuMode = ChunkBlockMenuMode.Blocks;
+						copyChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
+					}
+					break;
+				case Keys.V:
+					if (e.Control)
+					{
+						chunkBlockMenuMode = ChunkBlockMenuMode.Blocks;
+						pasteChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
+					}
 					break;
 				case Keys.X:
 					foreach (PatternIndex item in tiles)
@@ -9409,6 +9567,23 @@ namespace SonicRetro.SonLVL.GUI
 		private void calculateAngleButton_Click(object sender, EventArgs e)
 		{
 			ColAngle.Value = LevelData.GetColMap(LevelData.ColBmps[SelectedCol])[0, 0].Angle; // super lazy
+		}
+
+		private void CollisionSelector_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (!loaded) return;
+			switch (e.KeyCode)
+			{
+				case Keys.C:
+					copySolidsToolStripMenuItem_Click(this, EventArgs.Empty);
+					break;
+				case Keys.V:
+					pasteSolidsToolStripMenuItem_Click(this, EventArgs.Empty);
+					break;
+				case Keys.Delete:
+					clearSolidsToolStripMenuItem_Click(this, EventArgs.Empty);
+					break;
+			}
 		}
 
 		private void CollisionSelector_MouseDown(object sender, MouseEventArgs e)
