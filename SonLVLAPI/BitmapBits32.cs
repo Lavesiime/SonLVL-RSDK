@@ -172,9 +172,9 @@ namespace SonicRetro.SonLVL.API
 				// Now, loop through every column within the row
 				for (int srcX = srcl, destX = x + srcl; srcX < srcr; srcX++, destX++)
 				{
-					var pixel = pal[source.Bits[srcBase + srcX]].ToArgb();
+					var pixel = source.Bits[srcBase + srcX];
 					if (pixel != 0)
-						Bits[dstBase + destX] = pixel;
+						Bits[dstBase + destX] = pal[pixel].ToArgb();
 				}
 			}
 		}
