@@ -3542,6 +3542,7 @@
             this.sfxDownButton.Size = new System.Drawing.Size(33, 44);
             this.sfxDownButton.TabIndex = 19;
             this.sfxDownButton.Text = "↓";
+            this.toolTip.SetToolTip(this.sfxDownButton, "Shift the current selection down.");
             this.sfxDownButton.UseVisualStyleBackColor = true;
             this.sfxDownButton.Click += new System.EventHandler(this.sfxDownButton_Click);
             // 
