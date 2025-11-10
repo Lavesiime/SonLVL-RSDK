@@ -3979,9 +3979,10 @@ namespace SonicRetro.SonLVL.GUI
 			DrawChunkPicture();
 		}
 
-		private void DrawChunkPicture()
+		private BitmapBits GetChunkPreview()
 		{
-			if (!loaded) return;
+			if (!loaded) return null;
+
 			BitmapBits bmp = new BitmapBits(LevelData.Level.ChunkWidth, LevelData.Level.ChunkHeight);
 			if (lowToolStripMenuItem.Checked && highToolStripMenuItem.Checked)
 				bmp.DrawSprite(LevelData.ChunkSprites[SelectedChunk], 0, 0);
@@ -3989,10 +3990,19 @@ namespace SonicRetro.SonLVL.GUI
 				bmp.DrawSpriteLow(LevelData.ChunkSprites[SelectedChunk], 0, 0);
 			else if (highToolStripMenuItem.Checked)
 				bmp.DrawSpriteHigh(LevelData.ChunkSprites[SelectedChunk], 0, 0);
+			
 			if (path1ToolStripMenuItem.Checked)
 				bmp.DrawBitmapComposited(LevelData.ChunkColBmpBits[SelectedChunk][0], 0, 0);
-			if (path2ToolStripMenuItem.Checked)
+			else if (path2ToolStripMenuItem.Checked)
 				bmp.DrawBitmapComposited(LevelData.ChunkColBmpBits[SelectedChunk][1], 0, 0);
+
+			return bmp;
+		}
+
+		private void DrawChunkPicture()
+		{
+			if (!loaded) return;
+			BitmapBits bmp = GetChunkPreview();
 			bmp.DrawRectangle(LevelData.ColorWhite, SelectedChunkBlock.X * 16 - 1, SelectedChunkBlock.Y * 16 - 1, SelectedChunkBlock.Width * 16 + 1, SelectedChunkBlock.Height * 16 + 1);
 			using (Graphics gfx = ChunkPicture.CreateGraphics())
 			{
@@ -4158,9 +4168,10 @@ namespace SonicRetro.SonLVL.GUI
 				flipBlockHButton.Enabled = flipBlockVButton.Enabled = false;
 		}
 
-		private void DrawBlockPicture()
+		private BitmapBits GetBlockPreview()
 		{
-			if (!loaded) return;
+			if (!loaded) return null;
+
 			BitmapBits bmp = new BitmapBits(16, 16);
 			bmp.Bits.FastFill(0x20);
 			if (lowToolStripMenuItem.Checked)
@@ -4173,13 +4184,21 @@ namespace SonicRetro.SonLVL.GUI
 				tmp.IncrementIndexes(LevelData.ColorWhite - 1);
 				bmp.DrawBitmapComposited(tmp, 0, 0);
 			}
-			if (path2ToolStripMenuItem.Checked)
+			else if (path2ToolStripMenuItem.Checked)
 			{
 				BitmapBits tmp = new BitmapBits(LevelData.ColBmpBits[LevelData.GetColInd2(SelectedBlock)]);
 				tmp.IncrementIndexes(LevelData.ColorWhite - 1);
 				bmp.DrawBitmapComposited(tmp, 0, 0);
 			}
-			bmp = bmp.Scale(8);
+
+			return bmp;
+		}
+
+		private void DrawBlockPicture()
+		{
+			if (!loaded) return;
+			
+			BitmapBits bmp = GetBlockPreview().Scale(8);
 			bmp.DrawRectangle(LevelData.ColorWhite, SelectedBlockTile.X * 64 - 1, SelectedBlockTile.Y * 64 - 1, SelectedBlockTile.Width * 64 + 1, LevelData.Level.TwoPlayerCompatible ? 129 : SelectedBlockTile.Height * 64 + 1);
 			using (Graphics gfx = BlockPicture.CreateGraphics())
 			{
@@ -4894,26 +4913,17 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void cutTilesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			copyTilesToolStripMenuItem_Click(this, EventArgs.Empty);
+
 			switch (CurrentArtTab)
 			{
 				case ArtTab.Chunks:
-					Clipboard.SetData(typeof(Chunk).AssemblyQualifiedName, LevelData.Chunks[SelectedChunk].GetBytes());
 					DeleteChunk();
 					break;
 				case ArtTab.Blocks:
-					Clipboard.SetData(typeof(Block).AssemblyQualifiedName, LevelData.Blocks[SelectedBlock].GetBytes());
 					DeleteBlock();
 					break;
 				case ArtTab.Tiles:
-					if (LevelData.Level.TwoPlayerCompatible)
-					{
-						byte[][] data = new byte[2][];
-						data[0] = LevelData.Tiles[SelectedTile];
-						data[1] = LevelData.Tiles[SelectedTile + 1];
-						Clipboard.SetData("SonLVLTileInterlaced", data);
-					}
-					else
-						Clipboard.SetData("SonLVLTile", LevelData.Tiles[SelectedTile]);
 					DeleteTile();
 					break;
 			}
@@ -5012,10 +5022,14 @@ namespace SonicRetro.SonLVL.GUI
 			switch (CurrentArtTab)
 			{
 				case ArtTab.Chunks:
-					Clipboard.SetData(typeof(Chunk).AssemblyQualifiedName, LevelData.Chunks[SelectedChunk].GetBytes());
+					DataObject d = new DataObject(typeof(Chunk).AssemblyQualifiedName, LevelData.Chunks[SelectedChunk].GetBytes());
+					d.SetImage(GetChunkPreview().ToBitmap(LevelImgPalette));
+					Clipboard.SetDataObject(d);
 					break;
 				case ArtTab.Blocks:
-					Clipboard.SetData(typeof(Block).AssemblyQualifiedName, LevelData.Blocks[SelectedBlock].GetBytes());
+					d = new DataObject(typeof(Block).AssemblyQualifiedName, LevelData.Blocks[SelectedBlock].GetBytes());
+					d.SetImage(GetBlockPreview().ToBitmap(LevelImgPalette));
+					Clipboard.SetDataObject(d);
 					break;
 				case ArtTab.Tiles:
 					if (LevelData.Level.TwoPlayerCompatible)
@@ -5023,10 +5037,12 @@ namespace SonicRetro.SonLVL.GUI
 						byte[][] data = new byte[2][];
 						data[0] = LevelData.Tiles[SelectedTile];
 						data[1] = LevelData.Tiles[SelectedTile + 1];
-						Clipboard.SetData("SonLVLTileInterlaced", data);
+						d = new DataObject("SonLVLTileInterlaced", data);
 					}
 					else
-						Clipboard.SetData("SonLVLTile", LevelData.Tiles[SelectedTile]);
+						d = new DataObject("SonLVLTile", LevelData.Tiles[SelectedTile]);
+					d.SetImage(tile.ToBitmap(curpal));
+					Clipboard.SetDataObject(d);
 					break;
 			}
 		}
@@ -6295,9 +6311,12 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void cutToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
+			DataObject data = new DataObject();
 			ushort[,] layout;
 			bool[,] loop, xflip, yflip;
 			Rectangle selection;
+
+			Rectangle area;
 			if (CurrentTab == Tab.Background)
 			{
 				layout = LevelData.Layout.BGLayout;
@@ -6305,6 +6324,8 @@ namespace SonicRetro.SonLVL.GUI
 				xflip = LevelData.Layout.BGXFlip;
 				yflip = LevelData.Layout.BGYFlip;
 				selection = BGSelection;
+				area = new Rectangle(BGSelection.X * 128, BGSelection.Y * 128, BGSelection.Width * 128, BGSelection.Height * 128);
+				data.SetImage(LevelData.DrawBackground(area, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked).ToBitmap(LevelImgPalette));
 			}
 			else
 			{
@@ -6312,8 +6333,10 @@ namespace SonicRetro.SonLVL.GUI
 				loop = LevelData.Layout.FGLoop;
 				xflip = LevelData.Layout.FGXFlip;
 				yflip = LevelData.Layout.FGYFlip;
-				selection = FGSelection;
+				selection = FGSelection; area = new Rectangle(FGSelection.X * 128, FGSelection.Y * 128, FGSelection.Width * 128, FGSelection.Height * 128);
+				data.SetImage(LevelData.DrawForeground(area, includeobjectsWithFGToolStripMenuItem.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked, allToolStripMenuItem.Checked).ToBitmap(LevelImgPalette));
 			}
+
 			ushort[,] layoutsection = new ushort[selection.Width, selection.Height];
 			bool[,] loopsection = loop == null ? null : new bool[selection.Width, selection.Height];
 			bool[,] xflipsect = new bool[selection.Width, selection.Height];
@@ -6392,13 +6415,30 @@ namespace SonicRetro.SonLVL.GUI
 				}
 				SelectedObjectChanged();
 			}
-			Clipboard.SetData(typeof(LayoutSection).AssemblyQualifiedName, new LayoutSection(layoutsection, loopsection, xflipsect, yflipsect, objectselection));
+
+			data.SetData(typeof(LayoutSection).AssemblyQualifiedName, new LayoutSection(layoutsection, loopsection, xflipsect, yflipsect, objectselection));
+			Clipboard.SetDataObject(data);
+			
 			DrawLevel();
 		}
 
 		private void copyToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetData(typeof(LayoutSection).AssemblyQualifiedName, CreateLayoutSection());
+			DataObject data = new DataObject(typeof(LayoutSection).AssemblyQualifiedName, CreateLayoutSection());
+			
+			Rectangle area;
+			if (CurrentTab == Tab.Background)
+			{
+				area = new Rectangle(BGSelection.X * 128, BGSelection.Y * 128, BGSelection.Width * 128, BGSelection.Height * 128);
+				data.SetImage(LevelData.DrawBackground(area, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked).ToBitmap(LevelImgPalette));
+			}
+			else
+			{
+				area = new Rectangle(FGSelection.X * 128, FGSelection.Y * 128, FGSelection.Width * 128, FGSelection.Height * 128);
+				data.SetImage(LevelData.DrawForeground(area, includeobjectsWithFGToolStripMenuItem.Checked, !hideDebugObjectsToolStripMenuItem.Checked, objectsAboveHighPlaneToolStripMenuItem.Checked, lowToolStripMenuItem.Checked, highToolStripMenuItem.Checked, path1ToolStripMenuItem.Checked, path2ToolStripMenuItem.Checked, allToolStripMenuItem.Checked).ToBitmap(LevelImgPalette));
+			}
+
+			Clipboard.SetDataObject(data);
 		}
 
 		private LayoutSection CreateLayoutSection()
@@ -8817,10 +8857,14 @@ namespace SonicRetro.SonLVL.GUI
 			switch (CurrentArtTab)
 			{
 				case ArtTab.Chunks:
-					Clipboard.SetData(typeof(ChunkCopyData).AssemblyQualifiedName, new ChunkCopyData(LevelData.Chunks[SelectedChunk]));
+					DataObject d = new DataObject(typeof(ChunkCopyData).AssemblyQualifiedName, new ChunkCopyData(LevelData.Chunks[SelectedChunk]));
+					d.SetImage(GetChunkPreview().ToBitmap(LevelImgPalette));
+					Clipboard.SetDataObject(d);
 					break;
 				case ArtTab.Blocks:
-					Clipboard.SetData(typeof(BlockCopyData).AssemblyQualifiedName, new BlockCopyData(LevelData.Blocks[SelectedBlock]));
+					d = new DataObject(typeof(BlockCopyData).AssemblyQualifiedName, new BlockCopyData(LevelData.Blocks[SelectedBlock]));
+					d.SetImage(GetBlockPreview().ToBitmap(LevelImgPalette));
+					Clipboard.SetDataObject(d);
 					break;
 			}
 		}
@@ -9598,7 +9642,9 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void copySolidsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetData(typeof(ColInfo).AssemblyQualifiedName, new ColInfo(Solidity.NotSolid, LevelData.ColArr1[CollisionSelector.SelectedIndex], LevelData.Angles[CollisionSelector.SelectedIndex]));
+			DataObject data = new DataObject(typeof(ColInfo).AssemblyQualifiedName, new ColInfo(Solidity.NotSolid, LevelData.ColArr1[CollisionSelector.SelectedIndex], LevelData.Angles[CollisionSelector.SelectedIndex]));
+			data.SetImage(LevelData.ColBmpBits[SelectedCol].ToBitmap(Color.Black, Color.White));
+			Clipboard.SetDataObject(data);
 		}
 
 		private void pasteSolidsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -9896,7 +9942,10 @@ namespace SonicRetro.SonLVL.GUI
 					for (int y = 0; y < SelectedChunkBlock.Height; y++)
 						for (int x = 0; x < SelectedChunkBlock.Width; x++)
 							blocks[x, y] = chunk.Blocks[SelectedChunkBlock.X + x, SelectedChunkBlock.Y + y];
-					Clipboard.SetData(ChunkBlock.GetTypeForFormat().MakeArrayType(2).AssemblyQualifiedName, blocks);
+					
+					DataObject data = new DataObject(ChunkBlock.GetTypeForFormat().MakeArrayType(2).AssemblyQualifiedName, blocks);
+					data.SetImage(GetChunkPreview().GetSection(SelectedChunkBlock.X * 16, SelectedChunkBlock.Y * 16, SelectedChunkBlock.Width * 16, SelectedChunkBlock.Height * 16).ToBitmap(LevelImgPalette));
+					Clipboard.SetDataObject(data);
 					break;
 				case ChunkBlockMenuMode.Blocks:
 					Block block = LevelData.Blocks[SelectedBlock];
@@ -9904,7 +9953,10 @@ namespace SonicRetro.SonLVL.GUI
 					for (int y = 0; y < SelectedBlockTile.Height; y++)
 						for (int x = 0; x < SelectedBlockTile.Width; x++)
 							tiles[x, y] = block.Tiles[SelectedBlockTile.X + x, SelectedBlockTile.Y + y];
-					Clipboard.SetData(typeof(PatternIndex[,]).AssemblyQualifiedName, tiles);
+					
+					data = new DataObject(typeof(PatternIndex[,]).AssemblyQualifiedName, tiles);
+					data.SetImage(GetBlockPreview().GetSection(SelectedBlockTile.X * 8, SelectedBlockTile.Y * 8, SelectedBlockTile.Width * 8, LevelData.Level.TwoPlayerCompatible ? 16 : SelectedBlockTile.Height * 8).ToBitmap(LevelImgPalette));
+					Clipboard.SetDataObject(data);
 					break;
 			}
 		}
