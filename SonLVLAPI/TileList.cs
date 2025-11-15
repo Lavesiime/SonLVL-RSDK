@@ -91,14 +91,16 @@ namespace SonicRetro.SonLVL.API
 			switch (Direction)
 			{
 				case Direction.Horizontal:
-					int tilesPerCol = Math.Max((Height - hScrollBar1.Height) / (imageHeight + 4), 1);
-					hScrollBar1.Maximum = Math.Max(((int)Math.Ceiling(Images.Count / (double)tilesPerCol) * (imageWidth + 4)) - Width, 0);
 					hScrollBar1.SmallChange = hScrollBar1.LargeChange = imageHeight + 4;
+					int tilesPerCol = Math.Max((Height - hScrollBar1.Height) / (imageHeight + 4), 1);
+					int columnCount = (int)Math.Ceiling(Images.Count / (double)tilesPerCol);
+					hScrollBar1.Maximum = Math.Max((columnCount * (imageWidth + 4)) - Width, 0) + hScrollBar1.LargeChange - 1;
 					break;
 				case Direction.Vertical:
-					int tilesPerRow = Math.Max((Width - vScrollBar1.Width) / (imageWidth + 4), 1);
-					vScrollBar1.Maximum = Math.Max(((int)Math.Ceiling(Images.Count / (double)tilesPerRow) * (imageHeight + 4)) - Height, 0);
 					vScrollBar1.SmallChange = vScrollBar1.LargeChange = imageWidth + 4;
+					int tilesPerRow = Math.Max((Width - vScrollBar1.Width) / (imageWidth + 4), 1);
+					int rowCount = (int)Math.Ceiling(Images.Count / (double)tilesPerRow);
+					vScrollBar1.Maximum = Math.Max((rowCount * (imageHeight + 4)) - Height, 0) + vScrollBar1.LargeChange - 1;
 					break;
 			}
 			Invalidate();
@@ -327,9 +329,9 @@ namespace SonicRetro.SonLVL.API
 			set
 			{
 				if (direction == API.Direction.Horizontal)
-					hScrollBar1.Value = Math.Min(hScrollBar1.Maximum, Math.Max(0, value));
+					hScrollBar1.Value = Math.Min(hScrollBar1.Maximum - hScrollBar1.LargeChange + 1, Math.Max(0, value));
 				else
-					vScrollBar1.Value = Math.Min(vScrollBar1.Maximum, Math.Max(0, value));
+					vScrollBar1.Value = Math.Min(vScrollBar1.Maximum - vScrollBar1.LargeChange + 1, Math.Max(0, value));
 			}
 		}
 
