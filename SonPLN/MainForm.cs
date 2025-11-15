@@ -2174,11 +2174,22 @@ namespace SonicRetro.SonLVL.SonPLN
 				Point clientPoint = TileSelector.PointToClient(new Point(e.X, e.Y));
 				ushort newindex = (ushort)TileSelector.GetItemAtPoint(clientPoint);
 				ushort oldindex = (ushort)(int)e.Data.GetData("SonPLNTileIndex_" + pid);
-				if (newindex == oldindex) return;
+				
+				if (newindex == oldindex)
+				{
+					TileSelector.Invalidate();
+					return;
+				}
+
 				if ((ModifierKeys & Keys.Control) == Keys.Control)
 				{
-					if (newindex == TileSelector.Images.Count) return;
-						LevelData.Tiles.Swap(oldindex, newindex);
+					if (newindex == TileSelector.Images.Count)
+					{
+						TileSelector.Invalidate();
+						return;
+					}
+
+					LevelData.Tiles.Swap(oldindex, newindex);
 					TileSelector.Images.Swap(oldindex, newindex);
 					LevelData.UpdateTileArray();
 					for (int y = 0; y < planemap.GetLength(1); y++)
@@ -2193,8 +2204,13 @@ namespace SonicRetro.SonLVL.SonPLN
 				}
 				else
 				{
-					if (newindex == oldindex + 1) return;
-						LevelData.Tiles.Move(oldindex, newindex);
+					if (newindex == oldindex + 1)
+					{
+						TileSelector.Invalidate();
+						return;
+					}
+
+					LevelData.Tiles.Move(oldindex, newindex);
 					TileSelector.Images.Move(oldindex, newindex);
 					LevelData.UpdateTileArray();
 					for (int y = 0; y < planemap.GetLength(1); y++)
@@ -2270,6 +2286,7 @@ namespace SonicRetro.SonLVL.SonPLN
 			LevelData.Tiles[SelectedTile] = t;
 			t.CopyTo(LevelData.TileArray, SelectedTile * 32);
 			TileSelector.Images[SelectedTile] = LevelData.TileToBmp4bpp(LevelData.Tiles[SelectedTile], 0, SelectedColor.Y, false);
+			TileSelector.Invalidate();
 		}
 
 		private void importToolStripMenuItem2_Click(object sender, EventArgs e)

@@ -8316,10 +8316,21 @@ namespace SonicRetro.SonLVL.GUI
 				Point clientPoint = ChunkSelector.PointToClient(new Point(e.X, e.Y));
 				ushort newindex = (ushort)ChunkSelector.GetItemAtPoint(clientPoint);
 				ushort oldindex = (ushort)(int)e.Data.GetData("SonLVLChunkIndex_" + pid);
-				if (newindex == oldindex) return;
+				
+				if (newindex == oldindex)
+				{
+					ChunkSelector.Invalidate();
+					return;
+				}
+
 				if ((ModifierKeys & Keys.Control) == Keys.Control)
 				{
-					if (newindex == LevelData.Chunks.Count) return;
+					if (newindex == LevelData.Chunks.Count)
+					{
+						ChunkSelector.Invalidate();
+						return;
+					}
+
 					LevelData.Chunks.Swap(oldindex, newindex);
 					LevelData.ChunkSprites.Swap(oldindex, newindex);
 					LevelData.ChunkBmps.Swap(oldindex, newindex);
@@ -8337,7 +8348,12 @@ namespace SonicRetro.SonLVL.GUI
 				}
 				else
 				{
-					if (newindex == oldindex + 1) return;
+					if (newindex == oldindex + 1)
+					{
+						ChunkSelector.Invalidate();
+						return;
+					}
+
 					LevelData.Chunks.Move(oldindex, newindex);
 					LevelData.ChunkSprites.Move(oldindex, newindex);
 					LevelData.ChunkBmps.Move(oldindex, newindex);
@@ -8439,10 +8455,20 @@ namespace SonicRetro.SonLVL.GUI
 				Point clientPoint = BlockSelector.PointToClient(new Point(e.X, e.Y));
 				ushort newindex = (ushort)BlockSelector.GetItemAtPoint(clientPoint);
 				ushort oldindex = (ushort)(int)e.Data.GetData("SonLVLBlockIndex_" + pid);
-				if (newindex == oldindex) return;
+				if (newindex == oldindex)
+				{
+					BlockSelector.Invalidate();
+					return;
+				}
+
 				if ((ModifierKeys & Keys.Control) == Keys.Control)
 				{
-					if (newindex == LevelData.Blocks.Count) return;
+					if (newindex == LevelData.Blocks.Count)
+					{
+						BlockSelector.Invalidate();
+						return;
+					}
+
 					LevelData.Blocks.Swap(oldindex, newindex);
 					LevelData.BlockBmpBits.Swap(oldindex, newindex);
 					LevelData.BlockBmps.Swap(oldindex, newindex);
@@ -8465,7 +8491,12 @@ namespace SonicRetro.SonLVL.GUI
 				}
 				else
 				{
-					if (newindex == oldindex + 1) return;
+					if (newindex == oldindex + 1)
+					{
+						BlockSelector.Invalidate();
+						return;
+					}
+
 					LevelData.Blocks.Move(oldindex, newindex);
 					LevelData.BlockBmpBits.Move(oldindex, newindex);
 					LevelData.BlockBmps.Move(oldindex, newindex);
@@ -8572,10 +8603,20 @@ namespace SonicRetro.SonLVL.GUI
 				Point clientPoint = TileSelector.PointToClient(new Point(e.X, e.Y));
 				ushort newindex = (ushort)TileSelector.GetItemAtPoint(clientPoint);
 				ushort oldindex = (ushort)(int)e.Data.GetData("SonLVLTileIndex_" + pid);
-				if (newindex == oldindex) return;
+				if (newindex == oldindex)
+				{
+					TileSelector.Invalidate();
+					return;
+				}
+
 				if ((ModifierKeys & Keys.Control) == Keys.Control)
 				{
-					if (newindex == TileSelector.Images.Count) return;
+					if (newindex == TileSelector.Images.Count)
+					{
+						TileSelector.Invalidate();
+						return;
+					}
+
 					if (LevelData.Level.TwoPlayerCompatible)
 					{
 						LevelData.Tiles.Swap(oldindex * 2, newindex * 2);
@@ -8614,7 +8655,12 @@ namespace SonicRetro.SonLVL.GUI
 				}
 				else
 				{
-					if (newindex == oldindex + 1) return;
+					if (newindex == oldindex + 1)
+					{
+						TileSelector.Invalidate();
+						return;
+					}
+
 					if (LevelData.Level.TwoPlayerCompatible)
 					{
 						byte[] t1 = LevelData.Tiles[oldindex * 2];
@@ -9076,6 +9122,7 @@ namespace SonicRetro.SonLVL.GUI
 					else
 						LevelData.Chunks[SelectedChunk] = new Chunk((byte[])Clipboard.GetData(typeof(Chunk).AssemblyQualifiedName), 0);
 					LevelData.RedrawChunk(SelectedChunk);
+					ChunkSelector.Invalidate();
 					break;
 				case ArtTab.Blocks:
 					if (Clipboard.ContainsData(typeof(BlockCopyData).AssemblyQualifiedName))
@@ -9116,6 +9163,7 @@ namespace SonicRetro.SonLVL.GUI
 					else
 						LevelData.Blocks[SelectedBlock] = new Block((byte[])Clipboard.GetData(typeof(Block).AssemblyQualifiedName), 0);
 					LevelData.RedrawBlock(SelectedBlock, true);
+					BlockSelector.Invalidate();
 					break;
 				case ArtTab.Tiles:
 					if (LevelData.Level.TwoPlayerCompatible)
@@ -9147,6 +9195,7 @@ namespace SonicRetro.SonLVL.GUI
 					else
 						TileSelector.Images[SelectedTile] = LevelData.TileToBmp4bpp(LevelData.Tiles[SelectedTile], 0, SelectedColor.Y, false);
 					blockTileEditor.SelectedObjects = blockTileEditor.SelectedObjects;
+					TileSelector.Invalidate();
 					break;
 			}
 		}
