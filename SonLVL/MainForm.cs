@@ -871,6 +871,21 @@ namespace SonicRetro.SonLVL.GUI
 			Enabled = true;
 			UseWaitCursor = false;
 			DrawLevel();
+
+			switch (CurrentTab)
+			{
+				case Tab.Objects:
+					objectPanel.Focus();
+					break;
+
+				case Tab.Foreground:
+					foregroundPanel.Focus();
+					break;
+
+				case Tab.Background:
+					backgroundPanel.Focus();
+					break;
+			}
 		}
 
 		private void RefreshTileSelector()

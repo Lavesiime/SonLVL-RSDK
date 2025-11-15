@@ -560,6 +560,11 @@ namespace SonicRetro.SonLVL.SonPLN
 			Enabled = true;
 			UseWaitCursor = false;
 			DrawLevel();
+
+			if (CurrentTab == Tab.Foreground)
+				foregroundPanel.Focus();
+			else
+				TileSelector.Focus();
 		}
 
 		private void RefreshTileSelector()
