@@ -85,6 +85,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
 		{
+			UseWaitCursor = false;
 			Log(e.Exception.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
 			File.WriteAllLines("SonLVL.log", LogFile.ToArray());
 			using (ErrorDialog ed = new ErrorDialog("Unhandled Exception " + e.Exception.GetType().Name + "\nLog file has been saved.\n\nDo you want to try to continue running?", Enabled))
