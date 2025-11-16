@@ -2102,8 +2102,17 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				case Keys.Y:
 					if (!loaded) return;
-					if (e.Control && RedoList.Count > 0)
-						DoRedo(1);
+					if (e.Control)
+					{
+						if (RedoList.Count > 0)
+							DoRedo(1);
+					}
+					else
+					{
+						lowToolStripMenuItem.Checked = !lowToolStripMenuItem.Checked;
+						DrawLevel();
+						DrawChunkPicture();
+					}
 					break;
 				case Keys.Z:
 					if (!loaded) return;
@@ -2153,6 +2162,56 @@ namespace SonicRetro.SonLVL.GUI
 				case Keys.NumPad4:
 					if (e.Control)
 						CurrentTab = Tab.Art;
+					break;
+				case Keys.Q:
+					if (!loaded) return;
+					bool angles = anglesToolStripMenuItem.Checked;
+					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
+						if (item is ToolStripMenuItem)
+							((ToolStripMenuItem)item).Checked = false;
+					noneToolStripMenuItem1.Checked = true;
+					anglesToolStripMenuItem.Checked = angles;
+					DrawLevel();
+					DrawChunkPicture();
+					break;
+				case Keys.W:
+					if (!loaded) return;
+					angles = anglesToolStripMenuItem.Checked;
+					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
+						if (item is ToolStripMenuItem)
+							((ToolStripMenuItem)item).Checked = false;
+					path1ToolStripMenuItem.Checked = true;
+					anglesToolStripMenuItem.Checked = angles;
+					DrawLevel();
+					DrawChunkPicture();
+					break;
+				case Keys.E:
+					if (!loaded) return;
+					switch (LevelData.Level.ChunkFormat)
+					{
+						case EngineVersion.S1:
+						case EngineVersion.SCD:
+						case EngineVersion.SCDPC:
+							break;
+						case EngineVersion.S2:
+						case EngineVersion.S2NA:
+						case EngineVersion.S3K:
+						case EngineVersion.SKC:
+							angles = anglesToolStripMenuItem.Checked;
+							foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
+								if (item is ToolStripMenuItem)
+									((ToolStripMenuItem)item).Checked = false;
+							path2ToolStripMenuItem.Checked = true;
+							anglesToolStripMenuItem.Checked = angles;
+							DrawLevel();
+							DrawChunkPicture();
+							break;
+					}
+					break;
+				case Keys.U:
+					highToolStripMenuItem.Checked = !highToolStripMenuItem.Checked;
+					DrawLevel();
+					DrawChunkPicture();
 					break;
 			}
 		}
@@ -2582,45 +2641,6 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			switch (e.KeyCode)
 			{
-				case Keys.Q:
-					bool angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem)
-							((ToolStripMenuItem)item).Checked = false;
-					noneToolStripMenuItem1.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
-					DrawLevel();
-					break;
-				case Keys.W:
-					angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem)
-							((ToolStripMenuItem)item).Checked = false;
-					path1ToolStripMenuItem.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
-					DrawLevel();
-					break;
-				case Keys.E:
-					switch (LevelData.Level.ChunkFormat)
-					{
-						case EngineVersion.S1:
-						case EngineVersion.SCD:
-						case EngineVersion.SCDPC:
-							break;
-						case EngineVersion.S2:
-						case EngineVersion.S2NA:
-						case EngineVersion.S3K:
-						case EngineVersion.SKC:
-							angles = anglesToolStripMenuItem.Checked;
-							foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-								if (item is ToolStripMenuItem)
-									((ToolStripMenuItem)item).Checked = false;
-							path2ToolStripMenuItem.Checked = true;
-							anglesToolStripMenuItem.Checked = angles;
-							DrawLevel();
-							break;
-					}
-					break;
 				case Keys.R:
 					if (!(e.Alt & e.Control))
 					{
@@ -2630,17 +2650,6 @@ namespace SonicRetro.SonLVL.GUI
 					break;
 				case Keys.T:
 					objectsAboveHighPlaneToolStripMenuItem.Checked = !objectsAboveHighPlaneToolStripMenuItem.Checked;
-					DrawLevel();
-					break;
-				case Keys.Y:
-					if (!e.Control)
-					{
-						lowToolStripMenuItem.Checked = !lowToolStripMenuItem.Checked;
-						DrawLevel();
-					}
-					break;
-				case Keys.U:
-					highToolStripMenuItem.Checked = !highToolStripMenuItem.Checked;
 					DrawLevel();
 					break;
 				case Keys.I:
@@ -3886,45 +3895,6 @@ namespace SonicRetro.SonLVL.GUI
 					}
 					else
 						return;
-					break;
-				case Keys.Q:
-					bool angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem)
-							((ToolStripMenuItem)item).Checked = false;
-					noneToolStripMenuItem1.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
-					DrawChunkPicture();
-					break;
-				case Keys.W:
-					angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem)
-							((ToolStripMenuItem)item).Checked = false;
-					path1ToolStripMenuItem.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
-					DrawChunkPicture();
-					break;
-				case Keys.E:
-					switch (LevelData.Level.ChunkFormat)
-					{
-						case EngineVersion.S1:
-						case EngineVersion.SCD:
-						case EngineVersion.SCDPC:
-							break;
-						case EngineVersion.S2:
-						case EngineVersion.S2NA:
-						case EngineVersion.S3K:
-						case EngineVersion.SKC:
-							angles = anglesToolStripMenuItem.Checked;
-							foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-								if (item is ToolStripMenuItem)
-									((ToolStripMenuItem)item).Checked = false;
-							path2ToolStripMenuItem.Checked = true;
-							anglesToolStripMenuItem.Checked = angles;
-							DrawChunkPicture();
-							break;
-					}
 					break;
 				case Keys.S:
 					foreach (ChunkBlock item in blocks)
