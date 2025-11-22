@@ -19,6 +19,7 @@ namespace SonicRetro.SonLVL.API
 		public static IDataPack DataFile;
 		public static string EXEFolder;
 		public static string ModFolder;
+		public static string BaseModFolder;
 		public static GameConfig GameConfig;
 		public static GameXML GameXML;
 		public static string GameTitle;
@@ -131,6 +132,31 @@ namespace SonicRetro.SonLVL.API
 				DataFile = new DataFolder(EXEFolder);
 			}
 
+			// Super specialized feature added specifically for the Team Forever projects
+			// Because of how their games are mods themselves, let's use them as essentially a second data file
+			// (at the moment, only S1F is actually treated this way, S2A hasn't gotten an update in 2 years but may as well future proof just in case)
+			// (as for CD, no idea what that's gonna be like, but.. let's not get off topic here--)
+			BaseModFolder = null;
+			if (Game.BaseMod != null)
+			{
+				string modpath = Path.Combine(EXEFolder, "mods");
+				if (Directory.Exists(modpath))
+				{
+					// First, we try to match folder name
+					if (Directory.Exists(Path.Combine(modpath, Game.BaseMod)))
+						BaseModFolder = Path.Combine(modpath, Game.BaseMod);
+					else // If that doesn't work, then let's go with mod name
+						BaseModFolder = Path.GetDirectoryName(ModInfo.GetModFiles(new DirectoryInfo(modpath)).FirstOrDefault(m => IniSerializer.Deserialize<ModInfo>(m).Name == Game.BaseMod));
+
+					if (BaseModFolder != null)
+						Log($"Loading base mod from folder {BaseModFolder}..");
+					else
+						Log($"Tried to load base mod {Game.BaseMod}, but.. the mod couldn't be found!");
+				}
+				else
+					Log($"Tried to load base mod {Game.BaseMod}, but.. the mods folder doesn't exist!");
+			}
+
 			ModFolder = null;
 			switch (Game.RSDKVer)
 			{
@@ -197,22 +223,42 @@ namespace SonicRetro.SonLVL.API
 				if (File.Exists(modpath))
 					return (T)Activator.CreateInstance(typeof(T), modpath);
 			}
+
+
+			if (BaseModFolder != null)
+			{
+				string path = Path.Combine(BaseModFolder, filename);
+				if (File.Exists(path))
+					return (T)Activator.CreateInstance(typeof(T), path);
+			}
+
 			if (DataFile != null && DataFile.TryGetFileData(filename, out byte[] data))
 				using (MemoryStream ms = new MemoryStream(data))
 					return (T)Activator.CreateInstance(typeof(T), ms);
+			
 			if (File.Exists(filename))
 				return (T)Activator.CreateInstance(typeof(T), filename);
+			
 			return new T();
 		}
 
 		public static T ReadFileNoMod<T>(string filename)
 			where T : new()
 		{
+			if (BaseModFolder != null)
+			{
+				string path = Path.Combine(BaseModFolder, filename);
+				if (File.Exists(path))
+					return (T)Activator.CreateInstance(typeof(T), path);
+			}
+			
 			if (DataFile != null && DataFile.TryGetFileData(filename, out byte[] data))
 				using (MemoryStream ms = new MemoryStream(data))
 					return (T)Activator.CreateInstance(typeof(T), ms);
+			
 			if (File.Exists(filename))
 				return (T)Activator.CreateInstance(typeof(T), filename);
+			
 			return new T();
 		}
 
@@ -224,19 +270,38 @@ namespace SonicRetro.SonLVL.API
 				if (File.Exists(modpath))
 					return File.ReadAllBytes(modpath);
 			}
+
+			if (BaseModFolder != null)
+			{
+				string path = Path.Combine(BaseModFolder, filename);
+				if (File.Exists(path))
+					return File.ReadAllBytes(path);
+			}
+
 			if (DataFile != null && DataFile.TryGetFileData(filename, out byte[] data))
 				return data;
+			
 			if (File.Exists(filename))
 				return File.ReadAllBytes(filename);
+			
 			return null;
 		}
 
 		public static byte[] ReadFileRawNoMod(string filename)
 		{
+			if (BaseModFolder != null)
+			{
+				string path = Path.Combine(BaseModFolder, filename);
+				if (File.Exists(path))
+					return File.ReadAllBytes(path);
+			}
+			
 			if (DataFile != null && DataFile.TryGetFileData(filename, out byte[] data))
 				return data;
+			
 			if (File.Exists(filename))
 				return File.ReadAllBytes(filename);
+			
 			return null;
 		}
 
@@ -256,9 +321,11 @@ namespace SonicRetro.SonLVL.API
 					StageConfig = ReadFile<RSDKv3.StageConfig>(stgfol + "StageConfig.bin");
 					break;
 			}
+
 			for (int l = 0; l < StageConfig.stagePalette.colors.Length; l++)
 				for (int c = 0; c < StageConfig.stagePalette.colors[l].Length; c++)
 					NewPalette[(l * 16) + c + 96] = StageConfig.stagePalette.colors[l][c].ToSystemColor();
+			
 			Gif tilebmp = ReadFile<Gif>(stgfol + "16x16Tiles.gif");
 			if (tilebmp.width >= 16 && tilebmp.height >= 16)
 			{
@@ -268,6 +335,7 @@ namespace SonicRetro.SonLVL.API
 					NewTiles[i] = new BitmapBits(16, 16);
 					Array.Copy(tilebmp.pixels, i * 256, NewTiles[i].Bits, 0, 256);
 				}
+
 				for (int i = 128; i < 256; i++)
 					NewPalette[i] = tilebmp.palette[i].ToSystemColor();
 			}
@@ -279,8 +347,10 @@ namespace SonicRetro.SonLVL.API
 
 				NewPalette.Fill(NewPalette[0], 128, 128);
 			}
+
 			NewChunks = ReadFile<Tiles128x128>(stgfol + "128x128Tiles.bin");
 			Collision = ReadFile<TileConfig>(stgfol + "CollisionMasks.bin");
+			
 			AdditionalScenes = new List<AdditionalScene>();
 			switch (Game.RSDKVer)
 			{
@@ -297,10 +367,13 @@ namespace SonicRetro.SonLVL.API
 						AdditionalScenes.Add(new AdditionalScene(astg, ReadFile<RSDKv3.Scene>($"{stgfol}Act{astg.actID}.bin")));
 					break;
 			}
+
 			Objects = new List<ObjectEntry>(Scene.entities.Count);
 			foreach (var item in Scene.entities)
 				Objects.Add(ObjectEntry.Create(item));
+			
 			ForegroundDeformation = (Background.hScroll.Count > 0) ? Background.hScroll[0].deform : false;
+			
 			for (int i = 0; i < 8; i++)
 			{
 				BGScroll[i] = new List<ScrollData>();
@@ -343,9 +416,12 @@ namespace SonicRetro.SonLVL.API
 			unkobj = new DefaultObjectDefinition();
 			INIObjDefs = new Dictionary<string, ObjectData>();
 			spriteSheets = new Dictionary<string, BitmapBits>();
+
+			// (nothing here for BaseModFolder stuff, since the "base mod's" object definitions should be installed in the base game folder instead of inside the mod)
 			if (Directory.Exists("SonLVLObjDefs"))
 				foreach (string file in Directory.EnumerateFiles("SonLVLObjDefs", "*.ini"))
 					LoadObjectDefinitionFile(file, false);
+
 			if (ModFolder != null && Directory.Exists(Path.Combine(ModFolder, "SonLVLObjDefs")))
 			{
 				foreach (string file in Directory.EnumerateFiles(Path.Combine(ModFolder, "SonLVLObjDefs"), "*.ini"))
@@ -354,19 +430,24 @@ namespace SonicRetro.SonLVL.API
 			}
 			else
 				dllcache = Path.Combine("SonLVLObjDefs", "dllcache");
+			
 			unkobj.Init(new ObjectData());
+			
 			if (INIObjDefs.Count > 0 && !Directory.Exists(dllcache))
 			{
 				DirectoryInfo dir = Directory.CreateDirectory(dllcache);
 				dir.Attributes |= FileAttributes.Hidden;
 			}
+			
 			InitObjectDefinitions();
 			foreach (ObjectEntry obj in Objects)
 				obj.UpdateSprite();
+
 			Log("Drawing tile bitmaps...");
 			NewTileBmps = new Bitmap[NewTiles.Length];
 			for (int bi = 0; bi < NewTiles.Length; bi++)
 				RedrawBlock(bi, false);
+			
 			Log("Drawing collision bitmaps...");
 			NewColBmpBits = new BitmapBits[Collision.collisionMasks[0].Length][];
 			NewColBmps = new Bitmap[Collision.collisionMasks[0].Length][];
@@ -376,6 +457,7 @@ namespace SonicRetro.SonLVL.API
 				NewColBmps[i] = new Bitmap[2];
 				RedrawCol(i, false);
 			}
+			
 			Log("Drawing chunk bitmaps...");
 			ChunkSprites = new Sprite[NewChunks.chunkList.Length];
 			ChunkBmps = new Bitmap[NewChunks.chunkList.Length][];
@@ -391,6 +473,7 @@ namespace SonicRetro.SonLVL.API
 				ChunkColSprites[i] = new Sprite[2];
 				RedrawChunk(i);
 			}
+
 			stopwatch.Stop();
 			Log($"Level loaded in {stopwatch.Elapsed.TotalSeconds} second(s).");
 		}

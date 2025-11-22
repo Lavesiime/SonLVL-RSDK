@@ -8,6 +8,8 @@ namespace SonicRetro.SonLVL.API
 		public string DataFile { get; set; }
 		public EngineVersion RSDKVer { get; set; }
 		public bool IsV5U { get; set; }
+		public string BaseMod { get; set; }
+
 		[IniCollection(IniCollectionMode.IndexOnly)]
 		public Dictionary<string, LevelInfo> Levels { get; set; }
 

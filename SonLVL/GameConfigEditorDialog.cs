@@ -98,8 +98,13 @@ namespace SonicRetro.SonLVL
 			loaded = true;
 			if (Directory.Exists(Path.Combine(LevelData.EXEFolder, "Data/Stages")))
 				stageFiles.AddRange(GetFilesRelative(Path.Combine(LevelData.EXEFolder, "Data/Stages"), "Act*.bin"));
+
+			if (LevelData.BaseModFolder != null && Directory.Exists(Path.Combine(LevelData.BaseModFolder, "Data/Stages")))
+				stageFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.BaseModFolder, "Data/Stages"), "Act*.bin").Where(a => !stageFiles.Contains(a)));
+
 			if (LevelData.ModFolder != null && Directory.Exists(Path.Combine(LevelData.ModFolder, "Data/Stages")))
 				stageFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.ModFolder, "Data/Stages"), "Act*.bin").Where(a => !stageFiles.Contains(a)));
+			
 			stageFolder.AutoCompleteCustomSource.AddRange(stageFiles.Select(a => a.Remove(a.LastIndexOf('/'))).Distinct().ToArray());
 			stageCategory.SelectedIndex = 0;
 		}
