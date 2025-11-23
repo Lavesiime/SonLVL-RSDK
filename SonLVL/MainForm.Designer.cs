@@ -2775,6 +2775,7 @@
             this.bgDuplicateLayerOverToolStripButton.Name = "bgDuplicateLayerOverToolStripButton";
             this.bgDuplicateLayerOverToolStripButton.Size = new System.Drawing.Size(210, 44);
             this.bgDuplicateLayerOverToolStripButton.Text = "Duplicate Over...";
+            this.bgDuplicateLayerOverToolStripButton.ToolTipText = "Copy the current layer's chunk layout and scrolling data over another layer.";
             this.bgDuplicateLayerOverToolStripButton.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.bgDuplicateLayerOverToolStripButton_DropDownItemClicked);
             // 
             // layer1ToolStripMenuItem
@@ -2905,7 +2906,6 @@
             this.scrollCamX.Name = "scrollCamX";
             this.scrollCamX.Size = new System.Drawing.Size(156, 31);
             this.scrollCamX.TabIndex = 7;
-            this.toolTip.SetToolTip(this.scrollCamX, "Preview the scrolling parallax of the layer!");
             // 
             // scrollPreviewButton
             // 
@@ -2917,6 +2917,7 @@
             this.scrollPreviewButton.TabIndex = 3;
             this.scrollPreviewButton.Text = "Animate!";
             this.scrollPreviewButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.toolTip.SetToolTip(this.scrollPreviewButton, "Preview the parallax scrolling of the layer!");
             this.scrollPreviewButton.UseVisualStyleBackColor = true;
             this.scrollPreviewButton.CheckedChanged += new System.EventHandler(this.scrollPreviewButton_CheckedChanged);
             // 
@@ -3004,6 +3005,7 @@
             this.showScrollAreas.TabIndex = 11;
             this.showScrollAreas.Text = "Show Scroll Areas";
             this.showScrollAreas.UseVisualStyleBackColor = true;
+            this.toolTip.SetToolTip(this.showScrollAreas, "Display all scroll areas on the current layer.");
             this.showScrollAreas.CheckedChanged += new System.EventHandler(this.showScrollAreas_CheckedChanged);
             // 
             // scrollOffset
@@ -3061,6 +3063,7 @@
             this.addScrollButton.TabIndex = 6;
             this.addScrollButton.Text = "Add";
             this.addScrollButton.UseVisualStyleBackColor = true;
+            this.toolTip.SetToolTip(this.addScrollButton, "Add a new scroll section.");
             this.addScrollButton.Click += new System.EventHandler(this.addScrollButton_Click);
             // 
             // scrollScrollSpeed
@@ -3094,6 +3097,7 @@
             this.deleteScrollButton.TabIndex = 7;
             this.deleteScrollButton.Text = "Delete";
             this.deleteScrollButton.UseVisualStyleBackColor = true;
+            this.toolTip.SetToolTip(this.deleteScrollButton, "Delete the currently selected scroll section.");
             this.deleteScrollButton.Click += new System.EventHandler(this.deleteScrollButton_Click);
             // 
             // label11
@@ -3214,6 +3218,7 @@
             this.layerScrollType.Size = new System.Drawing.Size(238, 33);
             this.layerScrollType.TabIndex = 1;
             this.layerScrollType.SelectedIndexChanged += new System.EventHandler(this.layerScrollType_SelectedIndexChanged);
+            this.toolTip.SetToolTip(this.layerScrollType, "How this layer should scroll. 3D types cannot have scrolling data, and require custom code to show in-game.");
             // 
             // label8
             // 
@@ -4358,6 +4363,7 @@
             this.showGridToolStripCheckBoxButton.Name = "showGridToolStripCheckBoxButton";
             this.showGridToolStripCheckBoxButton.Size = new System.Drawing.Size(155, 42);
             this.showGridToolStripCheckBoxButton.Text = "Show &Grid";
+            this.showGridToolStripCheckBoxButton.ToolTipText = "Toggle grid visibility (I).";
             this.showGridToolStripCheckBoxButton.CheckedChanged += new System.EventHandler(this.showGridToolStripCheckBoxButton_CheckedChanged);
             // 
             // snapObjectsToolStripCheckBoxButton
@@ -4367,6 +4373,7 @@
             this.snapObjectsToolStripCheckBoxButton.Name = "snapObjectsToolStripCheckBoxButton";
             this.snapObjectsToolStripCheckBoxButton.Size = new System.Drawing.Size(186, 42);
             this.snapObjectsToolStripCheckBoxButton.Text = "Snap &Objects";
+            this.snapObjectsToolStripCheckBoxButton.ToolTipText = "Toggle whether objects will snap to the grid or not (K).";
             this.snapObjectsToolStripCheckBoxButton.CheckedChanged += new System.EventHandler(this.snapObjectsToolStripCheckBoxButton_CheckedChanged);
             // 
             // foregroundPanel
@@ -4406,6 +4413,7 @@
             this.displayObjectsToolStripCheckBoxButton.Name = "displayObjectsToolStripCheckBoxButton";
             this.displayObjectsToolStripCheckBoxButton.Size = new System.Drawing.Size(210, 50);
             this.displayObjectsToolStripCheckBoxButton.Text = "Display Objects";
+            this.displayObjectsToolStripCheckBoxButton.ToolTipText = "Toggle the visibility of objects (P).";
             this.displayObjectsToolStripCheckBoxButton.CheckedChanged += new System.EventHandler(this.displayObjectsToolStripCheckBoxButton_CheckedChanged);
             // 
             // backgroundPanel

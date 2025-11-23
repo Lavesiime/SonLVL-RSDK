@@ -8795,7 +8795,7 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				layerscrollpos = 0;
 				linescrollpos = new double[LevelData.BGScroll[bglayer].Count];
-				bgToolStrip.Enabled = scrollEditPanel.Enabled = false;
+				bgToolStrip.Enabled = scrollEditPanel.Enabled = layerScrollType.Enabled = false;
 				backgroundPanel.GraphicsBuffer.Graphics.Clear(LevelImgPalette.Entries[LevelData.ColorTransparent]);
 				backgroundPanel.GraphicsBuffer.Render(backgroundPanel.PanelGraphics);
 				backgroundPanel.FocusPanel();
@@ -8823,7 +8823,7 @@ namespace SonicRetro.SonLVL.GUI
 						scrollEditPanel.Enabled = false;
 						break;
 				}
-				bgToolStrip.Enabled = backgroundPanel.HScrollEnabled = backgroundPanel.VScrollEnabled = true;
+				bgToolStrip.Enabled = layerScrollType.Enabled = backgroundPanel.HScrollEnabled = backgroundPanel.VScrollEnabled = true;
 				scrollCamX.Enabled = scrollCamY.Enabled = moveCameraLabel.Visible = false;
 				scrollCamX.Value = scrollCamY.Value = 0;
 				DrawLevel();
