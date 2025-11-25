@@ -382,6 +382,7 @@
             this.colorHex = new SonicRetro.SonLVL.NumericUpDownPadded();
             this.importProgressControl1 = new SonicRetro.SonLVL.ImportProgressControl();
             this.label14 = new System.Windows.Forms.Label();
+            this.scrollHelpLabel = new System.Windows.Forms.Label();
             toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             label4 = new System.Windows.Forms.Label();
@@ -2885,7 +2886,7 @@
             this.previewGroupBox.Controls.Add(this.moveCameraLabel);
             this.previewGroupBox.Controls.Add(this.scrollCamY);
             this.previewGroupBox.Enabled = false;
-            this.previewGroupBox.Location = new System.Drawing.Point(17, 818);
+            this.previewGroupBox.Location = new System.Drawing.Point(21, 893);
             this.previewGroupBox.Name = "previewGroupBox";
             this.previewGroupBox.Size = new System.Drawing.Size(442, 163);
             this.previewGroupBox.TabIndex = 12;
@@ -2978,6 +2979,7 @@
             // 
             this.groupBox3.AutoSize = true;
             this.groupBox3.Controls.Add(this.showScrollAreas);
+            this.groupBox3.Controls.Add(this.scrollHelpLabel);
             this.groupBox3.Controls.Add(this.scrollOffset);
             this.groupBox3.Controls.Add(this.scrollList);
             this.groupBox3.Controls.Add(this.scrollEnableDeformation);
@@ -3008,9 +3010,20 @@
             this.toolTip.SetToolTip(this.showScrollAreas, "Display all scroll areas on the current layer.");
             this.showScrollAreas.CheckedChanged += new System.EventHandler(this.showScrollAreas_CheckedChanged);
             // 
+            // scrollHelpLabel
+            // 
+            this.scrollHelpLabel.AutoSize = true;
+            this.scrollHelpLabel.Enabled = false;
+            this.scrollHelpLabel.Location = new System.Drawing.Point(18, 69);
+            this.scrollHelpLabel.Name = "scrollHelpLabel";
+            this.scrollHelpLabel.Size = new System.Drawing.Size(330, 75);
+            this.scrollHelpLabel.TabIndex = 13;
+            this.scrollHelpLabel.Text = "Right Click: Insert/Delete Line\r\nLeft Click + Drag: Select/Move Line\r\nDouble Clic" +
+    "k + Drag: Create Parallax Series";
+            // 
             // scrollOffset
             // 
-            this.scrollOffset.Location = new System.Drawing.Point(249, 434);
+            this.scrollOffset.Location = new System.Drawing.Point(249, 514);
             this.scrollOffset.Margin = new System.Windows.Forms.Padding(6);
             this.scrollOffset.Name = "scrollOffset";
             this.scrollOffset.Size = new System.Drawing.Size(162, 31);
@@ -3023,7 +3036,7 @@
             this.scrollList.FormattingEnabled = true;
             this.scrollList.IntegralHeight = false;
             this.scrollList.ItemHeight = 25;
-            this.scrollList.Location = new System.Drawing.Point(18, 75);
+            this.scrollList.Location = new System.Drawing.Point(18, 155);
             this.scrollList.Margin = new System.Windows.Forms.Padding(6);
             this.scrollList.Name = "scrollList";
             this.scrollList.Size = new System.Drawing.Size(388, 287);
@@ -3033,7 +3046,7 @@
             // scrollEnableDeformation
             // 
             this.scrollEnableDeformation.AutoSize = true;
-            this.scrollEnableDeformation.Location = new System.Drawing.Point(18, 483);
+            this.scrollEnableDeformation.Location = new System.Drawing.Point(18, 563);
             this.scrollEnableDeformation.Margin = new System.Windows.Forms.Padding(6);
             this.scrollEnableDeformation.Name = "scrollEnableDeformation";
             this.scrollEnableDeformation.Size = new System.Drawing.Size(233, 29);
@@ -3047,7 +3060,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(18, 436);
+            this.label13.Location = new System.Drawing.Point(18, 516);
             this.label13.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(75, 25);
@@ -3056,7 +3069,7 @@
             // 
             // addScrollButton
             // 
-            this.addScrollButton.Location = new System.Drawing.Point(18, 377);
+            this.addScrollButton.Location = new System.Drawing.Point(18, 457);
             this.addScrollButton.Margin = new System.Windows.Forms.Padding(6);
             this.addScrollButton.Name = "addScrollButton";
             this.addScrollButton.Size = new System.Drawing.Size(150, 44);
@@ -3074,7 +3087,7 @@
             0,
             0,
             65536});
-            this.scrollScrollSpeed.Location = new System.Drawing.Point(249, 578);
+            this.scrollScrollSpeed.Location = new System.Drawing.Point(249, 658);
             this.scrollScrollSpeed.Margin = new System.Windows.Forms.Padding(6);
             this.scrollScrollSpeed.Maximum = new decimal(new int[] {
             3984375,
@@ -3090,7 +3103,7 @@
             // deleteScrollButton
             // 
             this.deleteScrollButton.Enabled = false;
-            this.deleteScrollButton.Location = new System.Drawing.Point(180, 377);
+            this.deleteScrollButton.Location = new System.Drawing.Point(180, 457);
             this.deleteScrollButton.Margin = new System.Windows.Forms.Padding(6);
             this.deleteScrollButton.Name = "deleteScrollButton";
             this.deleteScrollButton.Size = new System.Drawing.Size(150, 44);
@@ -3103,7 +3116,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(18, 580);
+            this.label11.Location = new System.Drawing.Point(18, 660);
             this.label11.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(140, 25);
@@ -3113,7 +3126,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(18, 530);
+            this.label12.Location = new System.Drawing.Point(18, 610);
             this.label12.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(163, 25);
@@ -3128,7 +3141,7 @@
             0,
             0,
             196608});
-            this.scrollParallaxFactor.Location = new System.Drawing.Point(249, 528);
+            this.scrollParallaxFactor.Location = new System.Drawing.Point(249, 608);
             this.scrollParallaxFactor.Margin = new System.Windows.Forms.Padding(6);
             this.scrollParallaxFactor.Maximum = new decimal(new int[] {
             -170194401,
@@ -4970,5 +4983,6 @@
 		private System.Windows.Forms.ToolStripMenuItem useHexadecimalToolStripMenuItem;
 		private System.Windows.Forms.ToolTip toolTip;
 		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.Label scrollHelpLabel;
 	}
 }

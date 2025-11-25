@@ -3661,16 +3661,11 @@ namespace SonicRetro.SonLVL.GUI
 								switch (e.Button)
 								{
 									case MouseButtons.Left:
-										int max;
-										if (i == LevelData.BGScroll[bglayer].Count - 1)
-											max = LevelData.BGHeight[bglayer] * 128 - 1;
-										else
-											max = LevelData.BGScroll[bglayer][i + 1].StartPos - 1;
-										if (max != LevelData.BGScroll[bglayer][i - 1].StartPos + 1)
-											scrollList.SelectedIndex = selectedScrollLine = i;
+										scrollList.SelectedIndex = selectedScrollLine = i;
 										break;
+
 									case MouseButtons.Right:
-										int ind = scrollList.SelectedIndex;
+										int ind = i;
 										LevelData.BGScroll[bglayer].RemoveAt(ind);
 										scrollList.Items.RemoveAt(ind);
 										if (ind == scrollList.Items.Count)
@@ -3715,16 +3710,11 @@ namespace SonicRetro.SonLVL.GUI
 								switch (e.Button)
 								{
 									case MouseButtons.Left:
-										int max;
-										if (i == LevelData.BGScroll[bglayer].Count - 1)
-											max = LevelData.BGWidth[bglayer] * 128 - 1;
-										else
-											max = LevelData.BGScroll[bglayer][i + 1].StartPos - 1;
-										if (max != LevelData.BGScroll[bglayer][i - 1].StartPos + 1)
-											scrollList.SelectedIndex = selectedScrollLine = i;
+										scrollList.SelectedIndex = selectedScrollLine = i;
 										break;
+
 									case MouseButtons.Right:
-										int ind = scrollList.SelectedIndex;
+										int ind = i;
 										LevelData.BGScroll[bglayer].RemoveAt(ind);
 										scrollList.Items.RemoveAt(ind);
 										if (ind == scrollList.Items.Count)
@@ -9096,8 +9086,9 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void showScrollAreas_CheckedChanged(object sender, EventArgs e)
 		{
-			DrawLevel();
 			if (!showScrollAreas.Checked) backgroundPanel.PanelCursor = Cursors.Default;
+			scrollHelpLabel.Enabled = showScrollAreas.Checked;
+			DrawLevel();
 		}
 
 		private void levelNameBox_TextChanged(object sender, EventArgs e)
