@@ -182,6 +182,7 @@ namespace SonicRetro.SonLVL.API
 		public static bool ArrayEqual<T>(this T[] arr1, T[] arr2)
 		{
 			if (arr1 == arr2) return true;
+			if (arr1 == null || arr2 == null) return false;
 			if (arr1.Length != arr2.Length) return false;
 			for (int i = 0; i < arr1.Length; i++)
 				if (!arr1[i].Equals(arr2[i]))
@@ -225,6 +226,7 @@ namespace SonicRetro.SonLVL.API
 		public static unsafe bool FastArrayEqual(this byte[] arr1, byte[] arr2)
 		{
 			if (arr1 == arr2) return true;
+			if (arr1 == null || arr2 == null) return false;
 			if (arr1.Length != arr2.Length) return false;
 			fixed (byte* fp1 = arr1, fp2 = arr2)
 				return FastArrayEqualInternal(fp1, fp2, arr1.Length);
@@ -233,6 +235,7 @@ namespace SonicRetro.SonLVL.API
 		public static unsafe bool FastArrayEqual(this sbyte[] arr1, sbyte[] arr2)
 		{
 			if (arr1 == arr2) return true;
+			if (arr1 == null || arr2 == null) return false;
 			if (arr1.Length != arr2.Length) return false;
 			fixed (sbyte* fp1 = arr1, fp2 = arr2)
 				return FastArrayEqualInternal(fp1, fp2, arr1.Length);
@@ -241,6 +244,7 @@ namespace SonicRetro.SonLVL.API
 		public static unsafe bool FastArrayEqual(this ushort[] arr1, ushort[] arr2)
 		{
 			if (arr1 == arr2) return true;
+			if (arr1 == null || arr2 == null) return false;
 			if (arr1.Length != arr2.Length) return false;
 			fixed (ushort* fp1 = arr1, fp2 = arr2)
 				return FastArrayEqualInternal(fp1, fp2, arr1.Length * 2);
@@ -249,6 +253,7 @@ namespace SonicRetro.SonLVL.API
 		public static unsafe bool FastArrayEqual(this short[] arr1, short[] arr2)
 		{
 			if (arr1 == arr2) return true;
+			if (arr1 == null || arr2 == null) return false;
 			if (arr1.Length != arr2.Length) return false;
 			fixed (short* fp1 = arr1, fp2 = arr2)
 				return FastArrayEqualInternal(fp1, fp2, arr1.Length * 2);
@@ -257,6 +262,7 @@ namespace SonicRetro.SonLVL.API
 		public static unsafe bool FastArrayEqual(this uint[] arr1, uint[] arr2)
 		{
 			if (arr1 == arr2) return true;
+			if (arr1 == null || arr2 == null) return false;
 			if (arr1.Length != arr2.Length) return false;
 			fixed (uint* fp1 = arr1, fp2 = arr2)
 				return FastArrayEqualInternal(fp1, fp2, arr1.Length * 4);
@@ -265,6 +271,7 @@ namespace SonicRetro.SonLVL.API
 		public static unsafe bool FastArrayEqual(this int[] arr1, int[] arr2)
 		{
 			if (arr1 == arr2) return true;
+			if (arr1 == null || arr2 == null) return false;
 			if (arr1.Length != arr2.Length) return false;
 			fixed (int* fp1 = arr1, fp2 = arr2)
 				return FastArrayEqualInternal(fp1, fp2, arr1.Length * 4);
@@ -273,6 +280,7 @@ namespace SonicRetro.SonLVL.API
 		public static unsafe bool FastArrayEqual(this char[] arr1, char[] arr2)
 		{
 			if (arr1 == arr2) return true;
+			if (arr1 == null || arr2 == null) return false;
 			if (arr1.Length != arr2.Length) return false;
 			fixed (char* fp1 = arr1, fp2 = arr2)
 				return FastArrayEqualInternal(fp1, fp2, arr1.Length * 2);
