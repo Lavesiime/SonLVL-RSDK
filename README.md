@@ -22,9 +22,9 @@ See the [wiki](https://github.com/Lavesiime/SonLVL-RSDK/wiki) for more informati
 
 ## Building
 
-0. Install the **WinForms** workload in Visual Studio.
+0. Install Visual Studio, with the **.NET desktop development** workload included.
 1. Clone the repository.
-2. Open `SonLVL-RSDK.sln`.
+2. Open `SonLVL-RSDK.sln` in Visual Studio.
 3. Build the solution.
 
 ---
