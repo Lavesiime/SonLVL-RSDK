@@ -904,7 +904,7 @@ namespace SonicRetro.SonLVL.API
 		public string Version { get; set; }
 		public string Description { get; set; }
 		public bool TxtScripts { get; set; }
-		public string DisablePauseFocus { get; set; }
+		public string DisableFocusPause { get; set; }
 		public bool RedirectSaveRAM { get; set; }
 		public bool DisableSaveIniOverride { get; set; }
 		public bool SkipStartMenu { get; set; }

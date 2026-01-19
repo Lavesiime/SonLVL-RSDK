@@ -58,7 +58,7 @@ namespace SonicRetro.SonLVL.GUI
 					Description       = textModDescription.Text,
 					Version           = textVersion.Text,
 					TxtScripts        = loadTextScripts.Checked,
-					DisablePauseFocus = disablePauseFocus.Checked ? "1" : "0",
+					DisableFocusPause = disableFocusPause.Checked ? "1" : "0",
 					RedirectSaveRAM   = redirectSave.Checked
 				};
 

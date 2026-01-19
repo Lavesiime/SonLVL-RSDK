@@ -42,7 +42,7 @@
             this.textVersion = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.loadTextScripts = new System.Windows.Forms.CheckBox();
-            this.disablePauseFocus = new System.Windows.Forms.CheckBox();
+            this.disableFocusPause = new System.Windows.Forms.CheckBox();
             this.redirectSave = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.useGameXml = new System.Windows.Forms.CheckBox();
@@ -187,16 +187,16 @@
             this.loadTextScripts.Text = "Load Text Scripts";
             this.loadTextScripts.UseVisualStyleBackColor = true;
             // 
-            // disablePauseFocus
+            // disableFocusPause
             // 
-            this.disablePauseFocus.AutoSize = true;
-            this.disablePauseFocus.Location = new System.Drawing.Point(169, 199);
-            this.disablePauseFocus.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.disablePauseFocus.Name = "disablePauseFocus";
-            this.disablePauseFocus.Size = new System.Drawing.Size(158, 20);
-            this.disablePauseFocus.TabIndex = 15;
-            this.disablePauseFocus.Text = "Disable Pause Focus";
-            this.disablePauseFocus.UseVisualStyleBackColor = true;
+            this.disableFocusPause.AutoSize = true;
+            this.disableFocusPause.Location = new System.Drawing.Point(169, 199);
+            this.disableFocusPause.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.disableFocusPause.Name = "disableFocusPause";
+            this.disableFocusPause.Size = new System.Drawing.Size(158, 20);
+            this.disableFocusPause.TabIndex = 15;
+            this.disableFocusPause.Text = "Disable Focus Pause";
+            this.disableFocusPause.UseVisualStyleBackColor = true;
             // 
             // redirectSave
             // 
@@ -253,7 +253,7 @@
             this.Controls.Add(this.useGameXml);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.redirectSave);
-            this.Controls.Add(this.disablePauseFocus);
+            this.Controls.Add(this.disableFocusPause);
             this.Controls.Add(this.loadTextScripts);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
@@ -295,7 +295,7 @@
         private System.Windows.Forms.TextBox textVersion;
         private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.CheckBox loadTextScripts;
-		private System.Windows.Forms.CheckBox disablePauseFocus;
+		private System.Windows.Forms.CheckBox disableFocusPause;
 		private System.Windows.Forms.CheckBox redirectSave;
 		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.CheckBox useGameXml;
