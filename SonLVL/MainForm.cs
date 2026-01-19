@@ -979,6 +979,40 @@ namespace SonicRetro.SonLVL.GUI
 						return;
 			}
 
+			// Since we're opening the game straight from the editor, let's make sure the mod is enabled in the game's modconfig.ini file if it isn't already
+			// Not ideal to put this all inside a try/catch statement, but.. given how file operations have been weird on Linux in other parts of the editor, it's best to play it safe here imo
+			try
+			{
+				if (LevelData.ModFolder != null)
+				{
+					string configPath = Path.Combine(Path.GetDirectoryName(path), "mods", "modconfig.ini");
+					var config = File.Exists(configPath) ? IniFile.Load(configPath) : new Dictionary<string, Dictionary<string, string>>();
+
+					if (!config.TryGetValue("mods", out var mods))
+					{
+						// If it doesn't exist (presumably because we just made a new dict since modconfig.ini doesn't exist), then let's add in the mods section ourselves
+						config.Add("mods", new Dictionary<string, string>());
+						mods = config["mods"];
+					}
+
+					var folderName = new DirectoryInfo(LevelData.ModFolder).Name;
+
+					bool modExists = mods.TryGetValue(folderName, out var modStatus);
+					bool isEnabled = modExists && (modStatus.Equals("true", StringComparison.OrdinalIgnoreCase) || modStatus == "1");
+
+					if (!isEnabled)
+					{
+						mods[folderName] = "true";
+						IniFile.Save(config, configPath);
+						LevelData.Log(modExists ? $"Enabling mod \"{folderName}\" in modconfig.ini..." : $"Adding mod \"{folderName}\" to modconfig.ini and enabling it...");
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				LevelData.Log($"Encountered exception when trying to enable current mod in modconfig.ini:\n{ex.ToString()}");
+			}
+
 			if (loaded)
 				System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path, $"stage={LevelData.StageInfo.folder} scene={LevelData.StageInfo.actID}") { WorkingDirectory = LevelData.EXEFolder });
 			else
