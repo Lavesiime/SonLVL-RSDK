@@ -697,14 +697,13 @@ namespace SonicRetro.SonLVL.API
 				Gif tilebmp = new Gif
 				{
 					width = 16,
-					height = (ushort)(NewTiles.Length * 16)
+					height = (ushort)(NewTiles.Length * 16),
+					pixels = new byte[NewTiles.Length * 256]
 				};
 
 				// okay so tbh i think FromSystemColor is supposed to be static, but it isn't, so..
 				// pardon the odd synatx, sorry!--
 				tilebmp.palette[0] = tilebmp.palette[0].FromSystemColor(NewPalette[0]);
-
-				// (note that Palette.Color is a class and not a struct, but since we immediatly discard this gif it's okay to do this--)
 				tilebmp.palette.Fill(tilebmp.palette[0], 1, 95);
 
 				for (int i = 96; i < 256; i++)
