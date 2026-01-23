@@ -37,7 +37,7 @@
             this.textModName = new System.Windows.Forms.TextBox();
             this.textModAuthor = new System.Windows.Forms.TextBox();
             this.checkOpenFolder = new System.Windows.Forms.CheckBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.textModDescription = new System.Windows.Forms.TextBox();
             this.textVersion = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -114,6 +114,7 @@
             this.textModName.Name = "textModName";
             this.textModName.Size = new System.Drawing.Size(340, 22);
             this.textModName.TabIndex = 1;
+            this.toolTip.SetToolTip(this.textModName, "The name of the mod.");
             // 
             // textModAuthor
             // 
@@ -124,6 +125,7 @@
             this.textModAuthor.Name = "textModAuthor";
             this.textModAuthor.Size = new System.Drawing.Size(340, 22);
             this.textModAuthor.TabIndex = 3;
+            this.toolTip.SetToolTip(this.textModAuthor, "The author of the mod.");
             // 
             // checkOpenFolder
             // 
@@ -136,12 +138,12 @@
             this.checkOpenFolder.Size = new System.Drawing.Size(108, 21);
             this.checkOpenFolder.TabIndex = 11;
             this.checkOpenFolder.Text = "Open folder";
-            this.toolTip1.SetToolTip(this.checkOpenFolder, "Open the newly created mod\'s folder upon completion.");
+            this.toolTip.SetToolTip(this.checkOpenFolder, "Open the newly created mod\'s folder upon completion.");
             this.checkOpenFolder.UseVisualStyleBackColor = true;
             // 
-            // toolTip1
+            // toolTip
             // 
-            this.toolTip1.ShowAlways = true;
+            this.toolTip.ShowAlways = true;
             // 
             // textModDescription
             // 
@@ -155,6 +157,7 @@
             this.textModDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textModDescription.Size = new System.Drawing.Size(340, 78);
             this.textModDescription.TabIndex = 7;
+            this.toolTip.SetToolTip(this.textModDescription, "The description of the mod.");
             // 
             // textVersion
             // 
@@ -165,6 +168,7 @@
             this.textVersion.Name = "textVersion";
             this.textVersion.Size = new System.Drawing.Size(340, 22);
             this.textVersion.TabIndex = 5;
+            this.toolTip.SetToolTip(this.textVersion, "The version number of the mod.");
             // 
             // label4
             // 
@@ -186,6 +190,7 @@
             this.loadTextScripts.TabIndex = 14;
             this.loadTextScripts.Text = "Load Text Scripts";
             this.loadTextScripts.UseVisualStyleBackColor = true;
+            this.toolTip.SetToolTip(this.loadTextScripts, "If the mod contains custom scripts.");
             // 
             // disableFocusPause
             // 
@@ -197,6 +202,7 @@
             this.disableFocusPause.TabIndex = 15;
             this.disableFocusPause.Text = "Disable Focus Pause";
             this.disableFocusPause.UseVisualStyleBackColor = true;
+            this.toolTip.SetToolTip(this.disableFocusPause, "Disables the native pause menu appearing when game focus is lost.");
             // 
             // redirectSave
             // 
@@ -208,6 +214,7 @@
             this.redirectSave.TabIndex = 16;
             this.redirectSave.Text = "Redirect Save";
             this.redirectSave.UseVisualStyleBackColor = true;
+            this.toolTip.SetToolTip(this.redirectSave, "Gives the mod its own save file, separate from the base game.");
             // 
             // checkBox1
             // 
@@ -241,6 +248,7 @@
             this.forceSonic1.TabIndex = 19;
             this.forceSonic1.Text = "Force Sonic 1";
             this.forceSonic1.UseVisualStyleBackColor = true;
+            this.toolTip.SetToolTip(this.forceSonic1, "Force the game to play in Sonic 1 mode (ie. for the Achivements list, Time Attack stages, etc).");
             // 
             // NewModDialog
             // 
@@ -290,7 +298,7 @@
 		private System.Windows.Forms.TextBox textModName;
 		private System.Windows.Forms.TextBox textModAuthor;
 		private System.Windows.Forms.CheckBox checkOpenFolder;
-		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ToolTip toolTip;
 		private System.Windows.Forms.TextBox textModDescription;
         private System.Windows.Forms.TextBox textVersion;
         private System.Windows.Forms.Label label4;

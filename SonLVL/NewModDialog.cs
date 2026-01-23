@@ -15,11 +15,13 @@ namespace SonicRetro.SonLVL.GUI
 				case EngineVersion.V3:
 					checkBox1.Text = "Disable Save INI Override";
 					checkBox1.Visible = true;
+					toolTip.SetToolTip(this.checkBox1, "Disable the Original Controls and sound setting overrides in the user's settings file.");
 					forceSonic1.Visible = false;
 					break;
 				case EngineVersion.V4:
 					checkBox1.Text = "Skip Start Menu";
 					checkBox1.Visible = true;
+					toolTip.SetToolTip(this.checkBox1, "Skip the 3d main menu when booting up the game, and go straight to the in-game title screen instead.");
 					forceSonic1.Visible = true;
 					break;
 				default:
@@ -27,6 +29,8 @@ namespace SonicRetro.SonLVL.GUI
 					forceSonic1.Visible = false;
 					break;
 			}
+
+			checkOpenFolder.Visible = !Program.IsMonoRuntime;
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
