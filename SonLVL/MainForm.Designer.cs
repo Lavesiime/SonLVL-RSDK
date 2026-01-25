@@ -827,6 +827,7 @@
             this.rotateTileRightButton.Size = new System.Drawing.Size(247, 45);
             this.rotateTileRightButton.TabIndex = 5;
             this.rotateTileRightButton.Text = "Rotate Tile Right";
+            this.toolTip.SetToolTip(this.rotateTileRightButton, "Rotate the tile's art clockwise.");
             this.rotateTileRightButton.UseVisualStyleBackColor = true;
             this.rotateTileRightButton.Click += new System.EventHandler(this.rotateTileRightButton_Click);
             // 
@@ -1125,7 +1126,7 @@
             this.copyCollisionSingleButton.Size = new System.Drawing.Size(240, 41);
             this.copyCollisionSingleButton.TabIndex = 18;
             this.copyCollisionSingleButton.Text = "Copy to Plane B";
-            this.toolTip.SetToolTip(this.copyCollisionSingleButton, "Copy the shown collision info to the other plane.");
+            this.toolTip.SetToolTip(this.copyCollisionSingleButton, "Copy the displayed collision to the other plane.");
             this.copyCollisionSingleButton.UseVisualStyleBackColor = true;
             this.copyCollisionSingleButton.Click += new System.EventHandler(this.copyCollisionSingleButton_Click);
             // 
@@ -1241,6 +1242,7 @@
             this.collisionCeiling.Size = new System.Drawing.Size(110, 29);
             this.collisionCeiling.TabIndex = 9;
             this.collisionCeiling.Text = "Ceiling";
+            this.toolTip.SetToolTip(this.collisionCeiling, "Whether this tile has its collision coming from the top or bottom.");
             this.collisionCeiling.UseVisualStyleBackColor = true;
             this.collisionCeiling.CheckedChanged += new System.EventHandler(this.collisionCeiling_CheckedChanged);
             // 
@@ -1973,7 +1975,7 @@
             this.transparentBackgroundToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.transparentBackgroundToolStripMenuItem.Name = "transparentBackgroundToolStripMenuItem";
             this.transparentBackgroundToolStripMenuItem.Size = new System.Drawing.Size(444, 44);
-            this.transparentBackgroundToolStripMenuItem.Text = "T&ransparent background";
+            this.transparentBackgroundToolStripMenuItem.Text = "T&ransparent Background";
             this.transparentBackgroundToolStripMenuItem.CheckedChanged += new System.EventHandler(this.transparentBackgroundToolStripMenuItem_CheckedChanged);
             // 
             // hideDebugObjectsToolStripMenuItem
@@ -1989,7 +1991,7 @@
             this.exportArtcollisionpriorityToolStripMenuItem.CheckOnClick = true;
             this.exportArtcollisionpriorityToolStripMenuItem.Name = "exportArtcollisionpriorityToolStripMenuItem";
             this.exportArtcollisionpriorityToolStripMenuItem.Size = new System.Drawing.Size(444, 44);
-            this.exportArtcollisionpriorityToolStripMenuItem.Text = "Export art+collision+priority";
+            this.exportArtcollisionpriorityToolStripMenuItem.Text = "Include Collision+Priority";
             this.exportArtcollisionpriorityToolStripMenuItem.CheckedChanged += new System.EventHandler(this.exportArtcollisionpriorityToolStripMenuItem_CheckedChanged);
             // 
             // helpToolStripMenuItem

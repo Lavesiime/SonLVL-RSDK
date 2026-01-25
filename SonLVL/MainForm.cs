@@ -33,8 +33,6 @@ namespace SonicRetro.SonLVL.GUI
 			InitializeComponent();
 		}
 
-		const int ColorGrid = 255;
-
 		void LevelData_PaletteChangedEvent()
 		{
 			LevelData.BmpPal.Entries.CopyTo(LevelImgPalette.Entries, 0);
