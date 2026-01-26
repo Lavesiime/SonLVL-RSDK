@@ -77,8 +77,8 @@ namespace SonicRetro.SonLVL.GUI
 		Bitmap LevelBmp;
 		Graphics LevelGfx, PalettePanelGfx;
 		BufferedGraphics PalettePanelGfxBuffer;
-		bool loaded;
-		bool saved;
+		System.Diagnostics.Process gameProcess;
+		bool loaded, saved;
 		ushort SelectedChunk;
 		List<Entry> SelectedItems;
 		ObjectList ObjectSelect;
@@ -435,6 +435,14 @@ namespace SonicRetro.SonLVL.GUI
 			}
 			tabControl1.Enabled = editToolStripMenuItem.Enabled = exportToolStripMenuItem.Enabled = saveToolStripMenuItem.Enabled = editGameConfigToolStripMenuItem.Enabled = changeLevelToolStripMenuItem.Enabled = false;
 			selectModToolStripMenuItem.Enabled = buildAndRunToolStripMenuItem.Enabled = true;
+			
+			// If we already have a game link, let's go ahead and cut it (leaving the window alone, if it's still open then we'll leave it like that)
+			if (gameProcess != null)
+			{
+				gameProcess.Dispose();
+				gameProcess = null;
+			}
+
 			Text = "SonLVL-RSDK - " + LevelData.GameTitle;
 		}
 
@@ -1011,10 +1019,18 @@ namespace SonicRetro.SonLVL.GUI
 				LevelData.Log($"Encountered exception when trying to enable current mod in modconfig.ini:\n{ex.ToString()}");
 			}
 
-			if (loaded)
-				System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path, $"stage={LevelData.StageInfo.folder} scene={LevelData.StageInfo.actID}") { WorkingDirectory = LevelData.EXEFolder });
-			else
-				System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path) { WorkingDirectory = LevelData.EXEFolder });
+			// If we already have an RSDK window open from using the Play button before, go ahead and kill it (sorry..)
+			if (gameProcess != null)
+			{
+				if (!gameProcess.HasExited)
+					gameProcess.CloseMainWindow();
+
+				gameProcess.Dispose();
+			}
+
+			// Now, let's go ahead and start the process up again, using args to boot straight to the current level (if we have one loaded)
+			string args = loaded ? $"stage={LevelData.StageInfo.folder} scene={LevelData.StageInfo.actID}" : string.Empty;
+			gameProcess = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path, args) { WorkingDirectory = LevelData.EXEFolder });
 		}
 
 		private void recentProjectsToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
