@@ -970,8 +970,8 @@ namespace SonicRetro.SonLVL.GUI
 				
 				using (OpenFileDialog a = new OpenFileDialog()
 				{
-					DefaultExt = "exe",
-					Filter = "EXE Files|*.exe|All Files|*.*",
+					DefaultExt = Program.IsMonoRuntime ? "" : "exe",
+					Filter = Program.IsMonoRuntime ? "All Files|*.*" : "EXE Files|*.exe|All Files|*.*",
 					Title = "Select your decompilation EXE",
 					InitialDirectory = Path.GetDirectoryName(path)
 				})
