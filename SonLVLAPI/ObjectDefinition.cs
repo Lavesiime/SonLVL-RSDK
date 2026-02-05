@@ -15,7 +15,6 @@ namespace SonicRetro.SonLVL.API
 		[IniName("xmlfile")]
 		public string XMLFile;
 		[IniName("name")]
-		[DefaultValue("Unknown")]
 		public string Name;
 		[IniName("pri")]
 		public bool Priority;

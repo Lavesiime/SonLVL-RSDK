@@ -9516,7 +9516,10 @@ namespace SonicRetro.SonLVL.GUI
 				if (dlg.ShowDialog(this) == DialogResult.OK)
 				{
 					objectScriptBox.Text = dlg.SelectedPath;
-					objectNameBox.Focus(); // you still gotta enter in the name, don't forget that..
+					if (LevelData.INIObjDefs.TryGetValue(objectScriptBox.Text, out ObjectData data)) // If we have a name for the script, let's try to autofill it
+						objectNameBox.Text = data.Name ?? "Object";
+					else
+						objectNameBox.Focus(); // If not, then you gotta enter in the name yourself, sorry..
 				}
 		}
 
