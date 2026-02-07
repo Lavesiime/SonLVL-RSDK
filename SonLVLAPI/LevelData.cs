@@ -1193,13 +1193,22 @@ namespace SonicRetro.SonLVL.API
 					modDate = File.GetLastWriteTime(dllfile);
 				string fp = data.CodeFile.Replace('/', Path.DirectorySeparatorChar);
 				Log($"Loading ObjectDefinition type {fulltypename} from \"{fp}\"...");
-				if (modDate >= File.GetLastWriteTime(fp) & modDate > File.GetLastWriteTime(Application.ExecutablePath))
+
+				if (modDate >= File.GetLastWriteTime(fp) && modDate > File.GetLastWriteTime(Application.ExecutablePath))
 				{
+					// If the previously compiled dll file is younger than both the .cs file as well as the SonLVL build, then let's just go with that
+					
 					Log($"Loading type from cached assembly \"{dllfile}\"...");
 					def = (ObjectDefinition)Activator.CreateInstance(System.Reflection.Assembly.LoadFile(Path.GetFullPath(dllfile)).GetType(fulltypename));
 				}
 				else
 				{
+					// Alternatively, if either..
+					// a) the .cs file has been edited more recently than the dll was compiled, or..
+					// b) this build of SonLVL-RSDK is newer than the dll, or..
+					// c) there just isn't a dll file to load from in the first place
+					// Let's go ahead and recompile it (or compile it for the first place)
+
 					Log("Compiling code file...");
 					string ext = Path.GetExtension(fp);
 					CodeDomProvider pr = null;
@@ -1212,6 +1221,7 @@ namespace SonicRetro.SonLVL.API
 							pr = new Microsoft.VisualBasic.VBCodeProvider();
 							break;
 					}
+
 					if (pr != null)
 					{
 						CompilerParameters para = new CompilerParameters(new string[] { "System.dll", "System.Core.dll", "System.Drawing.dll", System.Reflection.Assembly.GetExecutingAssembly().Location, typeof(Scene).Assembly.Location })
@@ -1254,6 +1264,7 @@ namespace SonicRetro.SonLVL.API
 #if !DEBUG
 			catch (Exception ex)
 			{
+				// If the object definition failed to load for any reason (dll already in use, missing files, tries to use invalid Sprite Frames, etc) then just quietly replace it with the default obj def
 				Log("Object definition " + objinf.script + " failed to initialize!");
 				Log(ex.ToString());
 				def = new DefaultObjectDefinition();
@@ -1933,7 +1944,7 @@ namespace SonicRetro.SonLVL.API
 				sheetname = "Data/Sprites/" + sheetname;
 				if (spriteSheets.TryGetValue(sheetname, out BitmapBits bits))
 					return bits;
-				BitmapBits img = new BitmapBits(LevelData.ReadFile<Gif>(sheetname));
+				BitmapBits img = new BitmapBits(ReadFile<Gif>(sheetname));
 				spriteSheets.Add(sheetname, img);
 				return img;
 			}
