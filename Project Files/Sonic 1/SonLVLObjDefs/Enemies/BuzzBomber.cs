@@ -60,8 +60,8 @@ namespace S1ObjectDefinitions.Enemies
 				(obj) => obj.PropertyValue & 2,
 				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~2) | (int)value));
 			
-			properties[2] = new PropertySpec("Hide On Off Screen", typeof(bool), "Extended",
-				"If this Buzz Bomber should hide after going off screen.", null,
+			properties[2] = new PropertySpec("Appear Once", typeof(bool), "Extended",
+				"If this Buzz Bomber should only appear a single time before despawning, instead of staying in the level.", null,
 				(obj) => (((V4ObjectEntry)obj).Value3 == 1),
 				(obj, value) => ((V4ObjectEntry)obj).Value3 = ((bool)value ? 1 : 0));
 		}
