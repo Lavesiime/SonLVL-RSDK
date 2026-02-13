@@ -48,7 +48,7 @@ namespace SCDObjectDefinitions.R4
 					{ "Clockwise", 2 },
 					{ "Counter-Clockwise", 0xfe }
 				},
-				(obj) => (obj.PropertyValue < 0x80) ? 2 : 0xfe,
+				(obj) => (obj.PropertyValue < 0x80) ? 2 : 0xfe, // (see below note on why we chose these values)
 				(obj, value) => obj.PropertyValue = (byte)((int)value));
 		}
 		
