@@ -2193,8 +2193,7 @@ namespace SonicRetro.SonLVL.GUI
 				item.UpdateSprite();
 			}
 			DrawLevel();
-			if (e.ChangedItem.PropertyDescriptor.Name == "Type")
-				ObjectProperties.Refresh();
+			ObjectProperties.Refresh();
 			SaveState($"Change Objects {e.ChangedItem.Label}");
 		}
 
