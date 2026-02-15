@@ -14,7 +14,7 @@ namespace SCDObjectDefinitions.R3
 		{
 			sprite = new Sprite(LevelData.GetSpriteSheet("R3/Objects.gif").GetSection(165, 1, 64, 16), -96, -8);
 			
-			// tagging this area withLevelData.ColorWhite
+			// tagging this area with LevelData.ColorWhite
 			BitmapBits bitmap = new BitmapBits(64 + 32 + 1, 17);
 			bitmap.DrawRectangle(6, 32, 0, 63, 15);
 			bitmap.DrawLine(6, 0, 8, 63, 8);
