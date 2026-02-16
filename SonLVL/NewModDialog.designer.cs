@@ -183,6 +183,7 @@
             // loadTextScripts
             // 
             this.loadTextScripts.AutoSize = true;
+            this.loadTextScripts.Checked = true;
             this.loadTextScripts.Location = new System.Drawing.Point(16, 199);
             this.loadTextScripts.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.loadTextScripts.Name = "loadTextScripts";
