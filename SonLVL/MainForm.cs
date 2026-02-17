@@ -958,7 +958,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void buildAndRunToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LevelData.Scene != null && LevelData.ModFolder != null)
+			if (saveToolStripMenuItem.Enabled)
 				saveToolStripMenuItem_Click(sender, e);
 
 			string path = Path.GetFullPath(LevelData.Game.EXEFile);
