@@ -3785,6 +3785,8 @@
             // 
             // objectNameBox
             // 
+            this.objectNameBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.objectNameBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.objectNameBox.Enabled = false;
             this.objectNameBox.Location = new System.Drawing.Point(422, 111);
             this.objectNameBox.Margin = new System.Windows.Forms.Padding(6);

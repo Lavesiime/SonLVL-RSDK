@@ -9501,7 +9501,14 @@ namespace SonicRetro.SonLVL.GUI
 				idx += (byte)LevelData.GlobalObjects.Count;
 			var def = LevelData.MakeObjectDefinition(info);
 			LevelData.ObjTypes[idx] = def;
+
+			// If we have a name for the script, then let's auto fill it if the user wants
+			objectNameBox.AutoCompleteCustomSource.Clear();
+			if (LevelData.INIObjDefs.TryGetValue(objectScriptBox.Text, out ObjectData data))
+				objectNameBox.AutoCompleteCustomSource.Add(data.Name);
+
 			InitObjectTypes();
+
 			foreach (var item in LevelData.Objects)
 				if (item.Type == idx)
 					item.UpdateSprite();
