@@ -30,8 +30,8 @@ namespace S2ObjectDefinitions.CNZ
 		public override void Init(ObjectData data)
 		{
 			sprites[2] = new Sprite(LevelData.GetSpriteSheet("CNZ/Objects.gif").GetSection(82, 34, 64, 64), -32, -32);
-			sprites[0] = new Sprite(sprites[2],  offset.X,  offset.Y);
-			sprites[1] = new Sprite(sprites[2], -offset.X, -offset.Y);
+			sprites[0] = new Sprite(sprites[2], -offset.X, -offset.Y);
+			sprites[1] = new Sprite(sprites[2],  offset.X,  offset.Y);
 			
 			BitmapBits bitmap = new BitmapBits((offset.X * 2) + 1, (offset.Y * 2) + 1);
 			bitmap.DrawLine(6, 0, 0, offset.X * 2, offset.Y * 2); // LevelData.ColorWhite
