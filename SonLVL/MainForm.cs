@@ -7996,6 +7996,7 @@ namespace SonicRetro.SonLVL.GUI
 					LevelData.RedrawBlock(SelectedTile, false);
 					LevelData.RedrawCol(SelectedTile, true);
 					DrawChunkPicture();
+					TileSelector.Invalidate();
 					TileSelector_SelectedIndexChanged(this, EventArgs.Empty);
 					SaveState("Paste Over Tile");
 					break;
