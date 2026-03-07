@@ -4058,6 +4058,9 @@ namespace SonicRetro.SonLVL.GUI
 								scrollSpeed += dlg.scrollSpeedIncreaseValue.Value / 64;
 							}
 
+							// Select the first parallax line that we added
+							scrollList.SelectedIndex = start;
+
 							SaveState("Add Parallax Group");
 						}
 					}
