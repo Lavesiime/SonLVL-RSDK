@@ -16,7 +16,7 @@ namespace S2ObjectDefinitions.ARZ
 			sprite = new Sprite(LevelData.GetSpriteSheet("Global/Display.gif").GetSection(168, 18, 16, 16), -8, -8);
 			
 			properties[0] = new PropertySpec("Size", typeof(int), "Extended",
-				"The size of this Leaf Spawner. Increases in powers of 2, based on this number.", null,
+				"The width of this Leaf Spawner. Increases in powers of 2, based on this number.", null,
 				(obj) => obj.PropertyValue + 1,
 				(obj, value) => obj.PropertyValue = (byte)(Math.Max((int)value - 1, 0)));
 		}
