@@ -29,8 +29,6 @@ namespace SonicRetro.SonLVL.GUI
 					forceSonic1.Visible = false;
 					break;
 			}
-
-			checkOpenFolder.Visible = !Program.IsMonoRuntime;
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
@@ -90,10 +88,8 @@ namespace SonicRetro.SonLVL.GUI
 					new GameXML().Save(Path.Combine(moddir, "Data/Game/game.xml"));
 				}
 
-				if (checkOpenFolder.Checked)
-				{
+				if (!Program.IsMonoRuntime)
 					System.Diagnostics.Process.Start(moddir);
-				}
 
 				DialogResult = DialogResult.OK;
 				Close();

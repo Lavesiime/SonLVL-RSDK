@@ -36,7 +36,6 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.textModName = new System.Windows.Forms.TextBox();
             this.textModAuthor = new System.Windows.Forms.TextBox();
-            this.checkOpenFolder = new System.Windows.Forms.CheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.textModDescription = new System.Windows.Forms.TextBox();
             this.textVersion = new System.Windows.Forms.TextBox();
@@ -126,20 +125,6 @@
             this.textModAuthor.Size = new System.Drawing.Size(340, 22);
             this.textModAuthor.TabIndex = 3;
             this.toolTip.SetToolTip(this.textModAuthor, "The author of the mod.");
-            // 
-            // checkOpenFolder
-            // 
-            this.checkOpenFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkOpenFolder.AutoSize = true;
-            this.checkOpenFolder.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.checkOpenFolder.Location = new System.Drawing.Point(16, 274);
-            this.checkOpenFolder.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.checkOpenFolder.Name = "checkOpenFolder";
-            this.checkOpenFolder.Size = new System.Drawing.Size(108, 21);
-            this.checkOpenFolder.TabIndex = 11;
-            this.checkOpenFolder.Text = "Open folder";
-            this.toolTip.SetToolTip(this.checkOpenFolder, "Open the newly created mod\'s folder upon completion.");
-            this.checkOpenFolder.UseVisualStyleBackColor = true;
             // 
             // toolTip
             // 
@@ -267,7 +252,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.checkOpenFolder);
             this.Controls.Add(this.textModName);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.label4);
@@ -298,7 +282,6 @@
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.TextBox textModName;
 		private System.Windows.Forms.TextBox textModAuthor;
-		private System.Windows.Forms.CheckBox checkOpenFolder;
 		private System.Windows.Forms.ToolTip toolTip;
 		private System.Windows.Forms.TextBox textModDescription;
         private System.Windows.Forms.TextBox textVersion;
