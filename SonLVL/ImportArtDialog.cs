@@ -50,7 +50,10 @@ namespace SonicRetro.SonLVL
 				loadFile(ref colALabel, ref colABitmap, string.Format(fmt, "col"), false);
 
 			if (File.Exists(string.Format(fmt, "col2")))
+			{
 				loadFile(ref colBLabel, ref colBBitmap, string.Format(fmt, "col2"), false);
+				colBBaseLabel.Enabled = colBBrowseButton.Enabled = colBBitmap != null;
+			}
 
 			if (!tilesMode && File.Exists(string.Format(fmt, "pri")))
 				loadFile(ref priLabel, ref priBitmap, string.Format(fmt, "pri"), false);
