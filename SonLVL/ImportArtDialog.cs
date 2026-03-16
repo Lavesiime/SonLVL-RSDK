@@ -116,9 +116,9 @@ namespace SonicRetro.SonLVL
 		private void infoButton_Click(object sender, EventArgs e)
 		{
 			if (tilesMode)
-				MessageBox.Show("When importing tile art, you can import collision for the tiles as well. For an example of what the collision images should look like, export a tile whlie the `Export art+collision+priority` setting is enabled.", "SonLVL-RSDK Art Importer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				MessageBox.Show("When importing tile art, you can import collision for the tiles as well. For an example of what the collision images should look like, export a tile with the `Include Collision+Priority` setting checked.", "SonLVL-RSDK Art Importer", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			else
-				MessageBox.Show("When importing chunks, you can import collision as well as priority data. For an example of what the images should look like, export a chunk whlie the `Export art+collision+priority` setting is enabled.", "SonLVL-RSDK Art Importer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				MessageBox.Show("When importing chunks, you can import collision as well as priority data. For an example of what the images should look like, export a chunk with the `Include Collision+Priority` setting checked.", "SonLVL-RSDK Art Importer", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 	}
 }
