@@ -5437,6 +5437,11 @@ namespace SonicRetro.SonLVL.GUI
 								bmp.Dispose();
 								return;
 							}
+
+							int excessX = bmp.Width & 127;
+							int excessY = bmp.Height & 127;
+							if (excessX > 0 || excessY > 0)
+								MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 128. Only the top left {bmp.Width & ~127}x{bmp.Height & ~127} corner will be imported.", "SonLVL-RSDK Chunk Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 							break;
 						case ArtTab.Tiles:
 							if (bmp.Width < 16 || bmp.Height < 16)
@@ -5445,6 +5450,11 @@ namespace SonicRetro.SonLVL.GUI
 								bmp.Dispose();
 								return;
 							}
+
+							excessX = bmp.Width & 15;
+							excessY = bmp.Height & 15;
+							if (excessX > 0 || excessY > 0)
+								MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 16. Only the top left {bmp.Width & ~15}x{bmp.Height & ~15} corner will be imported.", "SonLVL-RSDK Tile Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 							break;
 					}
 
@@ -8049,6 +8059,11 @@ namespace SonicRetro.SonLVL.GUI
 							return;
 						}
 
+						int excessX = bmp.Width & 127;
+						int excessY = bmp.Height & 127;
+						if (excessX > 0 || excessY > 0)
+							MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 128. Only the top left {bmp.Width & ~127}x{bmp.Height & ~127} corner will be imported.", "SonLVL-RSDK Layout Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
 						using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, false))
 						{
 							importDialog.Text = "Import Layout...";
@@ -8097,6 +8112,11 @@ namespace SonicRetro.SonLVL.GUI
 							MessageBox.Show(this, $"The image you have selected is too small ({bmp.Width}x{bmp.Height}). It must be at least as large as one chunk (128x128)", "SonLVL-RSDK Layout Section Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 							return;
 						}
+
+						int excessX = bmp.Width & 127;
+						int excessY = bmp.Height & 127;
+						if (excessX > 0 || excessY > 0)
+							MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 128. Only the top left {bmp.Width & ~127}x{bmp.Height & ~127} corner will be imported.", "SonLVL-RSDK Layout Section Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
 						using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, false))
 						{
