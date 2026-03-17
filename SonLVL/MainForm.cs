@@ -5776,7 +5776,9 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			if (TileSelector.SelectedIndex == -1) return;
 			int x = e.X / 8;
+			if (x < 0 || x > 15) return;
 			int y = e.Y / 8;
+			if (y < 0 || y > 16) return;
 			if (y == 16)
 			{
 				LevelData.Collision.collisionMasks[collisionLayerSelector.SelectedIndex][SelectedTile].heightMasks[x].solid = false;
