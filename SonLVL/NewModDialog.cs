@@ -68,12 +68,12 @@ namespace SonicRetro.SonLVL.GUI
 				{
 					case EngineVersion.V3:
 						newMod.DisableSaveIniOverride = checkBox1.Checked;
-						newMod.TargetVersion = "3";
+						newMod.TargetVersion = 3;
 						break;
 					case EngineVersion.V4:
 						newMod.SkipStartMenu = checkBox1.Checked;
 						newMod.ForceSonic1 = forceSonic1.Checked;
-						newMod.TargetVersion = "4";
+						newMod.TargetVersion = 4;
 						break;
 				}
 

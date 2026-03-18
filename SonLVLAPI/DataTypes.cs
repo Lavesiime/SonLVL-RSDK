@@ -909,7 +909,7 @@ namespace SonicRetro.SonLVL.API
 		public bool DisableSaveIniOverride { get; set; }
 		public bool SkipStartMenu { get; set; }
 		public bool ForceSonic1 { get; set; }
-		public string TargetVersion { get; set; }
+		public int TargetVersion { get; set; }
 
 		public static IEnumerable<string> GetModFiles(DirectoryInfo directoryInfo)
 		{
