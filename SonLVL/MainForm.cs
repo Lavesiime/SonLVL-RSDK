@@ -921,12 +921,16 @@ namespace SonicRetro.SonLVL.GUI
 			}
 			ObjectSelect.listView1.EndUpdate();
 			objectTypeList.EndUpdate();
+			
 			ObjectSelect.listView2.Items.Clear();
 			ObjectSelect.imageList2.Images.Clear();
+
 			objectOrder.BeginUpdate();
 			objectOrder.Items.Clear();
-			foreach (var obj in LevelData.Objects)
-				objectOrder.Items.Add(obj.Name, obj.Type < objectTypeImages.Images.Count ? obj.Type : 0);
+
+			var items = LevelData.Objects.Select(obj => new ListViewItem(obj.Name, obj.Type < objectTypeImages.Images.Count ? obj.Type : 0));
+			objectOrder.Items.AddRange(items.ToArray());
+
 			objectOrder.EndUpdate();
 		}
 
