@@ -185,12 +185,12 @@ namespace SonicRetro.SonLVL.GUI
 			switch (Settings.ViewCollision)
 			{
 				case CollisionPath.Path1:
-					chunkColNoneRadioButton.Checked = noneToolStripMenuItem1.Checked = false;
-					chunkColARadioButton.Checked = path1ToolStripMenuItem.Checked = true;
+					chunkColNoneRadioButton.Checked = false;
+					chunkColARadioButton.Checked = true;
 					break;
 				case CollisionPath.Path2:
-					chunkColNoneRadioButton.Checked = noneToolStripMenuItem1.Checked = false;
-					chunkColBRadioButton.Checked = path2ToolStripMenuItem.Checked = true;
+					chunkColNoneRadioButton.Checked = false;
+					chunkColBRadioButton.Checked = true;
 					break;
 			}
 			
@@ -837,12 +837,10 @@ namespace SonicRetro.SonLVL.GUI
 				sfxListBox.Items.Add(sfx.name);
 			sfxListBox.EndUpdate();
 			sfxAddButton.Enabled = LevelData.StageConfig.soundFX.Count < 255;
-			loaded = true;
+			
 			SelectedItems = new List<Entry>();
 			saveToolStripMenuItem.Enabled = LevelData.ModFolder != null;
 			editToolStripMenuItem.Enabled = exportToolStripMenuItem.Enabled = true;
-			objectListBox_SelectedIndexChanged(this, EventArgs.Empty);
-			sfxListBox_SelectedIndexChanged(this, EventArgs.Empty);
 			findNextToolStripMenuItem.Enabled = findPreviousToolStripMenuItem.Enabled = false;
 			
 			if (File.Exists(LevelData.StageInfo.folder + ".sls"))
@@ -878,11 +876,19 @@ namespace SonicRetro.SonLVL.GUI
 			layoutSectionListBox.EndUpdate();
 			foundobjs = null;
 			BGSelection = FGSelection = Rectangle.Empty;
+			
+			loaded = true;
+			
+			objectListBox_SelectedIndexChanged(this, EventArgs.Empty);
+			sfxListBox_SelectedIndexChanged(this, EventArgs.Empty);
+			
 			SelectedObjectChanged();
 			UpdateScrollControls();
 			ChunkID.Maximum = LevelData.NewChunks.chunkList.Length - 1;
 			TileID.Maximum = LevelData.NewTiles.Length - 1;
 			useHexadecimalToolStripMenuItem_CheckedChanged(this, EventArgs.Empty);
+			
+			// Not pretty, but let's enable all the controls of the form now
 			tableLayoutPanel4.Enabled = importToolStripButton.Enabled = deleteToolStripButton.Enabled = fgToolStrip.Enabled = bgToolStrip.Enabled =
 				usageCountsToolStripMenuItem.Enabled = titleCardGroup.Enabled = layerSettingsGroup.Enabled = objectListGroup.Enabled = soundEffectsGroup.Enabled =
 				objectPanel.PanelAllowDrop = objectOrder.AllowDrop = TileSelector.AllowDrop = true;
@@ -1132,7 +1138,7 @@ namespace SonicRetro.SonLVL.GUI
 			sfxListBox.EndUpdate();
 			sfxAddButton.Enabled = LevelData.StageConfig.soundFX.Count < 255;
 			loaded = true;
-			SelectedItems = new List<Entry>();
+			SelectedItems.Clear();
 			findNextToolStripMenuItem.Enabled = findPreviousToolStripMenuItem.Enabled = false;
 			LevelData.PaletteChanged();
 			TileSelector_SelectedIndexChanged(this, EventArgs.Empty);
@@ -1716,16 +1722,12 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void collisionToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			if (collisionToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem) < 3)
+			switch (collisionToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem))
 			{
-				bool angles = anglesToolStripMenuItem.Checked;
-				foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-					if (item is ToolStripMenuItem item1)
-						item1.Checked = false;
-				((ToolStripMenuItem)e.ClickedItem).Checked = true;
-				anglesToolStripMenuItem.Checked = angles;
-				DrawLevel();
-				DrawChunkPicture();
+				case 0: chunkColNoneRadioButton.Checked = true; break;
+				case 1: chunkColARadioButton.Checked = true; break;
+				case 2: chunkColBRadioButton.Checked = true; break;
+				default: break; // (nothing for the angles button)
 			}
 		}
 
@@ -3262,31 +3264,13 @@ namespace SonicRetro.SonLVL.GUI
 			switch (e.KeyCode)
 			{
 				case Keys.Q:
-					bool angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem item1)
-							item1.Checked = false;
-					noneToolStripMenuItem1.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
-					DrawLevel();
+					chunkColNoneRadioButton.Checked = true;
 					break;
 				case Keys.W:
-					angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem item1)
-							item1.Checked = false;
-					path1ToolStripMenuItem.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
-					DrawLevel();
+					chunkColARadioButton.Checked = true;
 					break;
 				case Keys.E:
-					angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem item1)
-							item1.Checked = false;
-					path2ToolStripMenuItem.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
-					DrawLevel();
+					chunkColBRadioButton.Checked = true;
 					break;
 				case Keys.R:
 					if (!(e.Alt & e.Control))
@@ -4611,28 +4595,13 @@ namespace SonicRetro.SonLVL.GUI
 						return;
 					break;
 				case Keys.Q:
-					bool angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem item1)
-							item1.Checked = false;
-					chunkColNoneRadioButton.Checked = noneToolStripMenuItem1.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
+					chunkColNoneRadioButton.Checked = true;
 					break;
 				case Keys.W:
-					angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem item1)
-							item1.Checked = false;
-					chunkColARadioButton.Checked = path1ToolStripMenuItem.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
+					chunkColARadioButton.Checked = true;
 					break;
 				case Keys.E:
-					angles = anglesToolStripMenuItem.Checked;
-					foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
-						if (item is ToolStripMenuItem item1)
-							item1.Checked = false;
-					chunkColBRadioButton.Checked = path2ToolStripMenuItem.Checked = true;
-					anglesToolStripMenuItem.Checked = angles;
+					chunkColBRadioButton.Checked = true;
 					break;
 				case Keys.Up:
 					if (SelectedChunkBlock.Y > 0)
@@ -4745,7 +4714,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void chunkColNoneRadioButton_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!loaded || !chunkColNoneRadioButton.Checked) return;
+			if (!chunkColNoneRadioButton.Checked) return;
 
 			bool angles = anglesToolStripMenuItem.Checked;
 			foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
@@ -4753,12 +4722,14 @@ namespace SonicRetro.SonLVL.GUI
 					toolStripMenuItem.Checked = false;
 			noneToolStripMenuItem1.Checked = true;
 			anglesToolStripMenuItem.Checked = angles;
+
+			DrawLevel();
 			DrawChunkPicture();
 		}
 
 		private void chunkColARadioButton_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!loaded || !chunkColARadioButton.Checked) return;
+			if (!chunkColARadioButton.Checked) return;
 
 			bool angles = anglesToolStripMenuItem.Checked;
 			foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
@@ -4766,11 +4737,13 @@ namespace SonicRetro.SonLVL.GUI
 					toolStripMenuItem.Checked = false;
 			path1ToolStripMenuItem.Checked = true;
 			anglesToolStripMenuItem.Checked = angles;
+			
+			DrawLevel();
 			DrawChunkPicture();
 		}
 		private void chunkColBRadioButton_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!loaded || !chunkColBRadioButton.Checked) return;
+			if (!chunkColBRadioButton.Checked) return;
 
 			bool angles = anglesToolStripMenuItem.Checked;
 			foreach (ToolStripItem item in collisionToolStripMenuItem.DropDownItems)
@@ -4778,6 +4751,8 @@ namespace SonicRetro.SonLVL.GUI
 					toolStripMenuItem.Checked = false;
 			path2ToolStripMenuItem.Checked = true;
 			anglesToolStripMenuItem.Checked = angles;
+
+			DrawLevel();
 			DrawChunkPicture();
 		}
 
@@ -4806,7 +4781,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void DrawChunkPicture()
 		{
-			if (!loaded) return;
+			if (!loaded || CurrentTab != Tab.Art) return;
 			BitmapBits32 bmp = new BitmapBits32(128, 128);
 			LevelImgPalette.Entries.CopyTo(bmp.Palette, 0);
 			bmp.Clear(bmp.Palette[LevelData.ColorTransparent]);
