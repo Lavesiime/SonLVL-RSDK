@@ -211,19 +211,11 @@ namespace SonicRetro.SonLVL.GUI
 			hideDebugObjectsToolStripMenuItem.Checked = Settings.HideDebugObjectsExport;
 			displayObjectsToolStripCheckBoxButton.Checked = Settings.IncludeObjectsFG;
 			exportArtcollisionpriorityToolStripMenuItem.Checked = Settings.ExportArtCollisionPriority;
+
 			CurrentTab = Settings.CurrentTab;
 			CurrentArtTab = Settings.CurrentArtTab;
+			
 			useHexadecimalToolStripMenuItem.Checked = Settings.UseHexadecimalIndexesForArt;
-
-			// The text on the form by default is hex, so let's change it to decimal if needed
-			// However, without a level loaded, we can't know the real chunk/tile max, so.. let's hardcode some default text
-			// (This text is just placeholder til a level gets loaded anyways, the real tile limits are in the RSDKv3_4 library, so this stuff doesn't really matter *that* much--)
-			if (!useHexadecimalToolStripMenuItem.Checked)
-			{
-				ChunkCount.Text = $"/ 511";
-				TileCount.Text = $"/ 1023";
-			}
-
 			switchMouseButtonsInChunkAndBlockEditorsToolStripMenuItem.Checked = Settings.SwitchChunkBlockMouseButtons;
 			
 			switch (Settings.WindowMode)
@@ -878,12 +870,12 @@ namespace SonicRetro.SonLVL.GUI
 			BGSelection = FGSelection = Rectangle.Empty;
 			
 			loaded = true;
-			
 			objectListBox_SelectedIndexChanged(this, EventArgs.Empty);
 			sfxListBox_SelectedIndexChanged(this, EventArgs.Empty);
-			
 			SelectedObjectChanged();
 			UpdateScrollControls();
+			loaded = false;
+
 			ChunkID.Maximum = LevelData.NewChunks.chunkList.Length - 1;
 			TileID.Maximum = LevelData.NewTiles.Length - 1;
 			useHexadecimalToolStripMenuItem_CheckedChanged(this, EventArgs.Empty);
@@ -897,10 +889,15 @@ namespace SonicRetro.SonLVL.GUI
 			undoToolStripMenuItem.DropDownItems.Clear();
 			redoToolStripMenuItem.Enabled = false;
 			redoToolStripMenuItem.DropDownItems.Clear();
+
 			tabControl1.Enabled = true;
 			Enabled = true;
 			UseWaitCursor = false;
 			saved = true;
+			loaded = true;
+
+			DrawPalette();
+			DrawChunkPicture();
 			DrawLevel();
 		}
 
@@ -1624,21 +1621,19 @@ namespace SonicRetro.SonLVL.GUI
 				findFGChunksDialog.Hexadecimal = findBGChunksDialog.Hexadecimal = chunkBlockEditor.Hexadecimal =
 				TileID.Hexadecimal = ChunkID.Hexadecimal = useHexadecimalToolStripMenuItem.Checked;
 
-			if (!loaded) return;
-			
-			if (CurrentTab == Tab.Foreground || CurrentTab == Tab.Background)
-				DrawLevel();
-
 			if (useHexadecimalToolStripMenuItem.Checked)
 			{
-				ChunkCount.Text = $"/ {(LevelData.NewChunks.chunkList.Length - 1):X}";
-				TileCount.Text = $"/ {(LevelData.NewTiles.Length - 1):X}";
+				ChunkCount.Text = $"/ {(int)ChunkID.Maximum:X}";
+				TileCount.Text = $"/ {(int)TileID.Maximum:X}";
 			}
 			else
 			{
-				ChunkCount.Text = $"/ {(LevelData.NewChunks.chunkList.Length - 1)}";
-				TileCount.Text = $"/ {(LevelData.NewTiles.Length - 1)}";
+				ChunkCount.Text = $"/ {ChunkID.Maximum}";
+				TileCount.Text = $"/ {TileID.Maximum}";
 			}
+
+			if (loaded && (CurrentTab == Tab.Foreground || CurrentTab == Tab.Background))
+				DrawLevel();
 		}
 
 		private void switchMouseButtonsInChunkAndBlockEditorsToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
