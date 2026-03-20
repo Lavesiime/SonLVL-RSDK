@@ -199,10 +199,10 @@
             458752});
             this.parallaxFactorStartingValue.Location = new System.Drawing.Point(227, 115);
             this.parallaxFactorStartingValue.Maximum = new decimal(new int[] {
-            255,
+            -170194401,
+            5,
             0,
-            0,
-            0});
+            524288});
             this.parallaxFactorStartingValue.Name = "parallaxFactorStartingValue";
             this.parallaxFactorStartingValue.Size = new System.Drawing.Size(120, 31);
             this.parallaxFactorStartingValue.TabIndex = 2;
