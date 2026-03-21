@@ -5400,57 +5400,58 @@ namespace SonicRetro.SonLVL.GUI
 				opendlg.RestoreDirectory = true;
 				if (opendlg.ShowDialog(this) == DialogResult.OK)
 				{
-					Bitmap bmp = new Bitmap(opendlg.FileName);
-					
-					switch (CurrentArtTab)
+					using (Bitmap bmp = new Bitmap(opendlg.FileName))
 					{
-						case ArtTab.Chunks:
-							if (bmp.Width < 128 || bmp.Height < 128)
-							{
-								MessageBox.Show(this, $"The image you have selected is too small ({bmp.Width}x{bmp.Height}). It must be at least as large as one chunk (128x128)", "SonLVL-RSDK Chunk Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-								bmp.Dispose();
-								return;
-							}
-
-							int excessX = bmp.Width & 127;
-							int excessY = bmp.Height & 127;
-							if (excessX > 0 || excessY > 0)
-								MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 128. Only the top left {bmp.Width & ~127}x{bmp.Height & ~127} corner will be imported.", "SonLVL-RSDK Chunk Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-							break;
-						case ArtTab.Tiles:
-							if (bmp.Width < 16 || bmp.Height < 16)
-							{
-								MessageBox.Show(this, $"The image you have selected is too small ({bmp.Width}x{bmp.Height}). It must be at least as large as one tile (16x16)", "SonLVL-RSDK Tile Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-								bmp.Dispose();
-								return;
-							}
-
-							excessX = bmp.Width & 15;
-							excessY = bmp.Height & 15;
-							if (excessX > 0 || excessY > 0)
-								MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 16. Only the top left {bmp.Width & ~15}x{bmp.Height & ~15} corner will be imported.", "SonLVL-RSDK Tile Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-							break;
-					}
-
-					using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, CurrentArtTab == ArtTab.Tiles))
-					{
-						if (CurrentArtTab == ArtTab.Tiles)
-							importDialog.Text = "Import Tiles...";
-						else
-							importDialog.Text = "Import Chunks...";
-
-						if (importDialog.ShowDialog(this) == DialogResult.OK)
+						switch (CurrentArtTab)
 						{
-							ImportFlags flags = ImportFlags.Normal;
+							case ArtTab.Chunks:
+								if (bmp.Width < 128 || bmp.Height < 128)
+								{
+									MessageBox.Show(this, $"The image you have selected is too small ({bmp.Width}x{bmp.Height}). It must be at least as large as one chunk (128x128)", "SonLVL-RSDK Chunk Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+									bmp.Dispose();
+									return;
+								}
 
+								int excessX = bmp.Width & 127;
+								int excessY = bmp.Height & 127;
+								if (excessX > 0 || excessY > 0)
+									MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 128. Only the top left {bmp.Width & ~127}x{bmp.Height & ~127} corner will be imported.", "SonLVL-RSDK Chunk Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+								break;
+							case ArtTab.Tiles:
+								if (bmp.Width < 16 || bmp.Height < 16)
+								{
+									MessageBox.Show(this, $"The image you have selected is too small ({bmp.Width}x{bmp.Height}). It must be at least as large as one tile (16x16)", "SonLVL-RSDK Tile Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+									bmp.Dispose();
+									return;
+								}
+
+								excessX = bmp.Width & 15;
+								excessY = bmp.Height & 15;
+								if (excessX > 0 || excessY > 0)
+									MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 16. Only the top left {bmp.Width & ~15}x{bmp.Height & ~15} corner will be imported.", "SonLVL-RSDK Tile Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+								break;
+						}
+
+						using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, CurrentArtTab == ArtTab.Tiles))
+						{
 							if (CurrentArtTab == ArtTab.Tiles)
-							{
-								if (!importDialog.mergeDupesCheckBox.Checked) flags |= ImportFlags.DontOptimize;
-								if (importDialog.concurrentTilesCheckBox.Checked) flags |= ImportFlags.GroupTilesTogether;
-							}
+								importDialog.Text = "Import Tiles...";
+							else
+								importDialog.Text = "Import Chunks...";
 
-							ImportImage(bmp, importDialog.colABitmap, importDialog.colBBitmap, importDialog.priBitmap, null, flags);
-							SaveState($"Import {(CurrentArtTab == ArtTab.Chunks ? "Chunks" : "Tiles")}");
+							if (importDialog.ShowDialog(this) == DialogResult.OK)
+							{
+								ImportFlags flags = ImportFlags.Normal;
+
+								if (CurrentArtTab == ArtTab.Tiles)
+								{
+									if (!importDialog.mergeDupesCheckBox.Checked) flags |= ImportFlags.DontOptimize;
+									if (importDialog.concurrentTilesCheckBox.Checked) flags |= ImportFlags.GroupTilesTogether;
+								}
+
+								ImportImage(bmp, importDialog.colABitmap, importDialog.colBBitmap, importDialog.priBitmap, null, flags);
+								SaveState($"Import {(CurrentArtTab == ArtTab.Chunks ? "Chunks" : "Tiles")}");
+							}
 						}
 					}
 				}
