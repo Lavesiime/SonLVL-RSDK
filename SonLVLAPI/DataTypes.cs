@@ -874,6 +874,9 @@ namespace SonicRetro.SonLVL.API
 		public decimal ParallaxFactor { get; set; }
 		public decimal ScrollSpeed { get; set; }
 
+		public const decimal SCROLLSPEED_MAX = (0xFF / 64m);
+		public const decimal PARALLAXFACTOR_MAX = (0xFFFF / 256m);
+
 		public ScrollData(ushort pos = 0)
 		{
 			StartPos = pos;
