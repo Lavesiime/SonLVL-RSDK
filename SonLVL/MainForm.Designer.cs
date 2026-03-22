@@ -3085,10 +3085,10 @@
             // 
             this.scrollScrollSpeed.DecimalPlaces = 5;
             this.scrollScrollSpeed.Increment = new decimal(new int[] {
-            1,
+            3125,
             0,
             0,
-            65536});
+            327680});
             this.scrollScrollSpeed.Location = new System.Drawing.Point(249, 658);
             this.scrollScrollSpeed.Margin = new System.Windows.Forms.Padding(6);
             this.scrollScrollSpeed.Maximum = new decimal(new int[] {
@@ -3139,10 +3139,10 @@
             // 
             this.scrollParallaxFactor.DecimalPlaces = 5;
             this.scrollParallaxFactor.Increment = new decimal(new int[] {
-            1,
+            78125,
             0,
             0,
-            196608});
+            458752});
             this.scrollParallaxFactor.Location = new System.Drawing.Point(249, 608);
             this.scrollParallaxFactor.Margin = new System.Windows.Forms.Padding(6);
             this.scrollParallaxFactor.Maximum = new decimal(new int[] {
@@ -3160,10 +3160,10 @@
             // 
             this.layerScrollSpeed.DecimalPlaces = 5;
             this.layerScrollSpeed.Increment = new decimal(new int[] {
-            1,
+            3125,
             0,
             0,
-            65536});
+            327680});
             this.layerScrollSpeed.Location = new System.Drawing.Point(263, 56);
             this.layerScrollSpeed.Margin = new System.Windows.Forms.Padding(6);
             this.layerScrollSpeed.Maximum = new decimal(new int[] {
@@ -3191,10 +3191,10 @@
             // 
             this.layerParallaxFactor.DecimalPlaces = 5;
             this.layerParallaxFactor.Increment = new decimal(new int[] {
-            1,
+            78125,
             0,
             0,
-            196608});
+            458752});
             this.layerParallaxFactor.Location = new System.Drawing.Point(263, 6);
             this.layerParallaxFactor.Margin = new System.Windows.Forms.Padding(6);
             this.layerParallaxFactor.Maximum = new decimal(new int[] {
