@@ -1742,12 +1742,14 @@ namespace SonicRetro.SonLVL.GUI
 				SolidColorOnly = true,
 				Color = Settings.GridColor
 			};
+
 			if (cols != null)
 				a.CustomColors = cols;
+
 			if (a.ShowDialog() == DialogResult.OK)
 			{
 				Settings.GridColor = a.Color;
-				if (loaded && showGridToolStripCheckBoxButton.Checked)
+				if (loaded && (showGridToolStripCheckBoxButton.Checked || (CurrentTab == Tab.Art && chunkHighlightHighTilesCheckBox.Checked)))
 				{
 					DrawLevel();
 					DrawChunkPicture();
