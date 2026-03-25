@@ -100,7 +100,7 @@ namespace SonicRetro.SonLVL
             this.solidity2.Margin = new System.Windows.Forms.Padding(6);
             this.solidity2.Name = "solidity2";
             this.solidity2.Size = new System.Drawing.Size(277, 33);
-            this.solidity2.TabIndex = 1;
+            this.solidity2.TabIndex = 6;
             this.solidity2.SelectedIndexChanged += new System.EventHandler(this.solidity2_SelectedIndexChanged);
             // 
             // solidity1
@@ -117,7 +117,7 @@ namespace SonicRetro.SonLVL
             this.solidity1.Margin = new System.Windows.Forms.Padding(6);
             this.solidity1.Name = "solidity1";
             this.solidity1.Size = new System.Drawing.Size(277, 33);
-            this.solidity1.TabIndex = 0;
+            this.solidity1.TabIndex = 5;
             this.solidity1.SelectedIndexChanged += new System.EventHandler(this.solidity1_SelectedIndexChanged);
             // 
             // xFlip
@@ -127,7 +127,7 @@ namespace SonicRetro.SonLVL
             this.xFlip.Margin = new System.Windows.Forms.Padding(6);
             this.xFlip.Name = "xFlip";
             this.xFlip.Size = new System.Drawing.Size(99, 29);
-            this.xFlip.TabIndex = 0;
+            this.xFlip.TabIndex = 2;
             this.xFlip.Text = "X Flip";
             this.xFlip.UseVisualStyleBackColor = true;
             this.xFlip.CheckedChanged += new System.EventHandler(this.xFlip_CheckedChanged);
@@ -139,7 +139,7 @@ namespace SonicRetro.SonLVL
             this.yFlip.Margin = new System.Windows.Forms.Padding(6);
             this.yFlip.Name = "yFlip";
             this.yFlip.Size = new System.Drawing.Size(100, 29);
-            this.yFlip.TabIndex = 1;
+            this.yFlip.TabIndex = 3;
             this.yFlip.Text = "Y Flip";
             this.yFlip.UseVisualStyleBackColor = true;
             this.yFlip.CheckedChanged += new System.EventHandler(this.yFlip_CheckedChanged);
@@ -151,7 +151,7 @@ namespace SonicRetro.SonLVL
             this.highPlane.Margin = new System.Windows.Forms.Padding(6);
             this.highPlane.Name = "highPlane";
             this.highPlane.Size = new System.Drawing.Size(149, 29);
-            this.highPlane.TabIndex = 11;
+            this.highPlane.TabIndex = 4;
             this.highPlane.Text = "High Plane";
             this.highPlane.UseVisualStyleBackColor = true;
             this.highPlane.CheckedChanged += new System.EventHandler(this.highPlane_CheckedChanged);
@@ -187,7 +187,7 @@ namespace SonicRetro.SonLVL
             0});
             this.block.Name = "block";
             this.block.Size = new System.Drawing.Size(106, 31);
-            this.block.TabIndex = 10;
+            this.block.TabIndex = 1;
             this.block.ValueChanged += new System.EventHandler(this.block_ValueChanged);
             // 
             // ChunkBlockEditor
