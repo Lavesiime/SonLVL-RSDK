@@ -27,7 +27,10 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://lavesiime.github.io/guides/sonlvl/install/");
+			if (!Program.IsMonoRuntime)
+				System.Diagnostics.Process.Start("https://lavesiime.github.io/guides/sonlvl/install/");
+			else
+				System.Diagnostics.Process.Start("xdg-open", "https://lavesiime.github.io/guides/sonlvl/install/");
 			Close();
 		}
 	}

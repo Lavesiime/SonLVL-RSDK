@@ -20,7 +20,10 @@ namespace SonicRetro.SonLVL.API
 
 		private void okButton_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://github.com/Lavesiime/SonLVL-RSDK/issues");
+			if (!LevelData.IsMonoRuntime)
+				System.Diagnostics.Process.Start("https://github.com/Lavesiime/SonLVL-RSDK/issues");
+			else
+				System.Diagnostics.Process.Start("xdg-open", "https://github.com/Lavesiime/SonLVL-RSDK/issues");
 			Close();
 		}
 
