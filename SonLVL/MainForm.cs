@@ -269,7 +269,7 @@ namespace SonicRetro.SonLVL.GUI
 					if (File.Exists(item.INIPath) && !item.INIPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) && (item.ModPath == null || File.Exists(item.ModPath)))
 					{
 						mru.Add(item);
-						recentModsToolStripMenuItem.DropDownItems.Add(item.Name.Replace("&", "&&"));
+						recentModsToolStripMenuItem.DropDownItems.Add(item.Name);
 					}
 				}
 				Settings.RecentMods = mru;
@@ -446,7 +446,7 @@ namespace SonicRetro.SonLVL.GUI
 					foreach (var item in modMenuItems)
 						item.MenuItem.Checked = false;
 					ModStuff ms = new ModStuff() { Path = dlg.ModFile };
-					ToolStripMenuItem menuitem = new ToolStripMenuItem(IniSerializer.Deserialize<ModInfo>(dlg.ModFile).Name ?? "Unknown Mod", null, new EventHandler(ModToolStripMenuItem_Clicked)) { Tag = ms, Checked = true };
+					ToolStripMenuItem menuitem = new ToolStripMenuItem(IniSerializer.Deserialize<ModInfo>(dlg.ModFile).Name?.Replace("&", "&&") ?? "Unknown Mod", null, new EventHandler(ModToolStripMenuItem_Clicked)) { Tag = ms, Checked = true };
 					ms.MenuItem = menuitem;
 					modMenuItems.Add(ms);
 					selectModToolStripMenuItem.DropDownItems.Insert(selectModToolStripMenuItem.DropDownItems.Count - 1, menuitem);
