@@ -90,8 +90,6 @@ namespace SonicRetro.SonLVL.GUI
 
 				if (!Program.IsMonoRuntime)
 					System.Diagnostics.Process.Start(moddir);
-				else
-					System.Diagnostics.Process.Start("xdg-open", $"\"{moddir}\"");
 
 				DialogResult = DialogResult.OK;
 				Close();
