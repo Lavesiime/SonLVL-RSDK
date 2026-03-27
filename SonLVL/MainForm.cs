@@ -359,6 +359,69 @@ namespace SonicRetro.SonLVL.GUI
 #endif
 			{
 				LevelData.LoadGame(filename);
+
+				// If this is the first time we're loading this Project File..
+				if (LevelData.Game.ExtractionState == ExtractionState.Default)
+				{
+					string outpath = LevelData.EXEFolder;
+
+					// And we're using a Data file (as opposed to a Data Folder..)
+					// [also double check that a Data Folder doesn't exist already, in case they're using a Data file but have extracted it already anyways]
+					if ((LevelData.DataFile is RSDKv3.DataPack || LevelData.DataFile is RSDKv4.DataPack || LevelData.DataFile is RSDKv5.DataPack) && !Directory.Exists(Path.Combine(outpath, "Data")))
+					{
+						// Then, let's offer the user to extract their Data.rsdk right here and now!
+						
+						fileToolStripMenuItem.HideDropDown();
+
+						if (MessageBox.Show(this, $"Would you like to extract your {Path.GetFileName(LevelData.Game.DataFile)} archive?\n\nThis will unpack the game's files into your game directory, for modding assets beyond levels (such as sprites, music, etc). Recommended for more advanced modding.\n\n(SonLVL-RSDK will still function normally if you choose not to.)", "SonLVL-RSDK New Project Setup", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+						{
+							// Not very pretty, but since they're all separate classes, that's just how it is
+							switch (LevelData.DataFile)
+							{
+								case RSDKv3.DataPack dpv3:
+									foreach (var file in dpv3.files)
+									{
+										string path = Path.Combine(outpath, file.fullName);
+										Directory.CreateDirectory(Path.GetDirectoryName(path));
+										File.WriteAllBytes(path, file.data);
+									}
+									break;
+								case RSDKv4.DataPack dpv4:
+									foreach (var file in dpv4.files)
+									{
+										string path = Path.Combine(outpath, file.name.name);
+										Directory.CreateDirectory(Path.GetDirectoryName(path));
+										File.WriteAllBytes(path, file.data);
+									}
+									break;
+								case RSDKv5.DataPack dpv5:
+									foreach (var file in dpv5.files)
+									{
+										string path = Path.Combine(outpath, file.name.name);
+										Directory.CreateDirectory(Path.GetDirectoryName(path));
+										File.WriteAllBytes(path, file.data);
+									}
+									break;
+								default:
+									break;
+							}
+
+							// We *could* set LevelData.Game.DataFile to an emptry string so that we use the newly created Data Folder, but..
+							// Not much of a reason to, really; the extraction process is for the user, not us
+							// (plus, there's the off chance the user accidentally edits their base game files, in which case
+							//   it's a good thing to pull from the Data.rsdk if we can)
+							LevelData.Game.ExtractionState = ExtractionState.Extracted;
+							
+							// Even if the process should be nearly instant, give the user some confirmation that it's done now
+							MessageBox.Show(this, "Archive successfully extracted!", "SonLVL-RSDK");
+						}
+						else // If they don't want to, then just remember that and never ask 'em again
+							LevelData.Game.ExtractionState = ExtractionState.Packed;
+
+						// Either way, let's save the result
+						LevelData.Game.Save(LevelData.GamePath);
+					}
+				}
 			}
 #if !DEBUG
 			catch (FormatException)
