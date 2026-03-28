@@ -1609,6 +1609,45 @@ namespace SonicRetro.SonLVL.GUI
 
 						BGSelection.Width = Math.Min(BGSelection.Right, LevelData.BGWidth[bglayer]) - BGSelection.Left;
 						BGSelection.Height = Math.Min(BGSelection.Bottom, LevelData.BGHeight[bglayer]) - BGSelection.Top;
+						
+						// If we shrunk, then remove all parallax slices that we cut off
+						int curEnd = -1;
+						int prevEnd = -1;
+						
+						if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll && cursize.Height > LevelData.BGSize[bglayer].Height)
+						{
+							curEnd = LevelData.BGSize[bglayer].Height * 128;
+							prevEnd = cursize.Height * 128;
+						}
+						else if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.VScroll && cursize.Width > LevelData.BGSize[bglayer].Width)
+						{
+							curEnd = LevelData.BGSize[bglayer].Width * 128;
+							prevEnd = cursize.Width * 128;
+						}
+						
+						if (curEnd != -1 && prevEnd != -1)
+						{
+							int start = LevelData.BGScroll[bglayer].FindIndex(a => (a.StartPos >= curEnd) && (a.StartPos <= prevEnd));
+							int end = LevelData.BGScroll[bglayer].FindLastIndex(a => (a.StartPos >= curEnd) && (a.StartPos <= prevEnd));
+
+							if (start != end)
+							{
+								// If there's more than one, let's do RemoveRange
+								LevelData.BGScroll[bglayer].RemoveRange(start, end - start + 1);
+
+								// (ListBoxes don't have RemoveRange, so..)
+								scrollList.BeginUpdate();
+								for (int i = end; i >= start; i--)
+									scrollList.Items.RemoveAt(i);
+								scrollList.EndUpdate();
+							}
+							else if (start != -1)
+							{
+								// If there's only one, just do a single remove
+								scrollList.Items.RemoveAt(start);
+								LevelData.BGScroll[bglayer].RemoveAt(start);
+							}
+						}
 					}
 					else
 					{
