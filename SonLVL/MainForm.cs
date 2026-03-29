@@ -2099,6 +2099,7 @@ namespace SonicRetro.SonLVL.GUI
 							pal.Entries[0] = Color.Transparent;
 						res.Palette = pal;
 						res.Save(a.FileName);
+						LevelData.DrawForeground(null, true, !hideDebugObjectsToolStripMenuItem.Checked, true, false, false, false, false).ToBitmap(pal).Save(pathBase + "_objects" + pathExt);
 						LevelData.DrawForegroundCollision(null, 0).ToBitmap4bpp(Color.Magenta, Color.White, Color.Yellow, Color.Black, Color.Red).Save(pathBase + "_col1" + pathExt);
 						LevelData.DrawForegroundCollision(null, 1).ToBitmap4bpp(Color.Magenta, Color.White, Color.Yellow, Color.Black, Color.Red).Save(pathBase + "_col2" + pathExt);
 						BitmapBits pri = new BitmapBits(bmp.Width, bmp.Height);
