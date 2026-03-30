@@ -5,9 +5,12 @@ namespace SonicRetro.SonLVL
 {
 	public partial class FileSelectDialog : Form
 	{
+		private TreeNode selectedNode;
+
 		public FileSelectDialog(string title, List<string> files)
 		{
 			InitializeComponent();
+
 			Text = title;
 			foreach (var item in files)
 			{
@@ -24,10 +27,11 @@ namespace SonicRetro.SonLVL
 
 		private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			button1.Enabled = e.Node.Nodes.Count == 0;
+			selectedNode = e.Node;
+			button1.Enabled = selectedNode.Nodes.Count == 0;
 		}
 
-		private void treeView1_DoubleClick(object sender, System.EventArgs e)
+		private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
 			if (button1.Enabled)
 			{
@@ -46,6 +50,6 @@ namespace SonicRetro.SonLVL
 			Close();
 		}
 
-		public string SelectedPath => treeView1.SelectedNode.FullPath;
+		public string SelectedPath => selectedNode.FullPath;
 	}
 }
