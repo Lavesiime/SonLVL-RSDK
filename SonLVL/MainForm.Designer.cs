@@ -782,7 +782,7 @@
             this.flipTileHButton.Margin = new System.Windows.Forms.Padding(6);
             this.flipTileHButton.Name = "flipTileHButton";
             this.flipTileHButton.Size = new System.Drawing.Size(247, 45);
-            this.flipTileHButton.TabIndex = 9;
+            this.flipTileHButton.TabIndex = 13;
             this.flipTileHButton.Text = "Flip Tile Horizontally";
             this.toolTip.SetToolTip(this.flipTileHButton, "Flip the tile\'s art and collision horizontally.");
             this.flipTileHButton.UseVisualStyleBackColor = true;
@@ -796,7 +796,7 @@
             this.flipTileVButton.Margin = new System.Windows.Forms.Padding(6);
             this.flipTileVButton.Name = "flipTileVButton";
             this.flipTileVButton.Size = new System.Drawing.Size(247, 45);
-            this.flipTileVButton.TabIndex = 10;
+            this.flipTileVButton.TabIndex = 14;
             this.flipTileVButton.Text = "Flip Tile Vertically";
             this.toolTip.SetToolTip(this.flipTileVButton, "Flip the tile\'s art and collision vertically.");
             this.flipTileVButton.UseVisualStyleBackColor = true;
@@ -825,7 +825,7 @@
             this.rotateTileRightButton.Margin = new System.Windows.Forms.Padding(6);
             this.rotateTileRightButton.Name = "rotateTileRightButton";
             this.rotateTileRightButton.Size = new System.Drawing.Size(247, 45);
-            this.rotateTileRightButton.TabIndex = 5;
+            this.rotateTileRightButton.TabIndex = 15;
             this.rotateTileRightButton.Text = "Rotate Tile Right";
             this.toolTip.SetToolTip(this.rotateTileRightButton, "Rotate the tile's art clockwise.");
             this.rotateTileRightButton.UseVisualStyleBackColor = true;
@@ -901,7 +901,7 @@
             this.chunkHighlightHighTilesCheckBox.Location = new System.Drawing.Point(11, 171);
             this.chunkHighlightHighTilesCheckBox.Name = "chunkHighlightHighTilesCheckBox";
             this.chunkHighlightHighTilesCheckBox.Size = new System.Drawing.Size(290, 29);
-            this.chunkHighlightHighTilesCheckBox.TabIndex = 8;
+            this.chunkHighlightHighTilesCheckBox.TabIndex = 11;
             this.chunkHighlightHighTilesCheckBox.Text = "Highlight High Layer Tiles";
             this.toolTip.SetToolTip(this.chunkHighlightHighTilesCheckBox, "Highlight each High Plane tile with the selected grid color, while leaving Low Pl" +
         "ane tiles alone.");
@@ -923,7 +923,7 @@
             this.chunkShowGridCheckBox.Location = new System.Drawing.Point(11, 136);
             this.chunkShowGridCheckBox.Name = "chunkShowGridCheckBox";
             this.chunkShowGridCheckBox.Size = new System.Drawing.Size(143, 29);
-            this.chunkShowGridCheckBox.TabIndex = 6;
+            this.chunkShowGridCheckBox.TabIndex = 10;
             this.chunkShowGridCheckBox.Text = "Show Grid";
             this.toolTip.SetToolTip(this.chunkShowGridCheckBox, "Toggle grid visibility.");
             this.chunkShowGridCheckBox.UseVisualStyleBackColor = true;
@@ -944,7 +944,7 @@
             this.chunkColBRadioButton.Location = new System.Drawing.Point(385, 37);
             this.chunkColBRadioButton.Name = "chunkColBRadioButton";
             this.chunkColBRadioButton.Size = new System.Drawing.Size(118, 29);
-            this.chunkColBRadioButton.TabIndex = 4;
+            this.chunkColBRadioButton.TabIndex = 7;
             this.chunkColBRadioButton.Text = "Plane B";
             this.toolTip.SetToolTip(this.chunkColBRadioButton, "Show collision for Plane B.");
             this.chunkColBRadioButton.UseVisualStyleBackColor = true;
@@ -956,7 +956,7 @@
             this.chunkColARadioButton.Location = new System.Drawing.Point(260, 37);
             this.chunkColARadioButton.Name = "chunkColARadioButton";
             this.chunkColARadioButton.Size = new System.Drawing.Size(118, 29);
-            this.chunkColARadioButton.TabIndex = 3;
+            this.chunkColARadioButton.TabIndex = 6;
             this.chunkColARadioButton.Text = "Plane A";
             this.toolTip.SetToolTip(this.chunkColARadioButton, "Show collision for Plane A.");
             this.chunkColARadioButton.UseVisualStyleBackColor = true;
@@ -969,7 +969,7 @@
             this.chunkColNoneRadioButton.Location = new System.Drawing.Point(158, 37);
             this.chunkColNoneRadioButton.Name = "chunkColNoneRadioButton";
             this.chunkColNoneRadioButton.Size = new System.Drawing.Size(94, 29);
-            this.chunkColNoneRadioButton.TabIndex = 2;
+            this.chunkColNoneRadioButton.TabIndex = 5;
             this.chunkColNoneRadioButton.TabStop = true;
             this.chunkColNoneRadioButton.Text = "None";
             this.toolTip.SetToolTip(this.chunkColNoneRadioButton, "Hide collision visualizations.");
@@ -984,7 +984,7 @@
             this.chunkShowLowTilesCheckBox.Location = new System.Drawing.Point(93, 86);
             this.chunkShowLowTilesCheckBox.Name = "chunkShowLowTilesCheckBox";
             this.chunkShowLowTilesCheckBox.Size = new System.Drawing.Size(194, 29);
-            this.chunkShowLowTilesCheckBox.TabIndex = 1;
+            this.chunkShowLowTilesCheckBox.TabIndex = 8;
             this.chunkShowLowTilesCheckBox.Text = "Show Low Tiles";
             this.toolTip.SetToolTip(this.chunkShowLowTilesCheckBox, "Toggle visibilty of Low Plane tiles.");
             this.chunkShowLowTilesCheckBox.UseVisualStyleBackColor = true;
@@ -998,7 +998,7 @@
             this.chunkShowHighTilesCheckBox.Location = new System.Drawing.Point(298, 86);
             this.chunkShowHighTilesCheckBox.Name = "chunkShowHighTilesCheckBox";
             this.chunkShowHighTilesCheckBox.Size = new System.Drawing.Size(199, 29);
-            this.chunkShowHighTilesCheckBox.TabIndex = 0;
+            this.chunkShowHighTilesCheckBox.TabIndex = 9;
             this.chunkShowHighTilesCheckBox.Text = "Show High Tiles";
             this.toolTip.SetToolTip(this.chunkShowHighTilesCheckBox, "Toggle visibilty of High Plane tiles.");
             this.chunkShowHighTilesCheckBox.UseVisualStyleBackColor = true;
@@ -1022,7 +1022,7 @@
             this.flipChunkVButton.Margin = new System.Windows.Forms.Padding(6);
             this.flipChunkVButton.Name = "flipChunkVButton";
             this.flipChunkVButton.Size = new System.Drawing.Size(219, 35);
-            this.flipChunkVButton.TabIndex = 6;
+            this.flipChunkVButton.TabIndex = 3;
             this.flipChunkVButton.Text = "Flip Chunk Vertically";
             this.toolTip.SetToolTip(this.flipChunkVButton, "Flip the chunk vertically.");
             this.flipChunkVButton.UseVisualStyleBackColor = true;
@@ -1037,7 +1037,7 @@
             this.flipChunkHButton.Margin = new System.Windows.Forms.Padding(6);
             this.flipChunkHButton.Name = "flipChunkHButton";
             this.flipChunkHButton.Size = new System.Drawing.Size(244, 35);
-            this.flipChunkHButton.TabIndex = 5;
+            this.flipChunkHButton.TabIndex = 2;
             this.flipChunkHButton.Text = "Flip Chunk Horizontally";
             this.toolTip.SetToolTip(this.flipChunkHButton, "Flip the chunk horizontally.");
             this.flipChunkHButton.UseVisualStyleBackColor = true;
@@ -1124,7 +1124,7 @@
             this.copyCollisionSingleButton.Margin = new System.Windows.Forms.Padding(6);
             this.copyCollisionSingleButton.Name = "copyCollisionSingleButton";
             this.copyCollisionSingleButton.Size = new System.Drawing.Size(240, 41);
-            this.copyCollisionSingleButton.TabIndex = 18;
+            this.copyCollisionSingleButton.TabIndex = 24;
             this.copyCollisionSingleButton.Text = "Copy to Plane B";
             this.toolTip.SetToolTip(this.copyCollisionSingleButton, "Copy the displayed collision to the other plane.");
             this.copyCollisionSingleButton.UseVisualStyleBackColor = true;
@@ -1151,7 +1151,7 @@
             0});
             this.colFlags.Name = "colFlags";
             this.colFlags.Size = new System.Drawing.Size(82, 31);
-            this.colFlags.TabIndex = 16;
+            this.colFlags.TabIndex = 23;
             this.toolTip.SetToolTip(this.colFlags, "A generic value, used by scripts for any purpose.");
             this.colFlags.ValueChanged += new System.EventHandler(this.colFlags_ValueChanged);
             // 
@@ -1177,7 +1177,7 @@
             0});
             this.ceilingAngle.Name = "ceilingAngle";
             this.ceilingAngle.Size = new System.Drawing.Size(82, 31);
-            this.ceilingAngle.TabIndex = 14;
+            this.ceilingAngle.TabIndex = 21;
             this.toolTip.SetToolTip(this.ceilingAngle, "The angle of the tile when walking on its bottom.");
             this.ceilingAngle.ValueChanged += new System.EventHandler(this.ceilingAngle_ValueChanged);
             // 
@@ -1203,7 +1203,7 @@
             0});
             this.rightAngle.Name = "rightAngle";
             this.rightAngle.Size = new System.Drawing.Size(82, 31);
-            this.rightAngle.TabIndex = 12;
+            this.rightAngle.TabIndex = 20;
             this.toolTip.SetToolTip(this.rightAngle, "The angle of the tile when walking on its right side.");
             this.rightAngle.ValueChanged += new System.EventHandler(this.rightAngle_ValueChanged);
             // 
@@ -1229,7 +1229,7 @@
             0});
             this.leftAngle.Name = "leftAngle";
             this.leftAngle.Size = new System.Drawing.Size(82, 31);
-            this.leftAngle.TabIndex = 10;
+            this.leftAngle.TabIndex = 19;
             this.toolTip.SetToolTip(this.leftAngle, "The angle of the tile when walking on its left side.");
             this.leftAngle.ValueChanged += new System.EventHandler(this.leftAngle_ValueChanged);
             // 
@@ -1240,7 +1240,7 @@
             this.collisionCeiling.Margin = new System.Windows.Forms.Padding(6);
             this.collisionCeiling.Name = "collisionCeiling";
             this.collisionCeiling.Size = new System.Drawing.Size(110, 29);
-            this.collisionCeiling.TabIndex = 9;
+            this.collisionCeiling.TabIndex = 17;
             this.collisionCeiling.Text = "Ceiling";
             this.toolTip.SetToolTip(this.collisionCeiling, "Whether this tile has its collision coming from the top or bottom.");
             this.collisionCeiling.UseVisualStyleBackColor = true;
@@ -1257,7 +1257,7 @@
             this.collisionLayerSelector.Margin = new System.Windows.Forms.Padding(6);
             this.collisionLayerSelector.Name = "collisionLayerSelector";
             this.collisionLayerSelector.Size = new System.Drawing.Size(240, 33);
-            this.collisionLayerSelector.TabIndex = 8;
+            this.collisionLayerSelector.TabIndex = 16;
             this.collisionLayerSelector.SelectedIndexChanged += new System.EventHandler(this.collisionLayerSelector_SelectedIndexChanged);
             // 
             // calculateAngleButton
@@ -1267,7 +1267,7 @@
             this.calculateAngleButton.Margin = new System.Windows.Forms.Padding(6);
             this.calculateAngleButton.Name = "calculateAngleButton";
             this.calculateAngleButton.Size = new System.Drawing.Size(240, 41);
-            this.calculateAngleButton.TabIndex = 7;
+            this.calculateAngleButton.TabIndex = 22;
             this.calculateAngleButton.Text = "Calculate Angles";
             this.toolTip.SetToolTip(this.calculateAngleButton, "Calculate the collision angles of this tile.");
             this.calculateAngleButton.UseVisualStyleBackColor = true;
@@ -1280,7 +1280,7 @@
             this.showBlockBehindCollisionCheckBox.Margin = new System.Windows.Forms.Padding(6);
             this.showBlockBehindCollisionCheckBox.Name = "showBlockBehindCollisionCheckBox";
             this.showBlockBehindCollisionCheckBox.Size = new System.Drawing.Size(138, 29);
-            this.showBlockBehindCollisionCheckBox.TabIndex = 5;
+            this.showBlockBehindCollisionCheckBox.TabIndex = 25;
             this.showBlockBehindCollisionCheckBox.Text = "Show Tile";
             this.toolTip.SetToolTip(this.showBlockBehindCollisionCheckBox, "Show the art of the tile behind the collision visualisation.");
             this.showBlockBehindCollisionCheckBox.UseVisualStyleBackColor = true;
@@ -1298,7 +1298,7 @@
             0});
             this.floorAngle.Name = "floorAngle";
             this.floorAngle.Size = new System.Drawing.Size(82, 31);
-            this.floorAngle.TabIndex = 3;
+            this.floorAngle.TabIndex = 18;
             this.toolTip.SetToolTip(this.floorAngle, "The angle of the tile when walking on its top.");
             this.floorAngle.ValueChanged += new System.EventHandler(this.floorAngle_ValueChanged);
             // 
@@ -3334,7 +3334,7 @@
             this.TileSelector.ScrollValue = 0;
             this.TileSelector.SelectedIndex = -1;
             this.TileSelector.Size = new System.Drawing.Size(1586, 1173);
-            this.TileSelector.TabIndex = 2;
+            this.TileSelector.TabIndex = 12;
             this.TileSelector.SelectedIndexChanged += new System.EventHandler(this.TileSelector_SelectedIndexChanged);
             this.TileSelector.ItemDrag += new System.EventHandler(this.TileSelector_ItemDrag);
             this.TileSelector.DragDrop += new System.Windows.Forms.DragEventHandler(this.TileSelector_DragDrop);
@@ -4473,7 +4473,7 @@
             this.chunkBlockEditor.Name = "chunkBlockEditor";
             this.chunkBlockEditor.SelectedObjects = null;
             this.chunkBlockEditor.Size = new System.Drawing.Size(506, 248);
-            this.chunkBlockEditor.TabIndex = 3;
+            this.chunkBlockEditor.TabIndex = 4;
             this.chunkBlockEditor.PropertyValueChanged += new System.EventHandler(this.chunkBlockEditor_PropertyValueChanged);
             // 
             // colorHex
