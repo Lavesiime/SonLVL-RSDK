@@ -600,73 +600,83 @@ namespace SonicRetro.SonLVL.GUI
 
 			changeLevelToolStripMenuItem.Enabled = true;
 
+			// Now, let's gather a list of all script files we have available to us
+			// We use this for autocompleting object script paths, as well as the `Browse...` button
 			scriptFiles = new List<string>();
 			
 			// originally "Scripts" was supposed to be in the EXE folder, but both work
 			// (and RE2 has it be in the Data folder) so let's support both, but with just "Scripts" at higher priority
 			if (Directory.Exists(Path.Combine(LevelData.EXEFolder, "Scripts")))
 				scriptFiles.AddRange(GetFilesRelative(Path.Combine(LevelData.EXEFolder, "Scripts"), "*.txt"));
-			else if (Directory.Exists(Path.Combine(LevelData.EXEFolder, "Data/Scripts")))
-				scriptFiles.AddRange(GetFilesRelative(Path.Combine(LevelData.EXEFolder, "Data/Scripts"), "*.txt"));
+			else if (Directory.Exists(Path.Combine(LevelData.EXEFolder, "Data", "Scripts")))
+				scriptFiles.AddRange(GetFilesRelative(Path.Combine(LevelData.EXEFolder, "Data", "Scripts"), "*.txt"));
 			
 			// part of the specialized S1F/S2A stuff
 			// technically, we only need to check just "Scripts" instead of "Data/Scripts", but.. let's just do both anyways, same priority order as normal
 			if (LevelData.BaseModFolder != null)
-				if (Directory.Exists(Path.Combine(LevelData.BaseModFolder, "Data/Scripts")))
-					scriptFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.BaseModFolder, "Data/Scripts"), "*.txt").Where(a => !scriptFiles.Contains(a)));
+				if (Directory.Exists(Path.Combine(LevelData.BaseModFolder, "Data", "Scripts")))
+					scriptFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.BaseModFolder, "Data", "Scripts"), "*.txt").Where(a => !scriptFiles.Contains(a)));
 				else if (Directory.Exists(Path.Combine(LevelData.BaseModFolder, "Scripts")))
 					scriptFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.BaseModFolder, "Scripts"), "*.txt").Where(a => !scriptFiles.Contains(a)));
 
 			// base decomp mods use "Data/Scripts" while S1F/S2A/SCDU mods use just "Scripts", let's go ahead and support 'em both too
 			if (LevelData.ModFolder != null)
-				if (Directory.Exists(Path.Combine(LevelData.ModFolder, "Data/Scripts")))
-					scriptFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.ModFolder, "Data/Scripts"), "*.txt").Where(a => !scriptFiles.Contains(a)));
+				if (Directory.Exists(Path.Combine(LevelData.ModFolder, "Data", "Scripts")))
+					scriptFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.ModFolder, "Data", "Scripts"), "*.txt").Where(a => !scriptFiles.Contains(a)));
 				else if (Directory.Exists(Path.Combine(LevelData.ModFolder, "Scripts")))
 					scriptFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.ModFolder, "Scripts"), "*.txt").Where(a => !scriptFiles.Contains(a)));
 			
 			objectScriptBox.AutoCompleteCustomSource.Clear();
 			objectScriptBox.AutoCompleteCustomSource.AddRange(scriptFiles.ToArray());
 
+			// Same thing here, let's gather a list of all sound effects we have available to us
+			// We use these for autocompleting sound effect paths as well as the SFX `Browse...` button
+			// - ..unfortunately, this doesn't really do much for Origins data files by default, but that's just how it is
 			sfxFiles = new List<string>();
 
-			if (Directory.Exists(Path.Combine(LevelData.EXEFolder, "Data/SoundFX")))
+			if (Directory.Exists(Path.Combine(LevelData.EXEFolder, "Data", "SoundFX")))
 			{
-				sfxFiles.AddRange(GetFilesRelative(Path.Combine(LevelData.EXEFolder, "Data/SoundFX"), "*.wav"));
+				sfxFiles.AddRange(GetFilesRelative(Path.Combine(LevelData.EXEFolder, "Data", "SoundFX"), "*.wav"));
 				if (LevelData.Game.RSDKVer == EngineVersion.V4)
-					sfxFiles.AddRange(GetFilesRelative(Path.Combine(LevelData.EXEFolder, "Data/SoundFX"), "*.ogg"));
+					sfxFiles.AddRange(GetFilesRelative(Path.Combine(LevelData.EXEFolder, "Data", "SoundFX"), "*.ogg"));
 			}
 
-			if (LevelData.BaseModFolder != null && Directory.Exists(Path.Combine(LevelData.BaseModFolder, "Data/SoundFX")))
+			if (LevelData.BaseModFolder != null && Directory.Exists(Path.Combine(LevelData.BaseModFolder, "Data", "SoundFX")))
 			{
-				sfxFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.BaseModFolder, "Data/SoundFX"), "*.wav").Where(a => !sfxFiles.Contains(a)));
+				sfxFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.BaseModFolder, "Data", "SoundFX"), "*.wav").Where(a => !sfxFiles.Contains(a)));
 				if (LevelData.Game.RSDKVer == EngineVersion.V4)
-					sfxFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.BaseModFolder, "Data/SoundFX"), "*.ogg").Where(a => !sfxFiles.Contains(a)));
+					sfxFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.BaseModFolder, "Data", "SoundFX"), "*.ogg").Where(a => !sfxFiles.Contains(a)));
 			}
 
-			if (LevelData.ModFolder != null && Directory.Exists(Path.Combine(LevelData.ModFolder, "Data/SoundFX")))
+			if (LevelData.ModFolder != null && Directory.Exists(Path.Combine(LevelData.ModFolder, "Data", "SoundFX")))
 			{
-				sfxFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.ModFolder, "Data/SoundFX"), "*.wav").Where(a => !sfxFiles.Contains(a)));
+				sfxFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.ModFolder, "Data", "SoundFX"), "*.wav").Where(a => !sfxFiles.Contains(a)));
 				if (LevelData.Game.RSDKVer == EngineVersion.V4)
-					sfxFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.ModFolder, "Data/SoundFX"), "*.ogg").Where(a => !sfxFiles.Contains(a)));
+					sfxFiles.AddRange(GetFilesRelative(Path.Combine(Directory.GetCurrentDirectory(), LevelData.ModFolder, "Data", "SoundFX"), "*.ogg").Where(a => !sfxFiles.Contains(a)));
 			}
 
 			sfxFileBox.AutoCompleteCustomSource.Clear();
 			sfxFileBox.AutoCompleteCustomSource.AddRange(sfxFiles.ToArray());
+
 			if (Settings.RecentMods.Count == 0)
 				recentModsToolStripMenuItem.DropDownItems.Remove(noneToolStripMenuItem);
+
 			int ind = Settings.RecentMods.FindIndex(a => a.INIPath == LevelData.GamePath && a.ModPath == path);
 			if (ind != -1)
 			{
 				recentModsToolStripMenuItem.DropDownItems.RemoveAt(ind);
 				Settings.RecentMods.RemoveAt(ind);
 			}
+
 			string modname;
 			if (path == null)
 				modname = $"No Mod ({LevelData.GameTitle})";
 			else
 				modname = $"{IniSerializer.Deserialize<ModInfo>(path).Name?.Replace("&", "&&") ?? "Unknown Mod"} ({LevelData.GameTitle})";
+
 			Settings.RecentMods.Insert(0, new MRUModItem(modname, LevelData.GamePath, path));
 			recentModsToolStripMenuItem.DropDownItems.Insert(0, new ToolStripMenuItem(modname));
+
 			Text = "SonLVL-RSDK - " + LevelData.GameTitle;
 		}
 
