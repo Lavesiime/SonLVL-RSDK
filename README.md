@@ -7,8 +7,8 @@ This editor is based on the original [SonLVL](https://github.com/sonicretro/SonL
 - _Sonic CD_ (2011 / Origins)
 - _Sonic 1_ (2013 / Origins)
 - _Sonic 2_ (2013 / Origins)
-- _Sonic Forever_
-- _Sonic 2 Absolute_
+- [_Sonic Forever_](https://teamforeveronline.wixsite.com/home/sonic-1-forever)
+- [_Sonic 2 Absolute_](https://teamforeveronline.wixsite.com/home/sonic-2-absolute)
 
 ---
 
