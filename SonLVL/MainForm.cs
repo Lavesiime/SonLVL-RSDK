@@ -1153,21 +1153,20 @@ namespace SonicRetro.SonLVL.GUI
 		byte[][] prevTiles;
 		RSDKv3_4.TileConfig.CollisionMask[][] prevCol;
 		RSDKv3_4.Tiles128x128.Block[] prevChunks;
-		private void SaveArtData()
+		List<RSDKv3_4.GameConfig.ObjectInfo> prevObjects;
+		private void SaveUndoData()
 		{
 			prevTiles = LevelData.NewTiles.Select(a => (byte[])a.Bits.Clone()).ToArray();
 			prevCol = LevelData.Collision.collisionMasks.Select(a => a.Select(b => b.Clone()).ToArray()).ToArray();
 			prevChunks = LevelData.NewChunks.chunkList.Select(a => a.Clone()).ToArray();
+			prevObjects = new List<RSDKv3_4.GameConfig.ObjectInfo>(LevelData.StageConfig.objects);
 		}
 
 		private void RefreshLevel()
 		{
 			loaded = false;
-			LevelData.Objects = new List<ObjectEntry>(LevelData.Scene.entities.Count);
-			foreach (var item in LevelData.Scene.entities)
-				LevelData.Objects.Add(ObjectEntry.Create(item));
-			foreach (var obj in LevelData.Objects)
-				obj.UpdateSprite();
+
+			// First, let's find all the tiles with different art..
 			var redrawblocks = new SortedSet<int>();
 			for (int bi = 0; bi < LevelData.NewTiles.Length; bi++)
 				if (!prevTiles[bi].FastArrayEqual(LevelData.NewTiles[bi].Bits))
@@ -1175,18 +1174,23 @@ namespace SonicRetro.SonLVL.GUI
 					LevelData.RedrawBlock(bi, false);
 					redrawblocks.Add(bi);
 				}
+
+			// Then, let's get a list of all the tiles with different collision..
 			for (int i = 0; i < LevelData.Collision.collisionMasks[0].Length; i++)
 				if (!prevCol[0][i].Equal(LevelData.Collision.collisionMasks[0][i]) || !prevCol[1][i].Equal(LevelData.Collision.collisionMasks[1][i]))
 				{
 					LevelData.RedrawCol(i, false);
 					redrawblocks.Add(i);
 				}
+
+			// And now, find all chunks that have either been changed, or contain tiles that themselves have been changed
 			for (int i = 0; i < LevelData.NewChunks.chunkList.Length; i++)
 				if (!prevChunks[i].Equal(LevelData.NewChunks.chunkList[i]) || LevelData.NewChunks.chunkList[i].tiles.SelectMany(a => a).Any(b => redrawblocks.Contains(b.tileIndex)))
 					LevelData.RedrawChunk(i);
+
 			drawChunkToolStripButton.Enabled = importChunksToolStripButton.Enabled = LevelData.HasFreeChunks();
 			drawTileToolStripButton.Enabled = importTilesToolStripButton.Enabled = LevelData.HasFreeTiles();
-			InitObjectTypes();
+
 			UpdateScrollBars();
 			levelNameBox.Text = LevelData.Scene.title;
 			midpointTrackBar.Value = 4 - (int)LevelData.Scene.layerMidpoint;
@@ -1195,19 +1199,63 @@ namespace SonicRetro.SonLVL.GUI
 			layer2Box.SelectedIndex = (int)LevelData.Scene.activeLayer2;
 			layer3Box.SelectedIndex = (int)LevelData.Scene.activeLayer3;
 			foregroundDeformation.Checked = LevelData.ForegroundDeformation;
+
+			// If and *only* if the object list changed, we'll refresh the entire object def list
+			bool refresh = loadGlobalObjects.Checked != LevelData.StageConfig.loadGlobalObjects;
 			loadGlobalObjects.Checked = LevelData.StageConfig.loadGlobalObjects;
-			objectListBox.BeginUpdate();
-			objectListBox.Items.Clear();
-			foreach (var item in LevelData.StageConfig.objects)
-				objectListBox.Items.Add(item.name);
-			objectListBox.EndUpdate();
-			objectAddButton.Enabled = LevelData.ObjTypes.Count < 256;
+			refresh |= (prevObjects.Count != LevelData.StageConfig.objects.Count);
+			if (!refresh)
+			{
+				foreach (var (l, r) in prevObjects.Zip(LevelData.StageConfig.objects, (a, b) => (a, b)))
+				{
+					if (l.name != r.name || l.script != r.script)
+					{
+						refresh = true;
+						break;
+					}
+				}
+			}
+
+			// Looks like we need to refresh it, so..
+			if (refresh)
+			{
+				// First, update the objectListBox and its items
+				int selection = objectListBox.SelectedIndex;
+
+				objectListBox.BeginUpdate();
+				objectListBox.Items.Clear();
+				foreach (var item in LevelData.StageConfig.objects)
+					objectListBox.Items.Add(item.name);
+				objectListBox.EndUpdate();
+
+				loaded = true;
+				objectListBox.SelectedIndex = Math.Min(selection, objectListBox.Items.Count - 1);
+				loaded = false;
+
+				// Now, go ahead and set up all the obj defs again
+				LevelData.InitObjectDefinitions();
+
+				objectAddButton.Enabled = LevelData.ObjTypes.Count < 256;
+			}
+
+			// Now that we have our obj defs created (if necessary), we can go ahead and set up entities
+			LevelData.Objects = new List<ObjectEntry>(LevelData.Scene.entities.Count);
+			foreach (var item in LevelData.Scene.entities)
+				LevelData.Objects.Add(ObjectEntry.Create(item));
+
+			foreach (var obj in LevelData.Objects)
+				obj.UpdateSprite();
+
+			InitObjectTypes();
+
 			sfxListBox.BeginUpdate();
 			sfxListBox.Items.Clear();
 			foreach (var sfx in LevelData.StageConfig.soundFX)
 				sfxListBox.Items.Add(sfx.name);
 			sfxListBox.EndUpdate();
+			
 			sfxAddButton.Enabled = LevelData.StageConfig.soundFX.Count < 255;
+
 			loaded = true;
 			SelectedItems.Clear();
 			findNextToolStripMenuItem.Enabled = findPreviousToolStripMenuItem.Enabled = false;
@@ -1221,7 +1269,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void Undo()
 		{
-			SaveArtData();
+			SaveUndoData();
 			undoSystem.Undo();
 			ToolStripItem item = undoToolStripMenuItem.DropDownItems[0];
 			undoToolStripMenuItem.DropDownItems.RemoveAt(0);
@@ -1235,7 +1283,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void Redo()
 		{
-			SaveArtData();
+			SaveUndoData();
 			undoSystem.Redo();
 			ToolStripItem item = redoToolStripMenuItem.DropDownItems[0];
 			redoToolStripMenuItem.DropDownItems.RemoveAt(0);
@@ -1251,7 +1299,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void undoToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			SaveArtData();
+			SaveUndoData();
 			int count = undoToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem) + 1;
 			undoSystem.Undo(count);
 			for (int i = 0; i < count; i++)
@@ -1271,7 +1319,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void redoToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			SaveArtData();
+			SaveUndoData();
 			int count = redoToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem) + 1;
 			undoSystem.Redo(count);
 			for (int i = 0; i < count; i++)

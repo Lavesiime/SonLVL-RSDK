@@ -341,16 +341,21 @@ namespace SonicRetro.SonLVL.API
 			}
 			else
 			{
+				// If the 16x16Tiles.gif doesn't exist, then create a new one
+
 				NewTiles = new BitmapBits[0x400];
 				for (int i = 0; i < 0x400; i++)
 					NewTiles[i] = new BitmapBits(16, 16);
 
+				// Just fill in the entire gif section of the palette with the transparency colour
 				NewPalette.Fill(NewPalette[0], 128, 128);
 			}
 
 			NewChunks = ReadFile<Tiles128x128>(stgfol + "128x128Tiles.bin");
 			Collision = ReadFile<TileConfig>(stgfol + "CollisionMasks.bin");
-			
+
+			// Let's also quietly keep track of all other stages in the same stage folder, so if folder-wide changes are made (ie swapping chunks, changing the object list) 
+			// then we can apply it to the entire folder and not just the single scene we have open
 			AdditionalScenes = new List<AdditionalScene>();
 			switch (Game.RSDKVer)
 			{
@@ -489,6 +494,7 @@ namespace SonicRetro.SonLVL.API
 					NewTiles[i] = new BitmapBits(16, 16);
 					Array.Copy(tilebmp.pixels, i * 256, NewTiles[i].Bits, 0, 256);
 				}
+
 				for (int i = 128; i < 256; i++)
 					NewPalette[i] = tilebmp.palette[i].ToSystemColor();
 			}
@@ -1152,7 +1158,7 @@ namespace SonicRetro.SonLVL.API
 				}
 		}
 
-		private static void InitObjectDefinitions()
+		public static void InitObjectDefinitions()
 		{
 			IEnumerable<(GameConfig.ObjectInfo objinf, byte ind)> objlist;
 			if (StageConfig.loadGlobalObjects)
