@@ -530,6 +530,7 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			saveToolStripMenuItem.Enabled = editToolStripMenuItem.Enabled = exportToolStripMenuItem.Enabled = tabControl1.Enabled = false;
 			editGameConfigToolStripMenuItem.Enabled = path != null;
+			saved = true;
 			try
 			{
 				LevelData.LoadMod(Path.GetDirectoryName(path));
@@ -2333,7 +2334,7 @@ namespace SonicRetro.SonLVL.GUI
 			bgDuplicateLayerOverToolStripButton.HideDropDown();
 
 			int destLayer = bgDuplicateLayerOverToolStripButton.DropDownItems.IndexOf(e.ClickedItem);
-			if (MessageBox.Show(this, $"This action will ENTIRELY replace both the chunk layout and parallax data of background layer {destLayer + 1}.\n\nAre you sure you want duplicate layer {bglayer + 1} over layer {destLayer + 1}?", "Duplicate Background Layer", MessageBoxButtons.OKCancel) != DialogResult.OK)
+			if (MessageBox.Show(this, $"This action will COMPLETELY replace both the chunk layout and parallax data of background layer {destLayer + 1}.\n\nAre you sure you want duplicate layer {bglayer + 1} over layer {destLayer + 1}?", "Duplicate Background Layer", MessageBoxButtons.OKCancel) != DialogResult.OK)
 				return;
 
 			LevelData.Background.layers[destLayer].type = LevelData.Background.layers[bglayer].type;
