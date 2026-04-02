@@ -2830,6 +2830,7 @@ namespace SonicRetro.SonLVL.GUI
 		FormWindowState prevstate;
 		private void MainForm_KeyDown(object sender, KeyEventArgs e)
 		{
+			if (!tabControl1.Enabled) return;
 			switch (e.KeyCode)
 			{
 				case Keys.Enter:
