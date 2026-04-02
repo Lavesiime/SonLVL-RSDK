@@ -2310,7 +2310,11 @@ namespace SonicRetro.SonLVL.GUI
 #region Help Menu
 		private void viewReadmeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "readme.txt"));
+			string path = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "readme.txt");
+			if (!Program.IsMonoRuntime)
+				System.Diagnostics.Process.Start(path);
+			else
+				System.Diagnostics.Process.Start("xdg-open", $"\"{path}\"");
 		}
 
 		private void reportBugToolStripMenuItem_Click(object sender, EventArgs e)
