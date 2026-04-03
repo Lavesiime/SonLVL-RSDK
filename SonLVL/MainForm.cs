@@ -1930,9 +1930,11 @@ namespace SonicRetro.SonLVL.GUI
 			else
 				ZoomLevel = zoomToolStripMenuItem.DropDownItems.IndexOf(e.ClickedItem); // Just a basic integer scale, nothing special needed
 			if (!loaded) return;
+			
 			loaded = false;
 			UpdateScrollBars();
 			loaded = true;
+
 			if (scrollPreviewButton.Checked)
 			{
 				backgroundPanel.GraphicsBuffer.Graphics.Clear(LevelImgPalette.Entries[LevelData.ColorTransparent]);
@@ -8662,9 +8664,9 @@ namespace SonicRetro.SonLVL.GUI
 					using (SaveFileDialog a = new SaveFileDialog() { FileName = (useHexadecimalToolStripMenuItem.Checked ? SelectedChunk.ToString("X3") : SelectedChunk.ToString()) + ".png", Filter = "PNG Images|*.png" })
 						if (a.ShowDialog() == DialogResult.OK)
 						{
-							string pathBase = Path.ChangeExtension(a.FileName, null);
 							if (exportArtcollisionpriorityToolStripMenuItem.Checked)
 							{
+								string pathBase = Path.ChangeExtension(a.FileName, null);
 								BitmapBits bits = new BitmapBits(128, 128);
 								bits.DrawSprite(LevelData.ChunkSprites[SelectedChunk]);
 								bits.ToBitmap(pal).Save(pathBase + ".png");
@@ -8681,6 +8683,8 @@ namespace SonicRetro.SonLVL.GUI
 							{
 								if (path1ToolStripMenuItem.Checked || path2ToolStripMenuItem.Checked)
 								{
+									// If the collision visualisation is enabled, we have to export the image in RGBA mode
+
 									BitmapBits32 bits = new BitmapBits32(128, 128);
 									pal.Entries.CopyTo(bits.Palette, 0);
 									bits.Clear(pal.Entries[0]);
@@ -8700,10 +8704,12 @@ namespace SonicRetro.SonLVL.GUI
 										bits.DrawBitmap(LevelData.ChunkColBmpBits[SelectedChunk][0], 0, 0);
 									else if (path2ToolStripMenuItem.Checked)
 										bits.DrawBitmap(LevelData.ChunkColBmpBits[SelectedChunk][1], 0, 0);
-									bits.ToBitmap().Save(pathBase + ".png");
+									bits.ToBitmap().Save(a.FileName);
 								}
 								else
 								{
+									// Alternatively, if we're not showing collision, then we can export the chunk with its palette intact
+
 									BitmapBits bits = new BitmapBits(128, 128);
 									if (highToolStripMenuItem.Checked & lowToolStripMenuItem.Checked)
 										bits.DrawSprite(LevelData.ChunkSprites[SelectedChunk]);
@@ -8711,7 +8717,7 @@ namespace SonicRetro.SonLVL.GUI
 										bits.DrawSpriteLow(LevelData.ChunkSprites[SelectedChunk]);
 									else if (highToolStripMenuItem.Checked)
 										bits.DrawSpriteHigh(LevelData.ChunkSprites[SelectedChunk]);
-									bits.ToBitmap(pal).Save(pathBase + ".png");
+									bits.ToBitmap(pal).Save(a.FileName);
 								}
 							}
 						}
