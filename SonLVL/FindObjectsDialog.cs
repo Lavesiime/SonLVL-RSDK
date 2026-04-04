@@ -78,27 +78,5 @@ namespace SonicRetro.SonLVL
 					return null;
 			}
 		}
-
-		public bool? XFlip
-		{
-			get
-			{
-				if (findXFlip.CheckState == CheckState.Indeterminate)
-					return null;
-				else
-					return findXFlip.Checked;
-			}
-		}
-
-		public bool? YFlip
-		{
-			get
-			{
-				if (findYFlip.CheckState == CheckState.Indeterminate)
-					return null;
-				else
-					return findYFlip.Checked;
-			}
-		}
 	}
 }
