@@ -1191,7 +1191,9 @@ namespace SonicRetro.SonLVL.GUI
 			drawChunkToolStripButton.Enabled = importChunksToolStripButton.Enabled = LevelData.HasFreeChunks();
 			drawTileToolStripButton.Enabled = importTilesToolStripButton.Enabled = LevelData.HasFreeTiles();
 
+			LevelData.PaletteChanged();
 			UpdateScrollBars();
+
 			levelNameBox.Text = LevelData.Scene.title;
 			midpointTrackBar.Value = 4 - (int)LevelData.Scene.layerMidpoint;
 			layer0Box.SelectedIndex = (int)LevelData.Scene.activeLayer0;
@@ -1259,7 +1261,6 @@ namespace SonicRetro.SonLVL.GUI
 			loaded = true;
 			SelectedItems.Clear();
 			findNextToolStripMenuItem.Enabled = findPreviousToolStripMenuItem.Enabled = false;
-			LevelData.PaletteChanged();
 			TileSelector_SelectedIndexChanged(this, EventArgs.Empty);
 			foundobjs = null;
 			SelectedObjectChanged();
