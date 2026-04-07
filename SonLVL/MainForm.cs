@@ -6086,7 +6086,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void TileList_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (CurrentTab > Tab.Background)
+			if (CurrentTab == Tab.Art)
 			{
 				switch (e.KeyCode)
 				{
@@ -6109,15 +6109,7 @@ namespace SonicRetro.SonLVL.GUI
 							}
 						break;
 					case Keys.Delete:
-						switch (CurrentArtTab)
-						{
-							case ArtTab.Chunks:
-								deleteTilesToolStripMenuItem_Click(sender, EventArgs.Empty);
-								break;
-							case ArtTab.Tiles:
-								deleteTilesToolStripMenuItem_Click(sender, EventArgs.Empty);
-								break;
-						}
+						deleteTilesToolStripMenuItem_Click(sender, EventArgs.Empty);
 						break;
 					case Keys.V:
 						if (e.Control)
@@ -6147,17 +6139,7 @@ namespace SonicRetro.SonLVL.GUI
 						break;
 					case Keys.X:
 						if (e.Control)
-							switch (CurrentArtTab)
-							{
-								case ArtTab.Chunks:
-									if (LevelData.NewChunks.chunkList.Length > 1)
-										cutTilesToolStripMenuItem_Click(sender, EventArgs.Empty);
-									break;
-								case ArtTab.Tiles:
-									if (TileSelector.Images.Count > 1)
-										cutTilesToolStripMenuItem_Click(sender, EventArgs.Empty);
-									break;
-							}
+							cutTilesToolStripMenuItem_Click(sender, EventArgs.Empty);
 						break;
 				}
 			}

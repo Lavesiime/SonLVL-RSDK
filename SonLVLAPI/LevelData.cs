@@ -1686,9 +1686,6 @@ namespace SonicRetro.SonLVL.API
 					if (forcepal.HasValue)
 						bmpbits.IncrementIndexes(forcepal.Value * 16);
 					break;
-				case PixelFormat.Format32bppArgb:
-					LoadBitmap32BppArgb(bmpbits, bmp.Pixels, bmp.Stride, NewPalette);
-					break;
 				case PixelFormat.Format4bppIndexed:
 					LoadBitmap4BppIndexed(bmpbits, bmp.Pixels, bmp.Stride);
 					if (forcepal.HasValue)
@@ -1696,6 +1693,9 @@ namespace SonicRetro.SonLVL.API
 					break;
 				case PixelFormat.Format8bppIndexed:
 					LoadBitmap8BppIndexed(bmpbits, bmp.Pixels, bmp.Stride);
+					break;
+				case PixelFormat.Format32bppArgb:
+					LoadBitmap32BppArgb(bmpbits, bmp.Pixels, bmp.Stride, NewPalette);
 					break;
 				default:
 					throw new Exception("wat");
