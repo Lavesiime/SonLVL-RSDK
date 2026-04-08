@@ -6,6 +6,25 @@
     </ImageFromSheet>
   </Images>
   <Properties>
-    <Property name="Interval Offset" description="How offset this Spear should be from the global cycle." type="int" startbit="0" length="7" />
+    <Property name="Interval Delay" description="How many frames delayed this Spear should be from the global cycle." type="int" startbit="0" length="7" />
   </Properties>
+  <Subtypes>
+    <Subtype id="00" name="0 Frame Delay" image="spear" />
+    <Subtype id="04" name="4 Frame Delay" image="spear" />
+    <Subtype id="08" name="8 Frame Delay" image="spear" />
+    <Subtype id="0C" name="12 Frame Delay" image="spear" />
+    <Subtype id="10" name="16 Frame Delay" image="spear" />
+    <Subtype id="14" name="20 Frame Delay" image="spear" />
+    <Subtype id="18" name="24 Frame Delay" image="spear" />
+    <Subtype id="1C" name="28 Frame Delay" image="spear" />
+    <Subtype id="20" name="32 Frame Delay" image="spear" />
+    <Subtype id="24" name="36 Frame Delay" image="spear" />
+    <Subtype id="28" name="40 Frame Delay" image="spear" />
+    <Subtype id="2C" name="44 Frame Delay" image="spear" />
+    <Subtype id="30" name="48 Frame Delay" image="spear" />
+    <Subtype id="34" name="52 Frame Delay" image="spear" />
+    <Subtype id="38" name="56 Frame Delay" image="spear" />
+    <Subtype id="3C" name="60 Frame Delay" image="spear" />
+    <Subtype id="40" name="64 Frame Delay" image="spear" />
+  </Subtypes>
 </ObjDef>
