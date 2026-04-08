@@ -1266,6 +1266,7 @@ namespace SonicRetro.SonLVL.GUI
 			SelectedObjectChanged();
 			UpdateScrollControls();
 			DrawLevel();
+			DrawChunkPicture();
 		}
 
 		private void Undo()
