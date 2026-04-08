@@ -126,18 +126,10 @@ namespace SonicRetro.SonLVL.API
 
 		public void DrawBitmap(BitmapBits32 source, int x, int y)
 		{
-			int srcl = 0;
-			if (x < 0)
-				srcl = -x;
-			int srct = 0;
-			if (y < 0)
-				srct = -y;
-			int srcr = source.Width;
-			if (srcr > Width - x)
-				srcr = Width - x;
-			int srcb = source.Height;
-			if (srcb > Height - y)
-				srcb = Height - y;
+			int srcl = Math.Max(0, -x);
+			int srct = Math.Max(0, -y);
+			int srcr = Math.Min(source.Width, Width - x);
+			int srcb = Math.Min(source.Height, Height - y);
 			for (int c = srct; c < srcb; c++)
 				for (int r = srcl; r < srcr; r++)
 					BlendPixel(source[r, c], x + r, y + c);
