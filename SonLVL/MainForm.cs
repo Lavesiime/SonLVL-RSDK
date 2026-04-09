@@ -8332,7 +8332,7 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				foreach (var row in LevelData.Scene.layout)
 					Array.Clear(row, 0, row.Length);
-				SaveState("Clear Foreground");
+				SaveState("Clear Foreground Chunks");
 			}
 		}
 
@@ -8380,7 +8380,7 @@ namespace SonicRetro.SonLVL.GUI
 
 			LevelData.Collision.collisionMasks[collisionLayerSelector.SelectedIndex ^ 1][SelectedTile] = LevelData.Collision.collisionMasks[collisionLayerSelector.SelectedIndex][SelectedTile].Clone();
 			LevelData.RedrawCol(SelectedTile, true);
-			SaveState($"Copy Tile Collision to Plane {(collisionLayerSelector.SelectedIndex ^ 1) + 1}");
+			SaveState($"Copy Tile Collision to Plane {(char)((collisionLayerSelector.SelectedIndex ^ 1) + 'A')}");
 		}
 
 		private void usageCountsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -8403,7 +8403,7 @@ namespace SonicRetro.SonLVL.GUI
 							LevelData.Scene.layout[y][x] = rc;
 							cnt++;
 						}
-				SaveState("Replace Foreground");
+				SaveState("Replace Foreground Chunks");
 				DrawLevel();
 				MessageBox.Show(this, $"Replaced {cnt} chunks.", "SonLVL-RSDK");
 			}
@@ -8423,7 +8423,7 @@ namespace SonicRetro.SonLVL.GUI
 							LevelData.Background.layers[bglayer].layout[y][x] = rc;
 							cnt++;
 						}
-				SaveState($"Replace Background {bglayer + 1}");
+				SaveState($"Replace Background {bglayer + 1} Chunks");
 				DrawLevel();
 				MessageBox.Show(this, $"Replaced {cnt} chunks.", "SonLVL-RSDK");
 			}
