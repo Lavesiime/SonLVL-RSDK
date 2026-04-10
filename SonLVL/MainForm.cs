@@ -8380,6 +8380,7 @@ namespace SonicRetro.SonLVL.GUI
 
 			LevelData.Collision.collisionMasks[collisionLayerSelector.SelectedIndex ^ 1][SelectedTile] = LevelData.Collision.collisionMasks[collisionLayerSelector.SelectedIndex][SelectedTile].Clone();
 			LevelData.RedrawCol(SelectedTile, true);
+			if (!chunkColNoneRadioButton.Checked) DrawChunkPicture();
 			SaveState($"Copy Tile Collision to Plane {(char)((collisionLayerSelector.SelectedIndex ^ 1) + 'A')}");
 		}
 
