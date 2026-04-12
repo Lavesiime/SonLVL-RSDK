@@ -633,7 +633,7 @@
             this.enableDraggingChunksButton.Name = "enableDraggingChunksButton";
             this.enableDraggingChunksButton.Size = new System.Drawing.Size(195, 44);
             this.enableDraggingChunksButton.Text = "Enable Dragging";
-            this.enableDraggingChunksButton.ToolTipText = "Toggle dragging chunks around to reorder them.";
+            this.enableDraggingChunksButton.ToolTipText = "Toggle dragging chunks around to reorder them (hold CTRL to swap).";
             // 
             // tileListToolStrip
             // 
@@ -732,7 +732,7 @@
             this.enableDraggingTilesButton.Name = "enableDraggingTilesButton";
             this.enableDraggingTilesButton.Size = new System.Drawing.Size(195, 44);
             this.enableDraggingTilesButton.Text = "Enable Dragging";
-            this.enableDraggingTilesButton.ToolTipText = "Toggle dragging tiles around to reorder them.";
+            this.enableDraggingTilesButton.ToolTipText = "Toggle dragging tiles around to reorder them (hold CTRL to swap).";
             // 
             // toolStripSeparator1
             // 
