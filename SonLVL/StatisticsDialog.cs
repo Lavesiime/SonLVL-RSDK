@@ -1,6 +1,7 @@
 ﻿using SonicRetro.SonLVL.API;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows.Forms;
 
 namespace SonicRetro.SonLVL
@@ -148,6 +149,48 @@ namespace SonicRetro.SonLVL
 				sort.Order = e.Column == 0 ? SortOrder.Ascending : SortOrder.Descending;
 			}
 			list.Sort();
+		}
+
+		private void objectsListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (objectsListView.SelectedItems.Count == 0) return;
+			if (e.KeyCode == Keys.C && e.Control)
+			{
+				// Let's copy the selected row(s) in csv format
+				StringBuilder sb = new StringBuilder("Name, Count, Folder Total\n");
+				foreach (ListViewItem item in objectsListView.SelectedItems)
+					sb.AppendLine($"{item.SubItems[0].Text}, {item.SubItems[1].Text}, {item.SubItems[2].Text}");
+
+				Clipboard.SetText(sb.ToString());
+			}
+		}
+
+		private void chunksListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (chunksListView.SelectedItems.Count == 0) return;
+			if (e.KeyCode == Keys.C && e.Control)
+			{
+				// Let's copy the selected row(s) in csv format
+				StringBuilder sb = new StringBuilder("Chunk ID, Foreground, Background, Folder Total\n");
+				foreach (ListViewItem item in chunksListView.SelectedItems)
+					sb.AppendLine($"{item.SubItems[0].Text}, {item.SubItems[1].Text}, {item.SubItems[2].Text}, {item.SubItems[3].Text}");
+
+				Clipboard.SetText(sb.ToString());
+			}
+		}
+
+		private void tilesListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (tilesListView.SelectedItems.Count == 0) return;
+			if (e.KeyCode == Keys.C && e.Control)
+			{
+				// Let's copy the selected row(s) in csv format
+				StringBuilder sb = new StringBuilder("Tile ID, Count\n");
+				foreach (ListViewItem item in tilesListView.SelectedItems)
+					sb.AppendLine($"{item.SubItems[0].Text}, {item.SubItems[1].Text}");
+
+				Clipboard.SetText(sb.ToString());
+			}
 		}
 	}
 

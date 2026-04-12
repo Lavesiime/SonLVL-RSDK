@@ -69,6 +69,7 @@
             this.objectsListView.UseCompatibleStateImageBehavior = false;
             this.objectsListView.View = System.Windows.Forms.View.Details;
             this.objectsListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
+            this.objectsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.objectsListView_KeyDown);
             // 
             // columnHeader1
             // 
@@ -141,6 +142,7 @@
             this.chunksListView.UseCompatibleStateImageBehavior = false;
             this.chunksListView.View = System.Windows.Forms.View.Details;
             this.chunksListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
+            this.chunksListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chunksListView_KeyDown);
             // 
             // columnHeader3
             // 
@@ -192,6 +194,7 @@
             this.tilesListView.UseCompatibleStateImageBehavior = false;
             this.tilesListView.View = System.Windows.Forms.View.Details;
             this.tilesListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
+            this.tilesListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tilesListView_KeyDown);
             // 
             // columnHeader7
             // 
