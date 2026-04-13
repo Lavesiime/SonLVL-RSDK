@@ -6717,7 +6717,7 @@ namespace SonicRetro.SonLVL.GUI
 				}
 				UpdateScrollBars();
 				DrawLevel();
-				SaveState($"Insert {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")}");
+				SaveState($"Insert {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Chunks");
 			}
 		}
 
@@ -6915,7 +6915,7 @@ namespace SonicRetro.SonLVL.GUI
 						}
 					}
 				}
-				SaveState($"Delete {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")}");
+				SaveState($"Delete {(CurrentTab == Tab.Background ? $"Background {bglayer + 1}" : "Foreground")} Chunks");
 			}
 		}
 
