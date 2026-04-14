@@ -4862,6 +4862,11 @@ namespace SonicRetro.SonLVL.GUI
 				case Keys.Delete:
 					clearChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
 					break;
+				case Keys.Escape:
+					SelectedChunkBlock = new Rectangle(0, 0, 1, 1);
+					copiedChunkBlock = LevelData.NewChunks.chunkList[SelectedChunk].tiles[SelectedChunkBlock.Y][SelectedChunkBlock.X];
+					blocks = new[] { copiedChunkBlock };
+					break;
 				default:
 					return;
 			}
@@ -5452,6 +5457,7 @@ namespace SonicRetro.SonLVL.GUI
 					DeleteChunk();
 					SaveState("Cut Chunk");
 					break;
+
 				case ArtTab.Tiles:
 					d = new DataObject(typeof(TileCopyData).AssemblyQualifiedName, new TileCopyData(LevelData.NewTiles[SelectedTile], LevelData.Collision.collisionMasks[0][SelectedTile], LevelData.Collision.collisionMasks[1][SelectedTile]));
 					d.SetImage(LevelData.NewTiles[SelectedTile].ToBitmap(LevelImgPalette));
