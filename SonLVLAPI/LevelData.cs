@@ -579,7 +579,7 @@ namespace SonicRetro.SonLVL.API
 
 		public static void SaveLevel()
 		{
-			Log($"Saving {StageInfo.name}...");
+			Log($"Saving stage...");
 			if (GameXML != null)
 			{
 				GameXML.palette.colors.RemoveAll(a => a.bank == 0 && a.index < 96);
