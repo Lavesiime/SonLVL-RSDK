@@ -52,8 +52,6 @@ namespace SonicRetro.SonLVL
 		public bool ViewLowPlane { get; set; }
 		[DefaultValue(true)]
 		public bool ViewHighPlane { get; set; }
-		public CollisionPath ViewCollision { get; set; }
-		public bool ViewAngles { get; set; }
 		[DefaultValue("1x")]
 		public string ZoomLevel { get; set; }
 		public Tab CurrentTab { get; set; }
@@ -161,14 +159,6 @@ namespace SonicRetro.SonLVL
 		}
 	}
 
-
-	public enum CollisionPath
-	{
-		None,
-		Path1,
-		Path2
-	}
-
 	public enum Tab
 	{
 		Objects,
@@ -182,8 +172,7 @@ namespace SonicRetro.SonLVL
 	public enum ArtTab
 	{
 		Chunks,
-		Tiles,
-		Solids
+		Tiles
 	}
 
 	public enum WindowMode

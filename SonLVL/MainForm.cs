@@ -181,20 +181,7 @@ namespace SonicRetro.SonLVL.GUI
 			hUDToolStripMenuItem.Checked = Settings.ShowHUD;
 			chunkShowLowTilesCheckBox.Checked = lowToolStripMenuItem.Checked = Settings.ViewLowPlane;
 			chunkShowHighTilesCheckBox.Checked = highToolStripMenuItem.Checked = Settings.ViewHighPlane;
-			
-			switch (Settings.ViewCollision)
-			{
-				case CollisionPath.Path1:
-					chunkColNoneRadioButton.Checked = false;
-					chunkColARadioButton.Checked = true;
-					break;
-				case CollisionPath.Path2:
-					chunkColNoneRadioButton.Checked = false;
-					chunkColBRadioButton.Checked = true;
-					break;
-			}
-			
-			anglesToolStripMenuItem.Checked = Settings.ViewAngles;
+
 			chunkShowGridCheckBox.Checked = showGridToolStripCheckBoxButton.Checked = Settings.ShowGrid;
 			snapObjectsToolStripCheckBoxButton.Checked = Settings.SnapObjectsToGrid;
 			
@@ -326,13 +313,6 @@ namespace SonicRetro.SonLVL.GUI
 			if (Settings != null)
 			{
 				Settings.ShowHUD = hUDToolStripMenuItem.Checked;
-				if (path1ToolStripMenuItem.Checked)
-					Settings.ViewCollision = CollisionPath.Path1;
-				else if (path2ToolStripMenuItem.Checked)
-					Settings.ViewCollision = CollisionPath.Path2;
-				else
-					Settings.ViewCollision = CollisionPath.None;
-				Settings.ViewAngles = anglesToolStripMenuItem.Checked;
 				Settings.ShowGrid = showGridToolStripCheckBoxButton.Checked;
 				Settings.SnapObjectsToGrid = snapObjectsToolStripCheckBoxButton.Checked;
 				Settings.ZoomLevel = zoomToolStripMenuItem.DropDownItems.Cast<ToolStripMenuItem>().Single((a) => a.Checked).Text;
