@@ -5402,7 +5402,7 @@ namespace SonicRetro.SonLVL.GUI
 			if (!loaded) return;
 			if (e.Button == MouseButtons.Right)
 			{
-				pasteOverToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(TileCopyData).AssemblyQualifiedName);
+				pasteOverToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(TileCopyData).AssemblyQualifiedName) || Clipboard.ContainsData("PNG");
 				duplicateTilesToolStripMenuItem.Enabled = LevelData.HasFreeTiles();
 				deepCopyToolStripMenuItem.Visible = false;
 				importOverToolStripMenuItem.Text = "&Import Over...";
@@ -6119,7 +6119,7 @@ namespace SonicRetro.SonLVL.GUI
 									}
 										break;
 								case ArtTab.Tiles:
-									if (Clipboard.ContainsData(typeof(TileCopyData).AssemblyQualifiedName))
+									if (Clipboard.ContainsData(typeof(TileCopyData).AssemblyQualifiedName) || Clipboard.ContainsData("PNG"))
 									{
 										pasteOverToolStripMenuItem_Click(sender, EventArgs.Empty);
 										TileSelector.Invalidate();
@@ -8126,12 +8126,58 @@ namespace SonicRetro.SonLVL.GUI
 					SaveState("Paste Over Chunk");
 					break;
 				case ArtTab.Tiles:
-					TileCopyData copyData = (TileCopyData)Clipboard.GetData(typeof(TileCopyData).AssemblyQualifiedName);
-					copyData.Bits.CopyTo(LevelData.NewTiles[SelectedTile].Bits, 0);
-					LevelData.Collision.collisionMasks[0][SelectedTile] = copyData.Mask1;
-					LevelData.Collision.collisionMasks[1][SelectedTile] = copyData.Mask2;
-					LevelData.RedrawBlock(SelectedTile, false);
-					LevelData.RedrawCol(SelectedTile, true);
+					if (Clipboard.ContainsData(typeof(TileCopyData).AssemblyQualifiedName))
+					{
+						TileCopyData copyData = (TileCopyData)Clipboard.GetData(typeof(TileCopyData).AssemblyQualifiedName);
+						copyData.Bits.CopyTo(LevelData.NewTiles[SelectedTile].Bits, 0);
+						LevelData.Collision.collisionMasks[0][SelectedTile] = copyData.Mask1;
+						LevelData.Collision.collisionMasks[1][SelectedTile] = copyData.Mask2;
+						LevelData.RedrawBlock(SelectedTile, false);
+						LevelData.RedrawCol(SelectedTile, true);
+					}
+					else
+					{
+						BitmapInfo bmpi = null;
+
+						// TODO (and some notes about this whole thing):
+						// We intentionally aren't using Clipboard.GetImage, as the format it uses strips all transparency and replaces it with white (which is bad)
+						// - Along with their own proprietary formats, paint.net, Aseprite, and Photoshop all copy images as PNG as well, so that works nicely here
+						// - GraphicsGale, on the other hand.. does not
+						//    Instead, along with its proprietary format, it only copies with the "CF_BITMAP" and "CF_DIB" formats (the former of which is what GetImage retrieves)
+						//    Apparently, the "CF_DIB" data format *does* support transparency, but.. I can't actually find much online about it?
+						//    For something that's apparently a system format, you'd expect there to be more on it out there..
+
+						using (var ms = (MemoryStream)Clipboard.GetData("PNG"))
+						using (Bitmap bmp = new Bitmap(ms))
+						{
+							// If the image is too small, then don't let the user paste
+							if (bmp.Width < 16 || bmp.Height < 16)
+							{
+								MessageBox.Show(this, "Image must be at least 16x16 to paste tile!", "SonLVL-RSDK");
+								return;
+							}
+
+							// Alright, we're at least 16x16, so let's proceed..
+							bmpi = new BitmapInfo(bmp);
+
+							// However, if the image is too large..
+							if (bmpi.Width > 64 || bmpi.Height > 64)
+							{
+								// We only import the top left 16x16 square, anything beyond that is ignored
+								// With smaller images, importing is near instantaneous, so we don't need to worry about time if there's just a handful of excess pixels, but..
+								// If an image is *too* large, pasting can result in a noticable delay which grows with the size of the image - let's crop the image so that doesn't happen
+								// (There's nothing special about 64x64, that's just an arbitrary "too large" value i made up rn)
+
+								bmpi = new BitmapInfo(bmpi, 0, 0, 16, 16);
+							}
+						}
+
+						// And now, import it as an image, and just take the first/top-left tile
+						ImportResult res = LevelData.BitmapToTiles(bmpi, new bool[bmpi.Width / 16, bmpi.Height / 16], null, null, new List<BitmapBits>(), null, false, Application.DoEvents);
+						LevelData.NewTiles[SelectedTile] = res.Art[0];
+						LevelData.RedrawBlock(SelectedTile, true);
+					}
+					
 					DrawChunkPicture();
 					TileSelector.Invalidate();
 					TileSelector_SelectedIndexChanged(this, EventArgs.Empty);
