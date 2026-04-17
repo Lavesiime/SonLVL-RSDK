@@ -179,8 +179,6 @@ namespace SonicRetro.SonLVL.GUI
 			// First, let's load settings
 			objectsAboveHighPlaneToolStripMenuItem.Checked = Settings.ObjectsAboveHighPlane;
 			hUDToolStripMenuItem.Checked = Settings.ShowHUD;
-			chunkShowLowTilesCheckBox.Checked = lowToolStripMenuItem.Checked = Settings.ViewLowPlane;
-			chunkShowHighTilesCheckBox.Checked = highToolStripMenuItem.Checked = Settings.ViewHighPlane;
 
 			chunkShowGridCheckBox.Checked = showGridToolStripCheckBoxButton.Checked = Settings.ShowGrid;
 			snapObjectsToolStripCheckBoxButton.Checked = Settings.SnapObjectsToGrid;
@@ -7557,12 +7555,12 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void lowToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
-			Settings.ViewLowPlane = chunkShowLowTilesCheckBox.Checked = lowToolStripMenuItem.Checked;
+			chunkShowLowTilesCheckBox.Checked = lowToolStripMenuItem.Checked;
 		}
 
 		private void highToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
-			Settings.ViewHighPlane = chunkShowHighTilesCheckBox.Checked = highToolStripMenuItem.Checked;
+			chunkShowHighTilesCheckBox.Checked = highToolStripMenuItem.Checked;
 		}
 
 		private void objGridSizeDropDownButton_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)

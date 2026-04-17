@@ -48,10 +48,6 @@ namespace SonicRetro.SonLVL
 		public bool UseHexadecimalIndexesForArt { get; set; }
 		public bool ExportArtCollisionPriority { get; set; }
 		public bool ObjectsAboveHighPlane { get; set; }
-		[DefaultValue(true)]
-		public bool ViewLowPlane { get; set; }
-		[DefaultValue(true)]
-		public bool ViewHighPlane { get; set; }
 		[DefaultValue("1x")]
 		public string ZoomLevel { get; set; }
 		public Tab CurrentTab { get; set; }
@@ -82,7 +78,6 @@ namespace SonicRetro.SonLVL
 				result.TransparentBackgroundExport = true;
 				result.UseHexadecimalIndexesForArt = true;
 				result.ObjectsAboveHighPlane = true;
-				result.ViewLowPlane = result.ViewHighPlane = true;
 				result.ZoomLevel = "1x";
 				result.EnableDraggingPalette = true;
 				result.EnableDraggingTiles = true;
