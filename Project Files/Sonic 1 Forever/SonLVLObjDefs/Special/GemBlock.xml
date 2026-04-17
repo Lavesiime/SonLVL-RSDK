@@ -15,7 +15,7 @@
     </ImageFromSheet>
   </Images>
   <Properties>
-    <Property name="Colour" description="The Colour of this Block." type="colours" startbit="0" length="2" />
+    <Property name="Colour" description="The Colour of this Block. Blue is the most durable, while Pink is the quickest to break." type="colours" startbit="0" length="2" />
   </Properties>
   <Enums>
     <Enum name="colours">
@@ -26,9 +26,9 @@
     </Enum>
   </Enums>
   <Subtypes>
-    <Subtype id="00" name="Blue" image="blue" />
-    <Subtype id="01" name="Green" image="green" />
-    <Subtype id="02" name="Yellow" image="yellow" />
-    <Subtype id="03" name="Pink" image="pink" />
+    <Subtype id="00" name="Blue Gem" image="blue" />
+    <Subtype id="01" name="Green Gem" image="green" />
+    <Subtype id="02" name="Yellow Gem" image="yellow" />
+    <Subtype id="03" name="Pink Gem" image="pink" />
   </Subtypes>
 </ObjDef>
