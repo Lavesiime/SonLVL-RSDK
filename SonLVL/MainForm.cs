@@ -4803,6 +4803,13 @@ namespace SonicRetro.SonLVL.GUI
 							item.direction ^= RSDKv3_4.Tiles128x128.Block.Tile.Directions.FlipY;
 						SaveState("Change Chunk Tiles Y Flip");
 					}
+					else
+					{
+						// poor man's cut..
+						// TODO: fix this later and do it the proper way, update the right click menu (once you figure out how to not make the designer break whenever you save in it..)
+						copyChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
+						clearChunkBlocksToolStripMenuItem_Click(this, EventArgs.Empty);
+					}
 					break;
 				case Keys.D:
 					foreach (RSDKv3_4.Tiles128x128.Block.Tile item in blocks)
