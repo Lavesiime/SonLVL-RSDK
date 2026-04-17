@@ -520,6 +520,7 @@ namespace SonicRetro.SonLVL.API
 					StageConfig = new RSDKv3.StageConfig();
 					break;
 			}
+			StageConfig.loadGlobalObjects = false;
 			for (int l = 0; l < StageConfig.stagePalette.colors.Length; l++)
 				for (int c = 0; c < StageConfig.stagePalette.colors[l].Length; c++)
 					NewPalette[(l * 16) + c + 96] = StageConfig.stagePalette.colors[l][c].ToSystemColor();
