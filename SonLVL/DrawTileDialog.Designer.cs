@@ -42,6 +42,8 @@ namespace SonicRetro.SonLVL.GUI
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.pencilToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.fillToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.undoToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.panel1.SuspendLayout();
 			this.panel2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -158,8 +160,10 @@ namespace SonicRetro.SonLVL.GUI
 			this.TilePicture.Size = new System.Drawing.Size(8, 8);
 			this.TilePicture.TabIndex = 2;
 			this.TilePicture.Paint += new System.Windows.Forms.PaintEventHandler(this.TilePicture_Paint);
+			this.TilePicture.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DrawTileDialog_KeyDown);
 			this.TilePicture.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TilePicture_MouseDown);
 			this.TilePicture.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TilePicture_MouseMove);
+			this.TilePicture.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TilePicture_MouseUp);
 			this.TilePicture.Resize += new System.EventHandler(this.TilePicture_Resize);
 			// 
 			// panel4
@@ -190,7 +194,9 @@ namespace SonicRetro.SonLVL.GUI
 			this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pencilToolStripButton,
-            this.fillToolStripButton});
+			this.fillToolStripButton,
+			this.undoToolStripButton,
+			this.redoToolStripButton});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(24, 266);
@@ -217,6 +223,26 @@ namespace SonicRetro.SonLVL.GUI
 			this.fillToolStripButton.Text = "Fill";
 			this.fillToolStripButton.Click += new System.EventHandler(this.fillToolStripButton_Click);
 			// 
+			// undoToolStripButton
+			// 
+			this.undoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.undoToolStripButton.Enabled = false;
+			this.undoToolStripButton.Image = global::SonicRetro.SonLVL.Properties.Resources.undo;
+			this.undoToolStripButton.Name = "undoToolStripButton";
+			this.undoToolStripButton.Size = new System.Drawing.Size(21, 20);
+			this.undoToolStripButton.Text = "Undo";
+			this.undoToolStripButton.Click += new System.EventHandler(this.undoToolStripButton_Click);
+			// 
+			// redoToolStripButton
+			// 
+			this.redoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.redoToolStripButton.Enabled = false;
+			this.redoToolStripButton.Image = global::SonicRetro.SonLVL.Properties.Resources.redo;
+			this.redoToolStripButton.Name = "redoToolStripButton";
+			this.redoToolStripButton.Size = new System.Drawing.Size(21, 20);
+			this.redoToolStripButton.Text = "Redo";
+			this.redoToolStripButton.Click += new System.EventHandler(this.redoToolStripButton_Click);
+			// 
 			// DrawTileDialog
 			// 
 			this.AcceptButton = this.okButton;
@@ -236,6 +262,7 @@ namespace SonicRetro.SonLVL.GUI
 			this.ShowInTaskbar = false;
 			this.Text = "SonLVL-RSDK - Draw Tile";
 			this.Shown += new System.EventHandler(this.DrawTileDialog_Shown);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DrawTileDialog_KeyDown);
 			this.panel1.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
@@ -267,6 +294,8 @@ namespace SonicRetro.SonLVL.GUI
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripButton pencilToolStripButton;
 		private System.Windows.Forms.ToolStripButton fillToolStripButton;
+		private System.Windows.Forms.ToolStripButton undoToolStripButton;
+		private System.Windows.Forms.ToolStripButton redoToolStripButton;
 	}
 }
 

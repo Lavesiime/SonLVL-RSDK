@@ -7,7 +7,12 @@ namespace SonicRetro.SonLVL.GUI
 {
 	public partial class DrawTileDialog : Form
 	{
+		public BitmapBits tile;
+
+		private UndoSystem undoSystem;
+		private Point selectedColor;
 		private Bitmap palette;
+
 		public DrawTileDialog()
 		{
 			InitializeComponent();
@@ -17,7 +22,6 @@ namespace SonicRetro.SonLVL.GUI
 				for (int x = 0; x < 16; x++)
 					bitmap.FillRectangle((byte)((y * 16) + x), x * 16, y * 16, 16, 16);
 			palette = bitmap.ToBitmap(LevelData.NewPalette);
-
 		}
 
 		private void okButton_Click(object sender, EventArgs e)
@@ -30,7 +34,39 @@ namespace SonicRetro.SonLVL.GUI
 			Close();
 		}
 
-		private Point selectedColor;
+		private void SaveState(string name)
+		{
+			// yeah.. we don't even use name here, but let's keep it anyways (since the undo system uses 'em)
+			if (undoSystem.CreateState(name))
+			{
+				undoToolStripButton.Enabled = true;
+				redoToolStripButton.Enabled = false;
+			}
+		}
+
+		private void Undo()
+		{
+			if (!undoSystem.CanUndo) return;
+
+			undoSystem.Undo();
+			undoToolStripButton.Enabled = undoSystem.CanUndo;
+			redoToolStripButton.Enabled = true;
+
+			DrawTile();
+		}
+
+		private void Redo()
+		{
+			if (!undoSystem.CanRedo) return;
+
+			undoSystem.Redo();
+			undoToolStripButton.Enabled = true;
+			redoToolStripButton.Enabled = undoSystem.CanRedo;
+
+			DrawTile();
+		}
+
+		
 		private void PalettePanel_Paint(object sender, PaintEventArgs e)
 		{
 			e.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
@@ -44,7 +80,6 @@ namespace SonicRetro.SonLVL.GUI
 			PalettePanel.Invalidate();
 		}
 
-		public BitmapBits tile;
 		private void TilePicture_Paint(object sender, PaintEventArgs e)
 		{
 			DrawTile();
@@ -64,6 +99,7 @@ namespace SonicRetro.SonLVL.GUI
 						break;
 					case Tool.Fill:
 						tile.FloodFill((byte)((selectedColor.Y * 16) + selectedColor.X), e.X / (int)numericUpDown1.Value, e.Y / (int)numericUpDown1.Value);
+						SaveState("Fill Tool");
 						DrawTile();
 						break;
 				}
@@ -74,6 +110,8 @@ namespace SonicRetro.SonLVL.GUI
 				selectedColor.Y = tile[e.X / (int)numericUpDown1.Value, e.Y / (int)numericUpDown1.Value] / 16;
 				PalettePanel.Invalidate();
 			}
+
+			TilePicture.Focus();
 		}
 
 		Point lastpoint;
@@ -89,6 +127,12 @@ namespace SonicRetro.SonLVL.GUI
 				lastpoint = new Point(e.X / (int)numericUpDown1.Value, e.Y / (int)numericUpDown1.Value);
 				DrawTile();
 			}
+		}
+
+		private void TilePicture_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (tool == Tool.Pencil && e.Button == MouseButtons.Left)
+				SaveState("Pencil Tool");
 		}
 
 		private Graphics tileGfx;
@@ -108,6 +152,9 @@ namespace SonicRetro.SonLVL.GUI
 		Cursor pencilcur, fillcur;
 		private void DrawTileDialog_Shown(object sender, EventArgs e)
 		{
+			undoSystem = new DrawTileUndoSystem(tile);
+			undoSystem.Init();
+
 			tileGfx = TilePicture.CreateGraphics();
 			tileGfx.SetOptions();
 
@@ -147,6 +194,40 @@ namespace SonicRetro.SonLVL.GUI
 			fillToolStripButton.Checked = true;
 			tool = Tool.Fill;
 			TilePicture.Cursor = fillcur;
+		}
+
+		private void DrawTileDialog_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+				case Keys.P:
+					pencilToolStripButton_Click(this, EventArgs.Empty);
+					break;
+
+				case Keys.F:
+					fillToolStripButton_Click(this, EventArgs.Empty);
+					break;
+
+				case Keys.Z:
+					if (e.Control)
+						Undo();
+					break;
+
+				case Keys.Y:
+					if (e.Control)
+						Redo();
+					break;
+			}
+		}
+
+		private void undoToolStripButton_Click(object sender, EventArgs e)
+		{
+			Undo();
+		}
+
+		private void redoToolStripButton_Click(object sender, EventArgs e)
+		{
+			Redo();
 		}
 
 		enum Tool { Pencil, Fill }

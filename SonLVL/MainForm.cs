@@ -6025,6 +6025,7 @@ namespace SonicRetro.SonLVL.GUI
 				switch (CurrentArtTab)
 				{
 					case ArtTab.Chunks:
+						dlg.Text = "SonLVL-RSDK - Draw Chunk";
 						dlg.tile = new BitmapBits(128, 128);
 						dlg.numericUpDown1.Value = 2;
 						break;
@@ -10070,6 +10071,7 @@ namespace SonicRetro.SonLVL.GUI
 				switch (CurrentArtTab)
 				{
 					case ArtTab.Chunks:
+						dlg.Text = "SonLVL-RSDK - Draw Chunk";
 						dlg.tile = new BitmapBits(128, 128);
 						dlg.tile.DrawSprite(LevelData.ChunkSprites[SelectedChunk]);
 						dlg.numericUpDown1.Value = 2;
