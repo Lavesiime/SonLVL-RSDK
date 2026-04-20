@@ -355,11 +355,14 @@ namespace SonicRetro.SonLVL.API
 				source.Bits.CopyTo(Bits, GetPixelIndex(0, y));
 				return;
 			}
+
+			int di = GetPixelIndex(x, y);
+			int si = 0;
 			for (int i = 0; i < source.Height; i++)
 			{
-				int di = GetPixelIndex(x, y + i);
-				int si = i * source.Width;
 				Array.Copy(source.Bits, si, Bits, di, source.Width);
+				di += Width;
+				si += source.Width;
 			}
 		}
 
