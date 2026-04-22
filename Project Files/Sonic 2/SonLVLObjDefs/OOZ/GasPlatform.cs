@@ -20,13 +20,13 @@ namespace S2ObjectDefinitions.OOZ
 			overlay.DrawLine(6, 0, 0, 16, 0);
 			debug[0] = new Sprite(overlay, -8, -207);
 			
-			overlay = new BitmapBits(11, 121);
+			overlay = new BitmapBits(17, 121);
 			overlay.DrawLine(6, 8, 0, 8, 120);
 			overlay.DrawLine(6, 0, 0, 16, 0);
 			debug[1] = new Sprite(overlay, -8, -120);
 			
 			properties[0] = new PropertySpec("Behaviour", typeof(int), "Extended",
-				"How this Platform should pop.", null, new Dictionary<string, int>
+				"When this Platform should pop.", null, new Dictionary<string, int>
 				{
 					{ "Pop On Interval", 0 },
 					{ "Pop On Contact", 1 }
