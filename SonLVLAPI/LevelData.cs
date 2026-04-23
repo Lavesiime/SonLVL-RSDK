@@ -14,6 +14,7 @@ namespace SonicRetro.SonLVL.API
 {
 	public static class LevelData
 	{
+		// Game-wide
 		public static GameInfo Game;
 		public static string GamePath;
 		public static IDataPack DataFile;
@@ -23,6 +24,8 @@ namespace SonicRetro.SonLVL.API
 		public static GameConfig GameConfig;
 		public static GameXML GameXML;
 		public static string GameTitle;
+
+		// Stage-specific, stored in their RSDK formats
 		public static GameConfig.StageList.StageInfo StageInfo;
 		public static StageConfig StageConfig;
 		public static Color[] NewPalette = new Color[256];
@@ -31,12 +34,14 @@ namespace SonicRetro.SonLVL.API
 		public static TileConfig Collision;
 		public static Backgrounds Background;
 		public static Scene Scene;
-		public static bool ForegroundDeformation;
+		
 		public static List<ObjectEntry> Objects;
 		public static List<ScrollData>[] BGScroll = new List<ScrollData>[8];
 		public static List<GameConfig.StageList.StageInfo>[] StageLists = new List<GameConfig.StageList.StageInfo>[4];
 		public static List<GameConfig.ObjectInfo> GlobalObjects;
 		public static List<AdditionalScene> AdditionalScenes;
+		public static bool ForegroundDeformation;
+
 		public static Bitmap[] NewTileBmps;
 		public static BitmapBits[][] NewColBmpBits;
 		public static Bitmap[][] NewColBmps;
@@ -1563,6 +1568,7 @@ namespace SonicRetro.SonLVL.API
 						if (map.solidityB == Tiles128x128.Block.Tile.Solidities.SolidNone)
 							mask2 = null;
 					}
+
 					bool match = false;
 					if (optimize)
 					{
@@ -1648,6 +1654,7 @@ namespace SonicRetro.SonLVL.API
 							}
 						}
 					}
+
 					if (!match)
 					{
 						tiles.Add(tile);
@@ -1669,11 +1676,14 @@ namespace SonicRetro.SonLVL.API
 								result.Collision2.Add(mask2);
 							}
 						}
+
 						map.tileIndex = (ushort)(tiles.Count - 1);
 					}
+
 					result.Mappings[x, y] = map;
 					updateProgress?.Invoke();
 				}
+
 			return result;
 		}
 
