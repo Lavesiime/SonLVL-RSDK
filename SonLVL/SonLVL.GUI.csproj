@@ -78,6 +78,9 @@
     <Compile Include="CopyCollisionDialog.Designer.cs">
       <DependentUpon>CopyCollisionDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="DoubleBufferedPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DrawTileUndoSystem.cs" />
     <Compile Include="FileSelectDialog.cs">
       <SubType>Form</SubType>
