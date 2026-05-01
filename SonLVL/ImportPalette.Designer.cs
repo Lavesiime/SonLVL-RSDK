@@ -28,11 +28,11 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.sourcePanel = new System.Windows.Forms.Panel();
+            this.sourcePanel = new SonicRetro.SonLVL.DoubleBufferedPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.destinationPanel = new System.Windows.Forms.Panel();
+            this.destinationPanel = new SonicRetro.SonLVL.DoubleBufferedPanel();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.resetButton = new System.Windows.Forms.Button();
@@ -162,11 +162,11 @@
 
 		#endregion
 
-		private System.Windows.Forms.Panel sourcePanel;
+		private SonicRetro.SonLVL.DoubleBufferedPanel sourcePanel;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Panel destinationPanel;
+		private SonicRetro.SonLVL.DoubleBufferedPanel destinationPanel;
 		private System.Windows.Forms.Button okButton;
 		private System.Windows.Forms.Button cancelButton;
 		private System.Windows.Forms.Button resetButton;

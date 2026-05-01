@@ -18,22 +18,9 @@ namespace SonicRetro.SonLVL
 		Point selection = new Point(-1, -1); // X: start index, Y: last index
 		int mouseindex = -1;
 
-		Graphics srcGfx, dstGfx;
-		BufferedGraphics srcBuffer, dstBuffer;
-
 		public ImportPalette(Color[] srcPal, Color[] dstPal)
 		{
 			InitializeComponent();
-
-			srcGfx = sourcePanel.CreateGraphics();
-			srcGfx.SetOptions();
-			srcBuffer = BufferedGraphicsManager.Current.Allocate(srcGfx, new Rectangle(0, 0, sourcePanel.Width, sourcePanel.Height));
-			srcBuffer.Graphics.SetOptions();
-
-			dstGfx = destinationPanel.CreateGraphics();
-			dstGfx.SetOptions();
-			dstBuffer = BufferedGraphicsManager.Current.Allocate(dstGfx, new Rectangle(0, 0, destinationPanel.Width, destinationPanel.Height));
-			dstBuffer.Graphics.SetOptions();
 
 			sourcePalette = srcPal;
 			destinationPalette = (Color[])dstPal.Clone();
@@ -42,18 +29,17 @@ namespace SonicRetro.SonLVL
 
 		private void sourcePanel_Paint(object sender, PaintEventArgs e)
 		{
-			srcBuffer.Graphics.FillRectangle(new SolidBrush(Color.Black), 0, 0, sourcePanel.Width, sourcePanel.Height);
+			e.Graphics.SetOptions();
+			e.Graphics.FillRectangle(new SolidBrush(Color.Black), 0, 0, sourcePanel.Width, sourcePanel.Height);
 
 			for (int i = 0; i < sourcePalette.Length; i++)
-				srcBuffer.Graphics.FillRectangle(new SolidBrush(sourcePalette[i]), (i & 15) * 14, (i / 16) * 14, 13, 13);
+				e.Graphics.FillRectangle(new SolidBrush(sourcePalette[i]), (i & 15) * 14, (i / 16) * 14, 13, 13);
 
 			if (selection.X > -1)
 			{
 				for (int i = Math.Min(selection.X, selection.Y); i <= Math.Max(selection.X, selection.Y); i++)
-					srcBuffer.Graphics.DrawRectangle(new Pen(Color.White), (i & 15) * 14, (i / 16) * 14, 13, 13);
+					e.Graphics.DrawRectangle(new Pen(Color.White), (i & 15) * 14, (i / 16) * 14, 13, 13);
 			}
-
-			srcBuffer.Render(srcGfx);
 		}
 
 		private void sourcePanel_MouseUp(object sender, MouseEventArgs e)
@@ -110,18 +96,19 @@ namespace SonicRetro.SonLVL
 
 		private void destinationPanel_Paint(object sender, PaintEventArgs e)
 		{
-			dstBuffer.Graphics.FillRectangle(new SolidBrush(Color.Black), 0, 0, destinationPanel.Width, destinationPanel.Height);
+			e.Graphics.SetOptions();
+			e.Graphics.FillRectangle(new SolidBrush(Color.Black), 0, 0, destinationPanel.Width, destinationPanel.Height);
 			for (int i = 0; i < destinationPalette.Length; i++)
-				dstBuffer.Graphics.FillRectangle(new SolidBrush(destinationPalette[i]), (i & 15) * 14, (i / 16) * 14, 13, 13);
+				e.Graphics.FillRectangle(new SolidBrush(destinationPalette[i]), (i & 15) * 14, (i / 16) * 14, 13, 13);
+			
 			if (selection.X > -1 && mouseindex > -1)
 			{
 				for (int i = 0; i <= selection.Y - selection.X; i++)
 				{
 					if (mouseindex + i >= destinationPalette.Length) break;
-					dstBuffer.Graphics.FillRectangle(new SolidBrush(sourcePalette[selection.X + i]), ((i + mouseindex) & 15) * 14, ((i + mouseindex) / 16) * 14, 13, 13);
+					e.Graphics.FillRectangle(new SolidBrush(sourcePalette[selection.X + i]), ((i + mouseindex) & 15) * 14, ((i + mouseindex) / 16) * 14, 13, 13);
 				}
 			}
-			dstBuffer.Render(dstGfx);
 		}
 
 		private void resetButton_Click(object sender, EventArgs e)
