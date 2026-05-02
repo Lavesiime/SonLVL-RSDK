@@ -31,12 +31,12 @@ namespace SonicRetro.SonLVL.GUI
 			this.okButton = new System.Windows.Forms.Button();
 			this.cancelButton = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.PalettePanel = new System.Windows.Forms.Panel();
+			this.PalettePanel = new SonicRetro.SonLVL.DoubleBufferedPanel();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.panel3 = new System.Windows.Forms.Panel();
-			this.TilePicture = new System.Windows.Forms.Panel();
+			this.TilePicture = new SonicRetro.SonLVL.DoubleBufferedPanel();
 			this.panel4 = new System.Windows.Forms.Panel();
 			this.panel5 = new System.Windows.Forms.Panel();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -164,7 +164,6 @@ namespace SonicRetro.SonLVL.GUI
 			this.TilePicture.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TilePicture_MouseDown);
 			this.TilePicture.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TilePicture_MouseMove);
 			this.TilePicture.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TilePicture_MouseUp);
-			this.TilePicture.Resize += new System.EventHandler(this.TilePicture_Resize);
 			// 
 			// panel4
 			// 
@@ -283,13 +282,13 @@ namespace SonicRetro.SonLVL.GUI
 		private System.Windows.Forms.Button okButton;
 		private System.Windows.Forms.Button cancelButton;
 		internal System.Windows.Forms.Panel panel1;
-		internal System.Windows.Forms.Panel PalettePanel;
+		internal SonicRetro.SonLVL.DoubleBufferedPanel PalettePanel;
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.Panel panel3;
 		private System.Windows.Forms.Panel panel4;
 		internal System.Windows.Forms.NumericUpDown numericUpDown1;
 		private System.Windows.Forms.Label label1;
-		internal System.Windows.Forms.Panel TilePicture;
+		internal SonicRetro.SonLVL.DoubleBufferedPanel TilePicture;
 		private System.Windows.Forms.Panel panel5;
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripButton pencilToolStripButton;

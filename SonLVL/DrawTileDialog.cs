@@ -52,7 +52,7 @@ namespace SonicRetro.SonLVL.GUI
 			undoToolStripButton.Enabled = undoSystem.CanUndo;
 			redoToolStripButton.Enabled = true;
 
-			DrawTile();
+			TilePicture.Invalidate();
 		}
 
 		private void Redo()
@@ -63,7 +63,7 @@ namespace SonicRetro.SonLVL.GUI
 			undoToolStripButton.Enabled = true;
 			redoToolStripButton.Enabled = undoSystem.CanRedo;
 
-			DrawTile();
+			TilePicture.Invalidate();
 		}
 
 		
@@ -82,7 +82,9 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void TilePicture_Paint(object sender, PaintEventArgs e)
 		{
-			DrawTile();
+			e.Graphics.SetOptions();
+			e.Graphics.Clear(LevelData.NewPalette[0]);
+			e.Graphics.DrawImage(tile.Scale((int)numericUpDown1.Value).ToBitmap(LevelData.BmpPal), 0, 0, tile.Width * (int)numericUpDown1.Value, tile.Height * (int)numericUpDown1.Value);
 		}
 
 		private Tool tool;
@@ -95,12 +97,13 @@ namespace SonicRetro.SonLVL.GUI
 					case Tool.Pencil:
 						tile[e.X / (int)numericUpDown1.Value, e.Y / (int)numericUpDown1.Value] = (byte)((selectedColor.Y * 16) + selectedColor.X);
 						lastpoint = new Point(e.X / (int)numericUpDown1.Value, e.Y / (int)numericUpDown1.Value);
-						DrawTile();
+						TilePicture.Invalidate();
 						break;
+
 					case Tool.Fill:
 						tile.FloodFill((byte)((selectedColor.Y * 16) + selectedColor.X), e.X / (int)numericUpDown1.Value, e.Y / (int)numericUpDown1.Value);
 						SaveState("Fill Tool");
-						DrawTile();
+						TilePicture.Invalidate();
 						break;
 				}
 			}
@@ -125,7 +128,7 @@ namespace SonicRetro.SonLVL.GUI
 					tile[e.X / (int)numericUpDown1.Value, e.Y / (int)numericUpDown1.Value] = (byte)((selectedColor.Y * 16) + selectedColor.X);
 				}
 				lastpoint = new Point(e.X / (int)numericUpDown1.Value, e.Y / (int)numericUpDown1.Value);
-				DrawTile();
+				TilePicture.Invalidate();
 			}
 		}
 
@@ -133,15 +136,6 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			if (tool == Tool.Pencil && e.Button == MouseButtons.Left)
 				SaveState("Pencil Tool");
-		}
-
-		private Graphics tileGfx;
-		private BufferedGraphics tileGfxBuffer;
-		private void DrawTile()
-		{
-			tileGfxBuffer.Graphics.Clear(LevelData.NewPalette[0]);
-			tileGfxBuffer.Graphics.DrawImage(tile.Scale((int)numericUpDown1.Value).ToBitmap(LevelData.BmpPal), 0, 0, tile.Width * (int)numericUpDown1.Value, tile.Height * (int)numericUpDown1.Value);
-			tileGfxBuffer.Render(tileGfx);
 		}
 
 		private void numericUpDown1_ValueChanged(object sender, EventArgs e)
@@ -155,29 +149,12 @@ namespace SonicRetro.SonLVL.GUI
 			undoSystem = new DrawTileUndoSystem(tile);
 			undoSystem.Init();
 
-			tileGfx = TilePicture.CreateGraphics();
-			tileGfx.SetOptions();
-
-			tileGfxBuffer = BufferedGraphicsManager.Current.Allocate(tileGfx, new Rectangle(0, 0, TilePicture.Width, TilePicture.Height));
-			tileGfxBuffer.Graphics.SetOptions();
-
 			using (System.IO.MemoryStream ms = new System.IO.MemoryStream(Properties.Resources.pencilcur))
 				pencilcur = new Cursor(ms);
 			using (System.IO.MemoryStream ms = new System.IO.MemoryStream(Properties.Resources.fillcur))
 				fillcur = new Cursor(ms);
 			TilePicture.Cursor = pencilcur;
 			TilePicture.Size = new Size(tile.Width * (int)numericUpDown1.Value, tile.Height * (int)numericUpDown1.Value);
-		}
-
-		private void TilePicture_Resize(object sender, EventArgs e)
-		{
-			tileGfx = TilePicture.CreateGraphics();
-			tileGfx.SetOptions();
-
-			tileGfxBuffer = BufferedGraphicsManager.Current.Allocate(tileGfx, new Rectangle(0, 0, TilePicture.Width, TilePicture.Height));
-			tileGfxBuffer.Graphics.SetOptions();
-
-			DrawTile();
 		}
 
 		private void pencilToolStripButton_Click(object sender, EventArgs e)
