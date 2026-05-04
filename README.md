@@ -1,14 +1,16 @@
 # SonLVL-RSDK
 
-**A level editor for Retro Engine v3 (Sonic CD 2011/Origins) and v4 (Sonic 1/2 2013/Origins).**
+**A level editor for Retro Engine v3 (Sonic CD) and v4 (Sonic 1/2).**
 
 This editor is based on the original [SonLVL](https://github.com/sonicretro/SonLVL) tool, but adapted for the Retro Engine. It supports level editing, from layer editing to object placement to more. Included are project files, for:
 
-- _Sonic CD_ (2011 / Origins)
-- _Sonic 1_ (2013 / Origins)
-- _Sonic 2_ (2013 / Origins)
+- _Sonic CD_ ([2011 Steam](https://store.steampowered.com/app/200940/Sonic_CD/) / [2011 Mobile](https://info.sonicretro.org/Sonic_the_Hedgehog_CD_(2011)) / [Origins](https://store.steampowered.com/app/1794960/Sonic_Origins/))
+- _Sonic 1_ ([2013](https://info.sonicretro.org/Sonic_the_Hedgehog_(2013_game)) / [Origins](https://store.steampowered.com/app/1794960/Sonic_Origins/))
+- _Sonic 2_ ([2013](https://info.sonicretro.org/Sonic_the_Hedgehog_2_(2013)) / [Origins](https://store.steampowered.com/app/1794960/Sonic_Origins/))
 - [_Sonic Forever_](https://teamforeveronline.wixsite.com/home/sonic-1-forever)
 - [_Sonic 2 Absolute_](https://teamforeveronline.wixsite.com/home/sonic-2-absolute)
+
+<img width="3080" height="1904" alt="image" src="https://github.com/user-attachments/assets/c74380f6-a48e-4319-a3be-9a62408f949a" />
 
 ---
 
