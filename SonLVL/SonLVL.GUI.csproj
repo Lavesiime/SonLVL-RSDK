@@ -124,6 +124,12 @@
     <Compile Include="NewModDialog.designer.cs">
       <DependentUpon>NewModDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="PaletteCycleDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PaletteCycleDialog.Designer.cs">
+      <DependentUpon>PaletteCycleDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -310,6 +316,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewModDialog.resx">
       <DependentUpon>NewModDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PaletteCycleDialog.resx">
+      <DependentUpon>PaletteCycleDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ReplaceChunkBlocksDialog.resx">
       <DependentUpon>ReplaceChunkBlocksDialog.cs</DependentUpon>

@@ -786,6 +786,11 @@ namespace SonicRetro.SonLVL.GUI
 				LevelImgPalette.Entries[LevelData.ColorTransparent] = LevelData.NewPalette[Settings.BackgroundColor.A];
 			else
 				LevelImgPalette.Entries[LevelData.ColorTransparent] = Settings.BackgroundColor;
+
+			editPaletteCycleToolStripButton.Enabled = (LevelData.PaletteCycles.Count > 0);
+			editPaletteCycleToolStripButton.DropDownItems.Clear();
+			foreach (var cycle in LevelData.PaletteCycles)
+				editPaletteCycleToolStripButton.DropDownItems.Add(cycle.Name);
 		}
 
 		private void backgroundLevelLoader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -5306,6 +5311,19 @@ namespace SonicRetro.SonLVL.GUI
 			}
 			LevelData.PaletteChanged();
 			SaveState("Import Palette");
+		}
+
+		private void editPaletteCycleToolStripButton_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			var cycle = LevelData.PaletteCycles[editPaletteCycleToolStripButton.DropDownItems.IndexOf(e.ClickedItem)];
+			Color[,] colors = LevelData.GetPaletteCycleColors(cycle);
+			using (PaletteCycleDialog dialog = new PaletteCycleDialog(LevelImgPalette.Entries, colors, cycle.Index))
+			{
+				dialog.chunkNumericUpDown.Value = SelectedChunk;
+				dialog.Hexadecimal = useHexadecimalToolStripMenuItem.Checked;
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					LevelData.SetPaletteCycleColors(cycle, colors);
+			}
 		}
 
 		private void TileSelector_SelectedIndexChanged(object sender, EventArgs e)

@@ -42,6 +42,9 @@ namespace SonicRetro.SonLVL.API
 		public static List<AdditionalScene> AdditionalScenes;
 		public static bool ForegroundDeformation;
 
+		public static List<PaletteCycleInfo> PaletteCycles;
+		private static Dictionary<string, byte[]> paletteFiles;
+
 		public static Bitmap[] NewTileBmps;
 		public static BitmapBits[][] NewColBmpBits;
 		public static Bitmap[][] NewColBmps;
@@ -417,7 +420,31 @@ namespace SonicRetro.SonLVL.API
 			
 			Background.hScroll.Clear();
 			Background.vScroll.Clear();
-			
+
+			// Let's load the colours from each of the folder's palette cycles
+			PaletteCycles = new List<PaletteCycleInfo>();
+			paletteFiles = new Dictionary<string, byte[]>();
+			if (Game.Levels.TryGetValue(stage.folder, out var stageInfo))
+			{
+				foreach (var entry in stageInfo.PaletteCycles)
+				{
+					if (!paletteFiles.ContainsKey(entry.File))
+					{
+						var path = $"Data/Palettes/{entry.File}";
+						byte[] file = ReadFileRaw(path);
+						if (file == null)
+						{
+							Log($"Tried to load palette cycle \"{entry.Name}\", but palette file at {path} couldn't be found!");
+							continue;
+						}
+
+						paletteFiles.Add(entry.File, file);
+					}
+
+					PaletteCycles.Add(entry);
+				}
+			}
+
 			using (Bitmap palbmp = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
 				BmpPal = palbmp.Palette;
 			NewPalette.CopyTo(BmpPal.Entries, 0);
@@ -849,6 +876,16 @@ namespace SonicRetro.SonLVL.API
 			SaveFile($"Act{StageInfo.actID}.bin", fn => Scene.Write(fn));
 			foreach (var astg in AdditionalScenes)
 				SaveFile($"Act{astg.StageInfo.actID}.bin", fn => astg.Scene.Write(fn));
+
+			foreach (var entry in paletteFiles)
+			{
+				string path = $"Data/Palettes/{entry.Key}";
+				if (File.Exists(Path.Combine(ModFolder, path)) || !entry.Value.FastArrayEqual(ReadFileRawNoMod(path)))
+				{
+					Directory.CreateDirectory(Path.Combine(ModFolder, "Data", "Palettes"));
+					File.WriteAllBytes(Path.Combine(ModFolder, "Data", "Palettes", entry.Key), entry.Value);
+				}
+			}
 		}
 
 		private static void SaveFile(string name, Action<string> action)
@@ -1964,6 +2001,46 @@ namespace SonicRetro.SonLVL.API
 				BitmapBits img = new BitmapBits(ReadFile<Gif>(sheetname));
 				spriteSheets.Add(sheetname, img);
 				return img;
+			}
+		}
+
+		public static Color[,] GetPaletteCycleColors(PaletteCycleInfo info)
+		{
+			byte[] file = paletteFiles[info.File];
+
+			int pos = info.Offset * 3;
+			Color[,] frames = new Color[info.Count, info.Length];
+			for (int frame = 0; frame < info.Count; frame++)
+			{
+				for (int i = 0; i < info.Length; i++)
+				{
+					frames[frame, i] = Color.FromArgb(file[pos], file[pos + 1], file[pos + 2]);
+					pos += 3;
+				}
+
+				pos += info.Gap * 3;
+			}
+
+			return frames;
+		}
+
+		public static void SetPaletteCycleColors(PaletteCycleInfo info, Color[,] colors)
+		{
+			byte[] file = paletteFiles[info.File];
+
+			int pos = info.Offset * 3;
+			for (int frame = 0; frame < colors.GetLength(0); frame++)
+			{
+				for (int index = 0; index < colors.GetLength(1); index++)
+				{
+					Color color = colors[frame, index];
+					file[pos] = color.R;
+					file[pos + 1] = color.G;
+					file[pos + 2] = color.B;
+					pos += 3;
+				}
+
+				pos += info.Gap * 3;
 			}
 		}
 
