@@ -43,7 +43,7 @@ namespace SonicRetro.SonLVL.GUI
 			ChunkSelector.Invalidate();
 			DrawChunkPicture();
 			chunkBlockEditor.Invalidate();
-			DrawPalette();
+			PalettePanel.Invalidate();
 			DrawTilePicture();
 			TileSelector.Invalidate();
 			DrawLevel();
@@ -75,8 +75,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		ImageAttributes imageTransparency = new ImageAttributes();
 		Bitmap LevelBmp;
-		Graphics LevelGfx, PalettePanelGfx;
-		BufferedGraphics PalettePanelGfxBuffer;
+		Graphics LevelGfx;
 		System.Diagnostics.Process gameProcess;
 		bool loaded, saved;
 		ushort SelectedChunk;
@@ -152,12 +151,6 @@ namespace SonicRetro.SonLVL.GUI
 			Settings = Settings.Load();
 			imageTransparency.SetColorMatrix(new ColorMatrix() { Matrix33 = 0.75f }, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 			
-			PalettePanelGfx = PalettePanel.CreateGraphics();
-			PalettePanelGfx.SetOptions();
-
-			PalettePanelGfxBuffer = BufferedGraphicsManager.Current.Allocate(PalettePanelGfx, new Rectangle(0, 0, PalettePanel.Width, PalettePanel.Height));
-			PalettePanelGfxBuffer.Graphics.SetOptions();
-
 			string HUDpath = Path.Combine(Application.StartupPath, "HUD");
 			
 			HUDLetters = new Dictionary<char, HUDImage>();
@@ -953,7 +946,7 @@ namespace SonicRetro.SonLVL.GUI
 			saved = true;
 			loaded = true;
 
-			DrawPalette();
+			PalettePanel.Invalidate();
 			DrawChunkPicture();
 			DrawLevel();
 		}
@@ -5027,9 +5020,10 @@ namespace SonicRetro.SonLVL.GUI
 		}
 
 		Color[,] disppal = null;
-		private void DrawPalette()
+		private void PalettePanel_Paint(object sender, PaintEventArgs e)
 		{
 			if (!loaded) return;
+
 			Color[,] pal = disppal;
 			if (pal == null)
 			{
@@ -5038,27 +5032,22 @@ namespace SonicRetro.SonLVL.GUI
 					for (int x = 0; x < 16; x++)
 						pal[y, x] = LevelData.NewPalette[(y * 16) + x];
 			}
-			
+
+			e.Graphics.SetOptions();
+
 			for (int y = 0; y < 16; y++)
 				for (int x = 0; x < 16; x++)
 				{
-					PalettePanelGfxBuffer.Graphics.FillRectangle(new SolidBrush(pal[y, x]), x * 20, y * 20, 20, 20);
-					PalettePanelGfxBuffer.Graphics.DrawRectangle(Pens.White, x * 20, y * 20, 19, 19);
+					e.Graphics.FillRectangle(new SolidBrush(pal[y, x]), x * 20, y * 20, 20, 20);
+					e.Graphics.DrawRectangle(Pens.White, x * 20, y * 20, 19, 19);
 				}
 
 			if (disppal == null)
-				PalettePanelGfxBuffer.Graphics.DrawRectangle(new Pen(Color.Yellow, 2), SelectedColor.X * 20, SelectedColor.Y * 20, 20, 20);
+				e.Graphics.DrawRectangle(new Pen(Color.Yellow, 2), SelectedColor.X * 20, SelectedColor.Y * 20, 20, 20);
 			else if (lastmouse.Y == SelectedColor.Y)
-				PalettePanelGfxBuffer.Graphics.DrawRectangle(new Pen(Color.Yellow, 2), lastmouse.X * 20, lastmouse.Y * 20, 20, 20);
+				e.Graphics.DrawRectangle(new Pen(Color.Yellow, 2), lastmouse.X * 20, lastmouse.Y * 20, 20, 20);
 			else
-				PalettePanelGfxBuffer.Graphics.DrawRectangle(new Pen(Color.Yellow, 2), 0, lastmouse.Y * 20, 320, 20);
-
-			PalettePanelGfxBuffer.Render(PalettePanelGfx);
-		}
-
-		private void PalettePanel_Paint(object sender, PaintEventArgs e)
-		{
-			DrawPalette();
+				e.Graphics.DrawRectangle(new Pen(Color.Yellow, 2), 0, lastmouse.Y * 20, 320, 20);
 		}
 
 		int[] cols;
@@ -5165,7 +5154,7 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			SelectedColor = color;
 			lastmouse = color;
-			DrawPalette();
+			PalettePanel.Invalidate();
 			loaded = false;
 			colorRed.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].R;
 			colorGreen.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].G;
@@ -5183,7 +5172,7 @@ namespace SonicRetro.SonLVL.GUI
 			{
 				disppal = null;
 				lastmouse = mouseColor;
-				DrawPalette();
+				PalettePanel.Invalidate();
 			}
 			if (mouseColor.X < 0 || mouseColor.Y < 0 || mouseColor.X > 15 || mouseColor.Y > 15) return;
 			List<List<Point>> palidxs = new List<List<Point>>();
@@ -5218,7 +5207,7 @@ namespace SonicRetro.SonLVL.GUI
 				for (int x = 0; x < 16; x++)
 					disppal[y, x] = LevelData.NewPalette[(palidxs[y][x].Y * 16) + palidxs[y][x].X];
 			lastmouse = mouseColor;
-			DrawPalette();
+			PalettePanel.Invalidate();
 		}
 
 		private void PalettePanel_MouseUp(object sender, MouseEventArgs e)

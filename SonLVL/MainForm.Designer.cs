@@ -298,7 +298,7 @@
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.panel8 = new System.Windows.Forms.Panel();
-            this.PalettePanel = new System.Windows.Forms.Panel();
+            this.PalettePanel = new SonicRetro.SonLVL.DoubleBufferedPanel();
             this.colorEditingPanel = new System.Windows.Forms.Panel();
             this.colorHex = new SonicRetro.SonLVL.NumericUpDownPadded();
             this.colorBlue = new System.Windows.Forms.NumericUpDown();
@@ -4746,7 +4746,7 @@
 		private System.Windows.Forms.Label TileCount;
 		private System.Windows.Forms.NumericUpDown TileID;
 		private System.Windows.Forms.Panel panel8;
-		private System.Windows.Forms.Panel PalettePanel;
+		private SonicRetro.SonLVL.DoubleBufferedPanel PalettePanel;
 		private System.Windows.Forms.NumericUpDown floorAngle;
 		private System.Windows.Forms.ContextMenuStrip tileContextMenuStrip;
 		private System.Windows.Forms.ToolStripMenuItem cutTilesToolStripMenuItem;
