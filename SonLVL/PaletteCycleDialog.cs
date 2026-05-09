@@ -18,6 +18,7 @@ namespace SonicRetro.SonLVL
 		private BitmapBits chunkBitmap;
 		private Color[] chunkPalette;
 
+		private Color[] basePalette;
 		private List<int> unchangedCols;
 
 		private int frameCount => frames.GetLength(0);
@@ -31,6 +32,7 @@ namespace SonicRetro.SonLVL
 		public PaletteCycleDialog(Color[] basePalette, Color[,] frames, int startIndex)
 		{
 			InitializeComponent();
+			this.basePalette = basePalette;
 			this.frames = frames;
 			this.startIndex = startIndex;
 			frameNumericUpDown.Maximum = frameCount - 1;
@@ -43,10 +45,6 @@ namespace SonicRetro.SonLVL
 			SelectColor(0);
 			DrawChunk();
 
-			tileList.Images = LevelData.CompChunkBmps;
-			chunkNumericUpDown.Maximum = LevelData.CompChunkBmps.Length - 1;
-			tileList.SelectedIndex = (int)chunkNumericUpDown.Value;
-
 			// Now, let's get a list of all indexes that stay constant throughout the entire animation
 			// (Given that palette cycle files typically contain the entire palette row, instead of only what's different)
 			bool[] used = new bool[colorCount];
@@ -54,7 +52,7 @@ namespace SonicRetro.SonLVL
 			{
 				for (int index = 0; index < colorCount; index++)
 				{
-					if (used[index] || frames[frame, index] != frames[frame - 1, index])
+					if (used[index] || frames[frame, index] != frames[0, index])
 						used[index] = true;
 				}
 			}
@@ -63,6 +61,12 @@ namespace SonicRetro.SonLVL
 			for (int i = 0; i < used.Length; i++)
 				if (!used[i])
 					unchangedCols.Add(i);
+
+			copyStageColorsbutton.Enabled = unchangedCols.Count > 0;
+
+			tileList.Images = LevelData.CompChunkBmps;
+			chunkNumericUpDown.Maximum = LevelData.CompChunkBmps.Length - 1;
+			tileList.SelectedIndex = (int)chunkNumericUpDown.Value;
 		}
 
 		private void palettePanel_Paint(object sender, PaintEventArgs e)
@@ -302,7 +306,15 @@ namespace SonicRetro.SonLVL
 
 		private void copyStageColorsbutton_Click(object sender, EventArgs e)
 		{
-			// yeah
+			//if (MessageBox.Show("Would you like to replace all colours that stay the same across the entire cycle with their stage palette counterparts?\n\nthis wording sucks sorry :sob:", "SonLVL-RSDK Palette Cycle Editor", MessageBoxButtons.OKCancel) == DialogResult.OK)
+			if (MessageBox.Show("This will copy all colours that remain unchanged the entire animation from the stage palette over each individual palette cycle frame.\n\nthis wording sucks sorry :sob:", "SonLVL-RSDK Palette Cycle Editor", MessageBoxButtons.OKCancel) == DialogResult.OK)
+			{
+				for (int frame = 0; frame < frameCount; frame++)
+					foreach (int index in unchangedCols)
+						frames[frame, index] = basePalette[startIndex + index];
+
+				frameNumericUpDown_ValueChanged(sender, EventArgs.Empty);
+			}
 		}
 	}
 }

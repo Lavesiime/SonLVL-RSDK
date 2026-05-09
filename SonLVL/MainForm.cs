@@ -5311,7 +5311,10 @@ namespace SonicRetro.SonLVL.GUI
 				dialog.chunkNumericUpDown.Value = SelectedChunk;
 				dialog.Hexadecimal = useHexadecimalToolStripMenuItem.Checked;
 				if (dialog.ShowDialog(this) == DialogResult.OK)
+				{
 					LevelData.SetPaletteCycleColors(cycle, colors);
+					SaveState($"Edit Palette Cycle {cycle.Name}");
+				}
 			}
 		}
 

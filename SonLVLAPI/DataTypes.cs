@@ -900,6 +900,42 @@ namespace SonicRetro.SonLVL.API
 		object ICloneable.Clone() => Clone();
 	}
 
+	public class PaletteCycleInfo
+	{
+		// The name of the palette cycle
+		public string Name { get; set; }
+
+		// The file name
+		public string File { get; set; }
+
+		// Where the palette file gets applied to in the palette bank (ie 96 for the first StageConfig palette row)
+		public int Index { get; set; }
+
+		// How long each "frame" is (ie in CD, most frames are either 16 or 32 colours long)
+		public int Length { get; set; }
+
+		// How many frames there are in the file (so file length divided by Length in most cases)
+		public int Count { get; set; }
+
+		// The offset to the beginning of the colours, within the file
+		public int Offset { get; set; }
+
+		// How many extra colours are between each entry
+		// (ie for cases where odd numbered lines are for one area and even numbered lines are for another area)
+		public int Gap { get; set; }
+
+		public PaletteCycleInfo(string name, string file, int index, int length, int count, int offset = 0, int gap = 0)
+		{
+			Name = name;
+			File = file;
+			Index = index;
+			Length = length;
+			Count = count;
+			Offset = offset;
+			Gap = gap;
+		}
+	}
+
 	public class ModInfo
 	{
 		public string Name { get; set; }

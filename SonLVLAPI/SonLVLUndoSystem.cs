@@ -17,6 +17,11 @@ namespace SonicRetro.SonLVL.API
 				});
 				ms.ReadDeflateBlock(ds =>
 				{
+					foreach (var palette in LevelData.PaletteFiles.Values)
+						ds.Read(palette, 0, palette.Length);
+				});
+				ms.ReadDeflateBlock(ds =>
+				{
 					for (var i = 0; i < LevelData.NewTiles.Length; i++)
 						ds.Read(LevelData.NewTiles[i].Bits, 0, LevelData.NewTiles[i].Bits.Length);
 				});
@@ -92,6 +97,11 @@ namespace SonicRetro.SonLVL.API
 						ds.WriteByte(LevelData.NewPalette[i].G);
 						ds.WriteByte(LevelData.NewPalette[i].B);
 					}
+				});
+				ms.WriteDeflateBlock(ds =>
+				{
+					foreach (var palette in LevelData.PaletteFiles.Values)
+						ds.Write(palette, 0, palette.Length);
 				});
 				ms.WriteDeflateBlock(ds =>
 				{

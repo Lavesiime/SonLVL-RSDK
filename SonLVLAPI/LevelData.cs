@@ -43,7 +43,7 @@ namespace SonicRetro.SonLVL.API
 		public static bool ForegroundDeformation;
 
 		public static List<PaletteCycleInfo> PaletteCycles;
-		private static Dictionary<string, byte[]> paletteFiles;
+		public static Dictionary<string, byte[]> PaletteFiles;
 
 		public static Bitmap[] NewTileBmps;
 		public static BitmapBits[][] NewColBmpBits;
@@ -359,6 +359,10 @@ namespace SonicRetro.SonLVL.API
 				NewPalette.Fill(NewPalette[0], 128, 128);
 			}
 
+			// We reset these here, it's up to object definitions to add to the list (through AddPaletteCycle)
+			PaletteCycles = new List<PaletteCycleInfo>();
+			PaletteFiles = new Dictionary<string, byte[]>();
+
 			NewChunks = ReadFile<Tiles128x128>(stgfol + "128x128Tiles.bin");
 			Collision = ReadFile<TileConfig>(stgfol + "CollisionMasks.bin");
 
@@ -420,30 +424,6 @@ namespace SonicRetro.SonLVL.API
 			
 			Background.hScroll.Clear();
 			Background.vScroll.Clear();
-
-			// Let's load the colours from each of the folder's palette cycles
-			PaletteCycles = new List<PaletteCycleInfo>();
-			paletteFiles = new Dictionary<string, byte[]>();
-			if (Game.Levels.TryGetValue(stage.folder, out var stageInfo))
-			{
-				foreach (var entry in stageInfo.PaletteCycles)
-				{
-					if (!paletteFiles.ContainsKey(entry.File))
-					{
-						var path = $"Data/Palettes/{entry.File}";
-						byte[] file = ReadFileRaw(path);
-						if (file == null)
-						{
-							Log($"Tried to load palette cycle \"{entry.Name}\", but palette file at {path} couldn't be found!");
-							continue;
-						}
-
-						paletteFiles.Add(entry.File, file);
-					}
-
-					PaletteCycles.Add(entry);
-				}
-			}
 
 			using (Bitmap palbmp = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
 				BmpPal = palbmp.Palette;
@@ -877,7 +857,7 @@ namespace SonicRetro.SonLVL.API
 			foreach (var astg in AdditionalScenes)
 				SaveFile($"Act{astg.StageInfo.actID}.bin", fn => astg.Scene.Write(fn));
 
-			foreach (var entry in paletteFiles)
+			foreach (var entry in PaletteFiles)
 			{
 				string path = $"Data/Palettes/{entry.Key}";
 				if (File.Exists(Path.Combine(ModFolder, path)) || !entry.Value.FastArrayEqual(ReadFileRawNoMod(path)))
@@ -2004,9 +1984,30 @@ namespace SonicRetro.SonLVL.API
 			}
 		}
 
+		public static void AddPaletteCycle(string name, string file, int index, int length, int count, int offset = 0, int gap = 0)
+		{
+			if (PaletteCycles.Any(a => a.Name == name)) return;
+
+			PaletteCycleInfo info = new PaletteCycleInfo(name, file, index, length, count, offset, gap);
+			if (!PaletteFiles.ContainsKey(info.File))
+			{
+				var path = $"Data/Palettes/{info.File}";
+				byte[] data = ReadFileRaw(path);
+				if (data == null)
+				{
+					Log($"Tried to load palette cycle \"{info.Name}\", but palette file at {path} couldn't be found!");
+					return;
+				}
+
+				PaletteFiles.Add(info.File, data);
+			}
+
+			PaletteCycles.Add(info);
+		}
+
 		public static Color[,] GetPaletteCycleColors(PaletteCycleInfo info)
 		{
-			byte[] file = paletteFiles[info.File];
+			byte[] file = PaletteFiles[info.File];
 
 			int pos = info.Offset * 3;
 			Color[,] frames = new Color[info.Count, info.Length];
@@ -2026,7 +2027,7 @@ namespace SonicRetro.SonLVL.API
 
 		public static void SetPaletteCycleColors(PaletteCycleInfo info, Color[,] colors)
 		{
-			byte[] file = paletteFiles[info.File];
+			byte[] file = PaletteFiles[info.File];
 
 			int pos = info.Offset * 3;
 			for (int frame = 0; frame < colors.GetLength(0); frame++)

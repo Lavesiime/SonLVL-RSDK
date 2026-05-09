@@ -3690,8 +3690,9 @@
             this.editPaletteCycleToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.editPaletteCycleToolStripButton.Name = "editPaletteCycleToolStripButton";
             this.editPaletteCycleToolStripButton.Size = new System.Drawing.Size(179, 36);
-            this.editPaletteCycleToolStripButton.Text = "Edit Palette &Cycles...";
-            this.editPaletteCycleToolStripButton.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.editPaletteCycleToolStripButton_DropDownItemClicked);
+			this.editPaletteCycleToolStripButton.Text = "Edit Palette &Cycles...";
+			this.editPaletteCycleToolStripButton.ToolTipText = "Edit any external palette cycles used in this stage.";
+			this.editPaletteCycleToolStripButton.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.editPaletteCycleToolStripButton_DropDownItemClicked);
             // 
             // tabPage15
             // 
