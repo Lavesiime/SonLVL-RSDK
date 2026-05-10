@@ -307,7 +307,7 @@
             this.copyStageColorsbutton.Name = "copyStageColorsbutton";
             this.copyStageColorsbutton.Size = new System.Drawing.Size(342, 42);
             this.copyStageColorsbutton.TabIndex = 43;
-            this.copyStageColorsbutton.Text = "Copy Unchanged Stage Colors...";
+            this.copyStageColorsbutton.Text = "Sync Static Colors...";
             this.copyStageColorsbutton.UseVisualStyleBackColor = true;
             this.copyStageColorsbutton.Click += new System.EventHandler(this.copyStageColorsbutton_Click);
             // 
