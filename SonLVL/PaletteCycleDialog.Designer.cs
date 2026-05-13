@@ -303,9 +303,9 @@
             // 
             // copyStageColorsbutton
             // 
-            this.copyStageColorsbutton.Location = new System.Drawing.Point(787, 163);
+            this.copyStageColorsbutton.Location = new System.Drawing.Point(844, 163);
             this.copyStageColorsbutton.Name = "copyStageColorsbutton";
-            this.copyStageColorsbutton.Size = new System.Drawing.Size(342, 42);
+            this.copyStageColorsbutton.Size = new System.Drawing.Size(285, 42);
             this.copyStageColorsbutton.TabIndex = 43;
             this.copyStageColorsbutton.Text = "Sync Static Colors...";
             this.copyStageColorsbutton.UseVisualStyleBackColor = true;

@@ -1986,7 +1986,7 @@ namespace SonicRetro.SonLVL.API
 
 		public static void AddPaletteCycle(string name, string file, int index, int length, int count, int offset = 0, int gap = 0)
 		{
-			if (PaletteCycles.Any(a => a.Name == name)) return;
+			if (PaletteCycles.Any(a => a.Name == name)) return; // (temp, should probably log/throw an error message instead of silently discarding it..)
 
 			PaletteCycleInfo info = new PaletteCycleInfo(name, file, index, length, count, offset, gap);
 			if (!PaletteFiles.ContainsKey(info.File))

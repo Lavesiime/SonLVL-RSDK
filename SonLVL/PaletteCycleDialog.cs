@@ -157,6 +157,20 @@ namespace SonicRetro.SonLVL
 
 			if (SelectColor(index))
 				palettePanel.Invalidate();
+
+			if (e.Clicks == 2 && index == selectedIndex)
+			{
+				int frame = (int)frameNumericUpDown.Value;
+				
+				using (ColorDialog dlg = new ColorDialog() { AllowFullOpen = true, AnyColor = true, FullOpen = true, SolidColorOnly = true, Color = frames[frame, selectedIndex] })
+				{
+					if (dlg.ShowDialog() == DialogResult.OK)
+					{
+						frames[frame, selectedIndex] = dlg.Color;
+						frameNumericUpDown_ValueChanged(sender, EventArgs.Empty);
+					}
+				}
+			}
 		}
 
 		private void color_ValueChanged(object sender, EventArgs e)
@@ -306,8 +320,6 @@ namespace SonicRetro.SonLVL
 
 		private void copyStageColorsbutton_Click(object sender, EventArgs e)
 		{
-			//if (MessageBox.Show("Would you like to replace all colours that stay the same across the entire cycle with their stage palette counterparts?\n\nthis wording sucks sorry :sob:", "SonLVL-RSDK Palette Cycle Editor", MessageBoxButtons.OKCancel) == DialogResult.OK)
-			//if (MessageBox.Show("This will copy all colours that remain unchanged the entire animation from the stage palette over each individual palette cycle frame.\n\nthis wording sucks sorry :sob:", "SonLVL-RSDK Palette Cycle Editor", MessageBoxButtons.OKCancel) == DialogResult.OK)
 			if (MessageBox.Show("Copy non-animated colors from the stage palette into all palette cycle frames?", "SonLVL-RSDK Palette Cycle Editor", MessageBoxButtons.OKCancel) == DialogResult.OK)
 
 			{
