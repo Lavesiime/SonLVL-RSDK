@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.palettePanel = new SonicRetro.SonLVL.DoubleBufferedPanel();
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.frameNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.colorRed = new System.Windows.Forms.NumericUpDown();
@@ -43,14 +43,17 @@
             this.frameMaxLabel = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.previewChunkPanel = new SonicRetro.SonLVL.DoubleBufferedPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tileList = new SonicRetro.SonLVL.API.TileList();
             this.chunkNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.exportChunkbutton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.colorHex = new SonicRetro.SonLVL.NumericUpDownPadded();
+            this.previewChunkPanel = new SonicRetro.SonLVL.DoubleBufferedPanel();
             this.copyStageColorsbutton = new System.Windows.Forms.Button();
+            this.colorHex = new SonicRetro.SonLVL.NumericUpDownPadded();
+            this.palettePanel = new SonicRetro.SonLVL.DoubleBufferedPanel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.frameNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.colorRed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.colorGreen)).BeginInit();
@@ -61,20 +64,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.colorHex)).BeginInit();
             this.SuspendLayout();
             // 
-            // palettePanel
-            // 
-            this.palettePanel.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.palettePanel.Location = new System.Drawing.Point(35, 80);
-            this.palettePanel.Name = "palettePanel";
-            this.palettePanel.Size = new System.Drawing.Size(512, 200);
-            this.palettePanel.TabIndex = 2;
-            this.palettePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.palettePanel_Paint);
-            this.palettePanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.palettePanel_MouseDown);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(42, 30);
+            this.label1.Location = new System.Drawing.Point(31, 36);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 25);
             this.label1.TabIndex = 3;
@@ -82,10 +75,11 @@
             // 
             // frameNumericUpDown
             // 
-            this.frameNumericUpDown.Location = new System.Drawing.Point(127, 28);
+            this.frameNumericUpDown.Location = new System.Drawing.Point(116, 34);
             this.frameNumericUpDown.Name = "frameNumericUpDown";
             this.frameNumericUpDown.Size = new System.Drawing.Size(120, 31);
             this.frameNumericUpDown.TabIndex = 0;
+            this.toolTip.SetToolTip(this.frameNumericUpDown, "The current frame (starting from 0) in the palette cycle.");
             this.frameNumericUpDown.ValueChanged += new System.EventHandler(this.frameNumericUpDown_ValueChanged);
             // 
             // colorRed
@@ -100,6 +94,7 @@
             this.colorRed.Size = new System.Drawing.Size(98, 31);
             this.colorRed.TabIndex = 15;
             this.colorRed.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.colorRed, "The Red value of the selected color.");
             this.colorRed.ValueChanged += new System.EventHandler(this.color_ValueChanged);
             // 
             // label3
@@ -123,6 +118,7 @@
             this.colorGreen.Size = new System.Drawing.Size(98, 31);
             this.colorGreen.TabIndex = 20;
             this.colorGreen.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.colorGreen, "The Green value of the selected color.");
             this.colorGreen.ValueChanged += new System.EventHandler(this.color_ValueChanged);
             // 
             // label4
@@ -146,6 +142,7 @@
             this.colorBlue.Size = new System.Drawing.Size(98, 31);
             this.colorBlue.TabIndex = 25;
             this.colorBlue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.colorBlue, "The Blue value of the selected color.");
             this.colorBlue.ValueChanged += new System.EventHandler(this.color_ValueChanged);
             // 
             // label5
@@ -173,6 +170,7 @@
             this.importButton.Size = new System.Drawing.Size(250, 42);
             this.importButton.TabIndex = 10;
             this.importButton.Text = "Import Palette Frame...";
+            this.toolTip.SetToolTip(this.importButton, "Import the palette from a palette file or indexed image.");
             this.importButton.UseVisualStyleBackColor = true;
             this.importButton.Click += new System.EventHandler(this.importButton_Click);
             // 
@@ -183,13 +181,14 @@
             this.exportButton.Size = new System.Drawing.Size(250, 42);
             this.exportButton.TabIndex = 5;
             this.exportButton.Text = "Export Palette Frame...";
+            this.toolTip.SetToolTip(this.exportButton, "Export the currently selected frame.");
             this.exportButton.UseVisualStyleBackColor = true;
             this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
             // 
             // frameMaxLabel
             // 
             this.frameMaxLabel.AutoSize = true;
-            this.frameMaxLabel.Location = new System.Drawing.Point(253, 30);
+            this.frameMaxLabel.Location = new System.Drawing.Point(242, 36);
             this.frameMaxLabel.Name = "frameMaxLabel";
             this.frameMaxLabel.Size = new System.Drawing.Size(36, 25);
             this.frameMaxLabel.TabIndex = 18;
@@ -214,14 +213,6 @@
             this.cancelButton.TabIndex = 40;
             this.cancelButton.Text = "&Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            // 
-            // previewChunkPanel
-            // 
-            this.previewChunkPanel.Location = new System.Drawing.Point(23, 79);
-            this.previewChunkPanel.Name = "previewChunkPanel";
-            this.previewChunkPanel.Size = new System.Drawing.Size(512, 512);
-            this.previewChunkPanel.TabIndex = 5;
-            this.previewChunkPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.previewChunkPanel_Paint);
             // 
             // panel1
             // 
@@ -267,6 +258,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.exportChunkbutton);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.panel1);
             this.groupBox1.Controls.Add(this.previewChunkPanel);
@@ -277,6 +269,18 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Preview";
             // 
+            // exportChunkbutton
+            // 
+            this.exportChunkbutton.AutoSize = true;
+            this.exportChunkbutton.Location = new System.Drawing.Point(274, 30);
+            this.exportChunkbutton.Name = "exportChunkbutton";
+            this.exportChunkbutton.Size = new System.Drawing.Size(261, 35);
+            this.exportChunkbutton.TabIndex = 16;
+            this.exportChunkbutton.Text = "Export As Indexed Image";
+            this.toolTip.SetToolTip(this.exportChunkbutton, "Export the chunk preview as an indexed image (with its palette).");
+            this.exportChunkbutton.UseVisualStyleBackColor = true;
+            this.exportChunkbutton.Click += new System.EventHandler(this.exportChunkbutton_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -285,6 +289,25 @@
             this.label2.Size = new System.Drawing.Size(80, 25);
             this.label2.TabIndex = 15;
             this.label2.Text = "Chunk:";
+            // 
+            // previewChunkPanel
+            // 
+            this.previewChunkPanel.Location = new System.Drawing.Point(23, 79);
+            this.previewChunkPanel.Name = "previewChunkPanel";
+            this.previewChunkPanel.Size = new System.Drawing.Size(512, 512);
+            this.previewChunkPanel.TabIndex = 5;
+            this.previewChunkPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.previewChunkPanel_Paint);
+            // 
+            // copyStageColorsbutton
+            // 
+            this.copyStageColorsbutton.Location = new System.Drawing.Point(844, 163);
+            this.copyStageColorsbutton.Name = "copyStageColorsbutton";
+            this.copyStageColorsbutton.Size = new System.Drawing.Size(285, 42);
+            this.copyStageColorsbutton.TabIndex = 43;
+            this.copyStageColorsbutton.Text = "Sync Static Colors...";
+            this.toolTip.SetToolTip(this.copyStageColorsbutton, "Sync all non-animated colors with the stage palette.");
+            this.copyStageColorsbutton.UseVisualStyleBackColor = true;
+            this.copyStageColorsbutton.Click += new System.EventHandler(this.copyStageColorsbutton_Click);
             // 
             // colorHex
             // 
@@ -299,17 +322,18 @@
             this.colorHex.Size = new System.Drawing.Size(120, 31);
             this.colorHex.TabIndex = 30;
             this.colorHex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.colorHex, "The hex color code of the selected color.");
             this.colorHex.ValueChanged += new System.EventHandler(this.colorHex_ValueChanged);
             // 
-            // copyStageColorsbutton
+            // palettePanel
             // 
-            this.copyStageColorsbutton.Location = new System.Drawing.Point(844, 163);
-            this.copyStageColorsbutton.Name = "copyStageColorsbutton";
-            this.copyStageColorsbutton.Size = new System.Drawing.Size(285, 42);
-            this.copyStageColorsbutton.TabIndex = 43;
-            this.copyStageColorsbutton.Text = "Sync Static Colors...";
-            this.copyStageColorsbutton.UseVisualStyleBackColor = true;
-            this.copyStageColorsbutton.Click += new System.EventHandler(this.copyStageColorsbutton_Click);
+            this.palettePanel.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.palettePanel.Location = new System.Drawing.Point(35, 80);
+            this.palettePanel.Name = "palettePanel";
+            this.palettePanel.Size = new System.Drawing.Size(512, 200);
+            this.palettePanel.TabIndex = 2;
+            this.palettePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.palettePanel_Paint);
+            this.palettePanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.palettePanel_MouseDown);
             // 
             // PaletteCycleDialog
             // 
@@ -382,5 +406,7 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button copyStageColorsbutton;
+		private System.Windows.Forms.Button exportChunkbutton;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }

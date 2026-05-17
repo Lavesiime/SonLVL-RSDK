@@ -330,5 +330,14 @@ namespace SonicRetro.SonLVL
 				frameNumericUpDown_ValueChanged(sender, EventArgs.Empty);
 			}
 		}
+
+		private void exportChunkbutton_Click(object sender, EventArgs e)
+		{
+			using (SaveFileDialog a = new SaveFileDialog() { DefaultExt = "png", Filter = "PNG Images|*.png|GIF Images|*.gif", RestoreDirectory = true })
+			{
+				if (a.ShowDialog() == DialogResult.OK)
+					chunkBitmap.ToBitmap(chunkPalette).Save(a.FileName);
+			}
+		}
 	}
 }
