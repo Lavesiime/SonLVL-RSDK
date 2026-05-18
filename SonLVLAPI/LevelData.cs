@@ -1984,6 +1984,7 @@ namespace SonicRetro.SonLVL.API
 			}
 		}
 
+		// Called by object definitions, to add a new palette cycle to the stage data
 		public static void AddPaletteCycle(string name, string file, int index, int length, int count, int offset = 0, int gap = 0)
 		{
 			if (PaletteCycles.Any(a => a.Name == name)) return; // (temp, should probably log/throw an error message instead of silently discarding it..)
@@ -2042,6 +2043,64 @@ namespace SonicRetro.SonLVL.API
 				}
 
 				pos += info.Gap * 3;
+			}
+		}
+
+		// Returns whether the colour at the specified index is the same across all frames of the given palette cycle
+		private static bool IsCycleColorStatic(PaletteCycleInfo info, int localIndex)
+		{
+			byte[] file = PaletteFiles[info.File];
+
+			int initial = (info.Offset + localIndex) * 3;
+			int stride = (info.Length + info.Gap) * 3;
+			int pos = initial + stride;
+
+			for (int frame = 1; frame < info.Count; frame++)
+			{
+				if (file[pos + 0] != file[initial + 0] || 
+				    file[pos + 1] != file[initial + 1] || 
+				    file[pos + 2] != file[initial + 2])
+					return false;
+
+				pos += stride;
+			}
+
+			return true;
+		}
+
+		// Sets the specified index within every frame to the specified colour
+		private static void SetColorAcrossFrames(PaletteCycleInfo info, int localIndex, Color color)
+		{
+			byte[] file = PaletteFiles[info.File];
+
+			int pos = (info.Offset + localIndex) * 3;
+			int stride = (info.Length + info.Gap) * 3;
+
+			for (int frame = 0; frame < info.Count; frame++)
+			{
+				file[pos + 0] = color.R;
+				file[pos + 1] = color.G;
+				file[pos + 2] = color.B;
+
+				pos += stride;
+			}
+		}
+
+		// Updates the specified index within all palette cycles, if and *only* if the colour is normally unchanged in the first place
+		public static void SyncStaticCycleColor(int index)
+		{
+			// Pull from the base stage palette, since we want to make 'em match
+			Color color = NewPalette[index];
+
+			foreach (var cycle in PaletteCycles)
+			{
+				// If the index isn't even contained within the current cycle, then we don't need to worry about it
+				if (index < cycle.Index || index >= cycle.Index + cycle.Length)
+					continue;
+
+				int localIndex = index - cycle.Index;
+				if (IsCycleColorStatic(cycle, localIndex))
+					SetColorAcrossFrames(cycle, localIndex, color);
 			}
 		}
 

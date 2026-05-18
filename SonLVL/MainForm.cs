@@ -5082,32 +5082,17 @@ namespace SonicRetro.SonLVL.GUI
 			cols = a.CustomColors;
 		}
 
-		private void color_ValueChanged(object sender, EventArgs e)
+		private void SetSelectedColor(Point color)
 		{
-			if (!loaded) return;
-			LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X] = Color.FromArgb((byte)colorRed.Value, (byte)colorGreen.Value, (byte)colorBlue.Value);
-
-			loaded = false;
-			colorHex.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].ToArgb() & 0xFFFFFF;
-			loaded = true;
-
-			LevelData.PaletteChanged();
-			SaveState($"Change Color {(SelectedColor.Y * 16) + SelectedColor.X}");
-		}
-
-		private void colorHex_ValueChanged(object sender, EventArgs e)
-		{
-			if (!loaded) return;
-			LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X] = Color.FromArgb((int)((int)colorHex.Value | 0xFF000000));
-			
+			SelectedColor = color;
+			lastmouse = color;
+			PalettePanel.Invalidate();
 			loaded = false;
 			colorRed.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].R;
 			colorGreen.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].G;
 			colorBlue.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].B;
+			colorHex.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].ToArgb() & 0xFFFFFF;
 			loaded = true;
-
-			LevelData.PaletteChanged();
-			SaveState($"Change Color {(SelectedColor.Y * 16) + SelectedColor.X}");
 		}
 
 		private void PalettePanel_MouseDown(object sender, MouseEventArgs e)
@@ -5148,19 +5133,6 @@ namespace SonicRetro.SonLVL.GUI
 					}
 					break;
 			}
-		}
-
-		private void SetSelectedColor(Point color)
-		{
-			SelectedColor = color;
-			lastmouse = color;
-			PalettePanel.Invalidate();
-			loaded = false;
-			colorRed.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].R;
-			colorGreen.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].G;
-			colorBlue.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].B;
-			colorHex.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].ToArgb() & 0xFFFFFF;
-			loaded = true;
 		}
 
 		private void PalettePanel_MouseMove(object sender, MouseEventArgs e)
@@ -5256,6 +5228,34 @@ namespace SonicRetro.SonLVL.GUI
 			SaveState($"{(ModifierKeys.HasFlag(Keys.Control) ? "Swap" : "Move")} Color");
 		}
 
+		private void color_ValueChanged(object sender, EventArgs e)
+		{
+			if (!loaded) return;
+			LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X] = Color.FromArgb((byte)colorRed.Value, (byte)colorGreen.Value, (byte)colorBlue.Value);
+
+			loaded = false;
+			colorHex.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].ToArgb() & 0xFFFFFF;
+			loaded = true;
+
+			LevelData.PaletteChanged();
+			SaveState($"Change Color {(SelectedColor.Y * 16) + SelectedColor.X}");
+		}
+
+		private void colorHex_ValueChanged(object sender, EventArgs e)
+		{
+			if (!loaded) return;
+			LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X] = Color.FromArgb((int)((int)colorHex.Value | 0xFF000000));
+			
+			loaded = false;
+			colorRed.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].R;
+			colorGreen.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].G;
+			colorBlue.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].B;
+			loaded = true;
+
+			LevelData.PaletteChanged();
+			SaveState($"Change Color {(SelectedColor.Y * 16) + SelectedColor.X}");
+		}
+
 		private void importPaletteToolStripButton_Click(object sender, EventArgs e)
 		{
 			using (OpenFileDialog a = new OpenFileDialog())
@@ -5294,12 +5294,26 @@ namespace SonicRetro.SonLVL.GUI
 					using (ImportPalette dialog = new ImportPalette(colors.ToArray(), LevelData.NewPalette))
 					{
 						if (dialog.ShowDialog(this) == DialogResult.OK)
+						{
+							// First, let's back up the old NewPalette..
+							Color[] oldPal = LevelData.NewPalette;
+
+							// Then, let's set NewPalette to the import result..
 							LevelData.NewPalette = dialog.destinationPalette;
+
+							// ..and now we go through each colour index, and update palette cycles when they don't match
+							for (int i = 0; i < LevelData.NewPalette.Length; i++)
+							{
+								if (LevelData.NewPalette[i] != oldPal[i])
+									LevelData.SyncStaticCycleColor(i);
+							}
+
+							LevelData.PaletteChanged();
+							SaveState("Import Palette");
+						}
 					}
 				}
 			}
-			LevelData.PaletteChanged();
-			SaveState("Import Palette");
 		}
 
 		private void editPaletteCycleToolStripButton_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
