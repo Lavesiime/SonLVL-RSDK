@@ -2223,9 +2223,8 @@
             // 
             this.objectPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.objectPanel.HScrollEnabled = false;
-            this.objectPanel.HScrollLargeChange = 128;
             this.objectPanel.HScrollMaximum = 128;
-            this.objectPanel.HScrollMinimum = 0;
+            this.objectPanel.HScrollMinimum = -128;
             this.objectPanel.HScrollSmallChange = 16;
             this.objectPanel.HScrollValue = 0;
             this.objectPanel.Location = new System.Drawing.Point(0, 42);
@@ -2236,10 +2235,8 @@
             this.objectPanel.Size = new System.Drawing.Size(809, 883);
             this.objectPanel.TabIndex = 5;
             this.objectPanel.VScrollEnabled = false;
-            this.objectPanel.VScrollLargeChange = 128;
             this.objectPanel.VScrollMaximum = 128;
-            this.objectPanel.VScrollMinimum = 0;
-            this.objectPanel.VScrollSmallChange = 16;
+            this.objectPanel.VScrollMinimum = -128;
             this.objectPanel.VScrollValue = 0;
             this.objectPanel.PanelPaint += new System.Windows.Forms.PaintEventHandler(this.panel_Paint);
             this.objectPanel.PanelKeyDown += new System.Windows.Forms.KeyEventHandler(this.objectPanel_KeyDown);
@@ -2593,9 +2590,8 @@
             // 
             this.foregroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.foregroundPanel.HScrollEnabled = false;
-            this.foregroundPanel.HScrollLargeChange = 128;
             this.foregroundPanel.HScrollMaximum = 128;
-            this.foregroundPanel.HScrollMinimum = 0;
+            this.foregroundPanel.HScrollMinimum = -128;
             this.foregroundPanel.HScrollSmallChange = 16;
             this.foregroundPanel.HScrollValue = 0;
             this.foregroundPanel.Location = new System.Drawing.Point(0, 42);
@@ -2606,10 +2602,8 @@
             this.foregroundPanel.Size = new System.Drawing.Size(863, 877);
             this.foregroundPanel.TabIndex = 5;
             this.foregroundPanel.VScrollEnabled = false;
-            this.foregroundPanel.VScrollLargeChange = 128;
             this.foregroundPanel.VScrollMaximum = 128;
-            this.foregroundPanel.VScrollMinimum = 0;
-            this.foregroundPanel.VScrollSmallChange = 16;
+            this.foregroundPanel.VScrollMinimum = -128;
             this.foregroundPanel.VScrollValue = 0;
             this.foregroundPanel.PanelPaint += new System.Windows.Forms.PaintEventHandler(this.panel_Paint);
             this.foregroundPanel.PanelKeyDown += new System.Windows.Forms.KeyEventHandler(this.foregroundPanel_KeyDown);
@@ -2814,7 +2808,6 @@
             // 
             this.backgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.backgroundPanel.HScrollEnabled = false;
-            this.backgroundPanel.HScrollLargeChange = 128;
             this.backgroundPanel.HScrollMaximum = 128;
             this.backgroundPanel.HScrollMinimum = 0;
             this.backgroundPanel.HScrollSmallChange = 16;
@@ -2827,10 +2820,8 @@
             this.backgroundPanel.Size = new System.Drawing.Size(759, 877);
             this.backgroundPanel.TabIndex = 6;
             this.backgroundPanel.VScrollEnabled = false;
-            this.backgroundPanel.VScrollLargeChange = 128;
             this.backgroundPanel.VScrollMaximum = 128;
             this.backgroundPanel.VScrollMinimum = 0;
-            this.backgroundPanel.VScrollSmallChange = 16;
             this.backgroundPanel.VScrollValue = 0;
             this.backgroundPanel.PanelPaint += new System.Windows.Forms.PaintEventHandler(this.panel_Paint);
             this.backgroundPanel.PanelKeyDown += new System.Windows.Forms.KeyEventHandler(this.backgroundPanel_KeyDown);

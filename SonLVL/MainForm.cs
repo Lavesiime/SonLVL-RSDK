@@ -829,36 +829,18 @@ namespace SonicRetro.SonLVL.GUI
 			InitObjectTypes();
 			Text = "SonLVL-RSDK - " + LevelData.GameTitle + " - " + this.levelname;
 			UpdateScrollBars();
-			objectPanel.HScrollValue = 0;
-			objectPanel.HScrollMinimum = -128;
-			objectPanel.HScrollSmallChange = 16;
-			objectPanel.HScrollLargeChange = 128;
-			objectPanel.VScrollValue = 0;
-			objectPanel.VScrollMinimum = -128;
-			objectPanel.VScrollSmallChange = 16;
-			objectPanel.VScrollLargeChange = 128;
-			objectPanel.HScrollEnabled = true;
-			objectPanel.VScrollEnabled = true;
-			foregroundPanel.HScrollValue = 0;
-			foregroundPanel.HScrollMinimum = -128;
-			foregroundPanel.HScrollSmallChange = 16;
-			foregroundPanel.HScrollLargeChange = 128;
-			foregroundPanel.VScrollValue = 0;
-			foregroundPanel.VScrollMinimum = -128;
-			foregroundPanel.VScrollSmallChange = 16;
-			foregroundPanel.VScrollLargeChange = 128;
-			foregroundPanel.HScrollEnabled = true;
-			foregroundPanel.VScrollEnabled = true;
-			backgroundPanel.HScrollValue = 0;
-			backgroundPanel.HScrollSmallChange = 16;
-			backgroundPanel.HScrollLargeChange = 128;
-			backgroundPanel.VScrollValue = 0;
-			backgroundPanel.VScrollSmallChange = 16;
-			backgroundPanel.VScrollLargeChange = 128;
-			backgroundPanel.HScrollEnabled = true;
-			backgroundPanel.VScrollEnabled = true;
-			colorEditingPanel.Enabled = true;
-			paletteToolStrip.Enabled = true;
+
+			objectPanel.HScrollValue = objectPanel.VScrollValue = 0;
+			objectPanel.HScrollEnabled = objectPanel.HScrollEnabled = true;
+
+			foregroundPanel.HScrollValue = foregroundPanel.VScrollValue = 0;
+			foregroundPanel.HScrollEnabled = foregroundPanel.HScrollEnabled = true;
+
+			backgroundPanel.HScrollValue = backgroundPanel.VScrollValue = 0;
+			backgroundPanel.HScrollEnabled = backgroundPanel.HScrollEnabled = true;
+
+			colorEditingPanel.Enabled = paletteToolStrip.Enabled = true;
+
 			levelNameBox.Text = LevelData.Scene.title;
 			midpointTrackBar.Value = 4 - (int)LevelData.Scene.layerMidpoint;
 			layer0Box.SelectedIndex = (int)LevelData.Scene.activeLayer0;
