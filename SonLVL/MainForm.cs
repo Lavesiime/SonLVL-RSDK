@@ -831,13 +831,13 @@ namespace SonicRetro.SonLVL.GUI
 			UpdateScrollBars();
 
 			objectPanel.HScrollValue = objectPanel.VScrollValue = 0;
-			objectPanel.HScrollEnabled = objectPanel.HScrollEnabled = true;
+			objectPanel.HScrollEnabled = objectPanel.VScrollEnabled = true;
 
 			foregroundPanel.HScrollValue = foregroundPanel.VScrollValue = 0;
-			foregroundPanel.HScrollEnabled = foregroundPanel.HScrollEnabled = true;
+			foregroundPanel.HScrollEnabled = foregroundPanel.VScrollEnabled = true;
 
 			backgroundPanel.HScrollValue = backgroundPanel.VScrollValue = 0;
-			backgroundPanel.HScrollEnabled = backgroundPanel.HScrollEnabled = true;
+			backgroundPanel.HScrollEnabled = backgroundPanel.VScrollEnabled = true;
 
 			colorEditingPanel.Enabled = paletteToolStrip.Enabled = true;
 
