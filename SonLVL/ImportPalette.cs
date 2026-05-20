@@ -18,13 +18,15 @@ namespace SonicRetro.SonLVL
 		Point selection = new Point(-1, -1); // X: start index, Y: last index
 		int mouseindex = -1;
 
-		public ImportPalette(Color[] srcPal, Color[] dstPal)
+		public ImportPalette(Color[] srcPal, Color[] dstPal, bool copyEnabled = true)
 		{
 			InitializeComponent();
 
 			sourcePalette = srcPal;
 			destinationPalette = (Color[])dstPal.Clone();
 			backupPalette = dstPal;
+
+			copyAllButton.Enabled = copyEnabled;
 		}
 
 		private void sourcePanel_Paint(object sender, PaintEventArgs e)

@@ -306,7 +306,7 @@ namespace SonicRetro.SonLVL
 					for (int i = 0; i < colorCount; i++)
 						framePal[i] = frames[frame, i];
 
-					using (ImportPalette dialog = new ImportPalette(colors.ToArray(), framePal))
+					using (ImportPalette dialog = new ImportPalette(colors.ToArray(), framePal, false))
 					{
 						if (dialog.ShowDialog(this) == DialogResult.OK)
 						{
