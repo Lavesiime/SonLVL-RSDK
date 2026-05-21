@@ -5602,54 +5602,6 @@ namespace SonicRetro.SonLVL.GUI
 								break;
 						}
 
-						// If the image is composite/isn't indexed..
-						if (!bmp.PixelFormat.HasFlag(PixelFormat.Indexed))
-						{
-							// Then, before anything else, let's get a list of all unique colours in the image
-							HashSet<int> palette = new HashSet<int>();
-
-							BitmapBits32 bmp32 = new BitmapBits32(bmp);
-							foreach (var pixel in bmp32.Bits)
-								palette.Add(pixel);
-
-							// Now, let's sort out all elements not already present in LevelData.NewPalette
-							palette.ExceptWith(LevelData.NewPalette.Select(a => a.ToArgb()).ToHashSet());
-
-							// Some extra filtering.. let's remove all colours that are transparent
-							// (pardon the odd syntax.. keep in mind these are signed ints, so we're effectively checking if Alpha is < 0x80 here)
-							palette.RemoveWhere(a => a > 0);
-
-							// Now, if there are any colours still remaining..
-							// (We set 96 as an upper limit, because at that point you have more colours than the stage palette size so we kinda just give up)
-							if (palette.Count > 0 && palette.Count < 64)
-							{
-								if (MessageBox.Show(this, $"There {(palette.Count > 1 ? $"are {palette.Count} colours" : "is 1 colour")} in the image that {(palette.Count > 1 ? "aren't" : "isn't")} already present in the stage palette. Would you like to import {(palette.Count > 1 ? "them" : "it")}?\n\n(For colours without full matches, the next closest colour match will be used.)", "SonLVL-RSDK Image Importer", MessageBoxButtons.YesNo) == DialogResult.Yes)
-								{
-									Color[] srcPal = palette.Select(a => Color.FromArgb(a)).ToArray();
-									using (ImportPalette dialog = new ImportPalette(srcPal, LevelData.NewPalette, false))
-									{
-										if (dialog.ShowDialog(this) == DialogResult.OK)
-										{
-											// First, let's back up the old NewPalette..
-											Color[] oldPal = LevelData.NewPalette;
-
-											// Then, let's set NewPalette to the import result..
-											LevelData.NewPalette = dialog.destinationPalette;
-
-											// ..and now we go through each colour index, and update palette cycles when they don't match
-											for (int i = 0; i < LevelData.NewPalette.Length; i++)
-											{
-												if (LevelData.NewPalette[i] != oldPal[i])
-													LevelData.SyncStaticCycleColor(i);
-											}
-
-											LevelData.PaletteChanged();
-										}
-									}
-								}
-							}
-						}
-
 						using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, CurrentArtTab == ArtTab.Tiles))
 						{
 							if (CurrentArtTab == ArtTab.Tiles)
@@ -5659,7 +5611,7 @@ namespace SonicRetro.SonLVL.GUI
 
 							if (importDialog.ShowDialog(this) == DialogResult.OK)
 							{
-								ImportFlags flags = ImportFlags.Normal;
+								ImportFlags flags = ImportFlags.DetectCompositeImgPalette;
 
 								if (CurrentArtTab == ArtTab.Tiles)
 								{
@@ -5683,10 +5635,67 @@ namespace SonicRetro.SonLVL.GUI
 			HideMessageBox = 1,
 			DontOptimize = 2,
 			GroupTilesTogether = 4,
+			DetectCompositeImgPalette = 8
 		}
 
 		private bool ImportImage(Bitmap bmp, Bitmap colbmp1, Bitmap colbmp2, Bitmap pribmp, ushort[,] layout, ImportFlags flags = ImportFlags.Normal)
 		{
+			// If the image is composite/isn't indexed..
+			if (flags.HasFlag(ImportFlags.DetectCompositeImgPalette) && !bmp.PixelFormat.HasFlag(PixelFormat.Indexed))
+			{
+				// Then, let's get a list of all unique colours in the image
+				HashSet<int> palette = new HashSet<int>();
+
+				BitmapBits32 bmp32 = new BitmapBits32(bmp);
+				foreach (var pixel in bmp32.Bits)
+					palette.Add(pixel);
+
+				// Now, let's sort out all elements not already present in LevelData.NewPalette
+				palette.ExceptWith(LevelData.NewPalette.Select(a => a.ToArgb()).ToHashSet());
+
+				// Some extra filtering.. let's remove all colours that are transparent
+				// (pardon the odd syntax.. keep in mind these are signed ints, so we're effectively checking if Alpha is < 0x80 here)
+				palette.RemoveWhere(a => a > 0);
+
+				// Now, if there are any colours still remaining..
+				// (We set 96 as an upper limit, because at that point you have more colours than the stage palette size so we kinda just give up)
+				if (palette.Count > 0 && palette.Count < 96)
+				{
+					switch (MessageBox.Show(this, $"There {(palette.Count > 1 ? $"are {palette.Count} colours" : "is 1 colour")} in the image that {(palette.Count > 1 ? "aren't" : "isn't")} already present in the stage palette. Would you like to import {(palette.Count > 1 ? "them" : "it")}?\n\n(For colours without full matches, the next closest colour match will be used.)", "SonLVL-RSDK Image Importer", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+					{
+						case DialogResult.Yes:
+							Color[] srcPal = palette.Select(a => Color.FromArgb(a)).ToArray();
+							using (ImportPalette dialog = new ImportPalette(srcPal, LevelData.NewPalette, false))
+							{
+								if (dialog.ShowDialog(this) == DialogResult.OK)
+								{
+									// First, let's back up the old NewPalette..
+									Color[] oldPal = LevelData.NewPalette;
+
+									// Then, let's set NewPalette to the import result..
+									LevelData.NewPalette = dialog.destinationPalette;
+
+									// ..and now we go through each colour index, and update palette cycles when they don't match
+									for (int i = 0; i < LevelData.NewPalette.Length; i++)
+									{
+										if (LevelData.NewPalette[i] != oldPal[i])
+											LevelData.SyncStaticCycleColor(i);
+									}
+
+									LevelData.PaletteChanged();
+								}
+							}
+							break;
+
+						case DialogResult.No:
+							break;
+
+						case DialogResult.Cancel:
+							return false;
+					}
+				}
+			}
+
 			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 			sw.Start();
 
@@ -6095,6 +6104,7 @@ namespace SonicRetro.SonLVL.GUI
 						dlg.numericUpDown1.Value = 16;
 						break;
 				}
+
 				if (dlg.ShowDialog(this) == DialogResult.OK)
 				{
 					ImportImage(dlg.tile.ToBitmap(LevelData.BmpPal), null, null, null, null, (CurrentArtTab == ArtTab.Tiles) ? (ImportFlags.DontOptimize | ImportFlags.HideMessageBox) : ImportFlags.Normal);
@@ -8288,54 +8298,6 @@ namespace SonicRetro.SonLVL.GUI
 						if (excessX > 0 || excessY > 0)
 							MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 128. Only the top left {bmp.Width & ~127}x{bmp.Height & ~127} corner will be imported.", "SonLVL-RSDK Layout Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-						// If the image is composite/isn't indexed..
-						if (!bmp.PixelFormat.HasFlag(PixelFormat.Indexed))
-						{
-							// Then, before anything else, let's get a list of all unique colours in the image
-							HashSet<int> palette = new HashSet<int>();
-
-							BitmapBits32 bmp32 = new BitmapBits32(bmp);
-							foreach (var pixel in bmp32.Bits)
-								palette.Add(pixel);
-
-							// Now, let's sort out all elements not already present in LevelData.NewPalette
-							palette.ExceptWith(LevelData.NewPalette.Select(a => a.ToArgb()).ToHashSet());
-
-							// Some extra filtering.. let's remove all colours that are transparent
-							// (pardon the odd syntax.. keep in mind these are signed ints, so we're effectively checking if Alpha is < 0x80 here)
-							palette.RemoveWhere(a => a > 0);
-
-							// Now, if there are any colours still remaining..
-							// (We set 96 as an upper limit, because at that point you have more colours than the stage palette size so we kinda just give up)
-							if (palette.Count > 0 && palette.Count < 64)
-							{
-								if (MessageBox.Show(this, $"There {(palette.Count > 1 ? $"are {palette.Count} colours" : "is 1 colour")} in the image that {(palette.Count > 1 ? "aren't" : "isn't")} already present in the stage palette. Would you like to import {(palette.Count > 1 ? "them" : "it")}?\n\n(For colours without full matches, the next closest colour match will be used.)", "SonLVL-RSDK Image Importer", MessageBoxButtons.YesNo) == DialogResult.Yes)
-								{
-									Color[] srcPal = palette.Select(a => Color.FromArgb(a)).ToArray();
-									using (ImportPalette dialog = new ImportPalette(srcPal, LevelData.NewPalette, false))
-									{
-										if (dialog.ShowDialog(this) == DialogResult.OK)
-										{
-											// First, let's back up the old NewPalette..
-											Color[] oldPal = LevelData.NewPalette;
-
-											// Then, let's set NewPalette to the import result..
-											LevelData.NewPalette = dialog.destinationPalette;
-
-											// ..and now we go through each colour index, and update palette cycles when they don't match
-											for (int i = 0; i < LevelData.NewPalette.Length; i++)
-											{
-												if (LevelData.NewPalette[i] != oldPal[i])
-													LevelData.SyncStaticCycleColor(i);
-											}
-
-											LevelData.PaletteChanged();
-										}
-									}
-								}
-							}
-						}
-
 						using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, false))
 						{
 							importDialog.Text = "Import Layout...";
@@ -8343,8 +8305,9 @@ namespace SonicRetro.SonLVL.GUI
 							if (importDialog.ShowDialog(this) == DialogResult.OK)
 							{
 								ushort[,] section = new ushort[bmp.Width / 128, bmp.Height / 128];
-								if (!ImportImage(bmp, importDialog.colABitmap, importDialog.colBBitmap, importDialog.priBitmap, section))
+								if (!ImportImage(bmp, importDialog.colABitmap, importDialog.colBBitmap, importDialog.priBitmap, section, ImportFlags.DetectCompositeImgPalette))
 									return;
+
 								ushort[][] layout;
 								int w, h;
 								if (CurrentTab == Tab.Background)
@@ -8390,54 +8353,6 @@ namespace SonicRetro.SonLVL.GUI
 						if (excessX > 0 || excessY > 0)
 							MessageBox.Show(this, $"Image dimensions ({bmp.Width}x{bmp.Height}) are not a multiple of 128. Only the top left {bmp.Width & ~127}x{bmp.Height & ~127} corner will be imported.", "SonLVL-RSDK Layout Section Importer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-						// If the image is composite/isn't indexed..
-						if (!bmp.PixelFormat.HasFlag(PixelFormat.Indexed))
-						{
-							// Then, before anything else, let's get a list of all unique colours in the image
-							HashSet<int> palette = new HashSet<int>();
-
-							BitmapBits32 bmp32 = new BitmapBits32(bmp);
-							foreach (var pixel in bmp32.Bits)
-								palette.Add(pixel);
-
-							// Now, let's sort out all elements not already present in LevelData.NewPalette
-							palette.ExceptWith(LevelData.NewPalette.Select(a => a.ToArgb()).ToHashSet());
-
-							// Some extra filtering.. let's remove all colours that are transparent
-							// (pardon the odd syntax.. keep in mind these are signed ints, so we're effectively checking if Alpha is < 0x80 here)
-							palette.RemoveWhere(a => a > 0);
-
-							// Now, if there are any colours still remaining..
-							// (We set 96 as an upper limit, because at that point you have more colours than the stage palette size so we kinda just give up)
-							if (palette.Count > 0 && palette.Count < 64)
-							{
-								if (MessageBox.Show(this, $"There {(palette.Count > 1 ? $"are {palette.Count} colours" : "is 1 colour")} in the image that {(palette.Count > 1 ? "aren't" : "isn't")} already present in the stage palette. Would you like to import {(palette.Count > 1 ? "them" : "it")}?\n\n(For colours without full matches, the next closest colour match will be used.)", "SonLVL-RSDK Image Importer", MessageBoxButtons.YesNo) == DialogResult.Yes)
-								{
-									Color[] srcPal = palette.Select(a => Color.FromArgb(a)).ToArray();
-									using (ImportPalette dialog = new ImportPalette(srcPal, LevelData.NewPalette, false))
-									{
-										if (dialog.ShowDialog(this) == DialogResult.OK)
-										{
-											// First, let's back up the old NewPalette..
-											Color[] oldPal = LevelData.NewPalette;
-
-											// Then, let's set NewPalette to the import result..
-											LevelData.NewPalette = dialog.destinationPalette;
-
-											// ..and now we go through each colour index, and update palette cycles when they don't match
-											for (int i = 0; i < LevelData.NewPalette.Length; i++)
-											{
-												if (LevelData.NewPalette[i] != oldPal[i])
-													LevelData.SyncStaticCycleColor(i);
-											}
-
-											LevelData.PaletteChanged();
-										}
-									}
-								}
-							}
-						}
-
 						using (ImportArtDialog importDialog = new ImportArtDialog(opendlg.FileName, bmp.Size, false))
 						{
 							importDialog.Text = "Import Layout Section...";
@@ -8445,8 +8360,9 @@ namespace SonicRetro.SonLVL.GUI
 							if (importDialog.ShowDialog(this) == DialogResult.OK)
 							{
 								ushort[,] layout = new ushort[bmp.Width / 128, bmp.Height / 128];
-								if (!ImportImage(bmp, importDialog.colABitmap, importDialog.colBBitmap, importDialog.priBitmap, layout))
+								if (!ImportImage(bmp, importDialog.colABitmap, importDialog.colBBitmap, importDialog.priBitmap, layout, ImportFlags.DetectCompositeImgPalette))
 									return;
+
 								LayoutSection section = new LayoutSection(layout, new List<Entry>());
 								using (LayoutSectionNameDialog dlg = new LayoutSectionNameDialog() { Value = Path.GetFileNameWithoutExtension(opendlg.FileName) })
 								{
