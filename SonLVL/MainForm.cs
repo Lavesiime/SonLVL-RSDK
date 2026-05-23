@@ -5858,7 +5858,7 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						// Let's give the user the option of turning the setting off, if they still need to get their art in
 
-						if (MessageBox.Show(this, $"There are {ir.Art.Count} tiles trying to be imported, but the longest free tile streak is only {count} tiles (or {ir.Art.Count - count} tiles less). However, if tiles are imported in separate groups, is still enough room to fit all of them. Would you like to import the tiles wherever free space is available, instead?", "SonLVL-RSDK",
+						if (MessageBox.Show(this, $"There are {ir.Art.Count} tiles trying to be imported, but the longest free tile streak is only {count} tiles ({ir.Art.Count - count} tiles too little). However, if tiles are split up, there is still enough room to fit all of them.\n\nWould you like to import the tiles wherever free space is available, instead?", "SonLVL-RSDK",
 							MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
 						{
 							freetiles = LevelData.GetFreeTiles().ToList();
