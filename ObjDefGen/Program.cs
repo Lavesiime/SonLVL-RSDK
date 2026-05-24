@@ -28,7 +28,7 @@ namespace ObjDefGen
 				int ln = Array.FindIndex(lines, a => a.StartsWith("sub ObjectStartup") || a.StartsWith("event ObjectStartup"));
 				if (ln > -1)
 				{
-					int end = Array.FindIndex(lines, ln, a => a.StartsWith("endsub") || a.StartsWith("end event"));
+					int end = Array.FindIndex(lines, ln, a => a.StartsWith("end sub") || a.StartsWith("end event"));
 					if (end == -1) continue;
 					string sheet = null;
 					for (; ln < end; ln++)
