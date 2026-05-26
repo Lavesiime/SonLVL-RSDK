@@ -39,7 +39,7 @@ namespace S2ObjectDefinitions.Enemies
 				(obj) => obj.PropertyValue & 1,
 				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~1) | (int)value));
 			
-			properties[1] = new PropertySpec("Static", typeof(bool), "Extended",
+			properties[1] = new PropertySpec("Locked", typeof(bool), "Extended",
 				"Mission Mode only. If the Buzzer should stay still, rather than fly around.", null,
 				(obj) => (obj.PropertyValue & 2) == 2,
 				(obj, value) => obj.PropertyValue = (byte)((obj.PropertyValue & ~2) | ((bool)value ? 2 : 0)));
@@ -47,7 +47,7 @@ namespace S2ObjectDefinitions.Enemies
 
 		public override ReadOnlyCollection<byte> Subtypes
 		{
-			get { return new ReadOnlyCollection<byte>(new byte[] {0, 1}); } // not including Static here because it doesn't matter most of the time
+			get { return new ReadOnlyCollection<byte>(new byte[] {0, 1}); } // not including Static here because it doesn't matter most of the time since it doesn't work outside of Mission Mode anyways
 		}
 		
 		public override PropertySpec[] CustomProperties
