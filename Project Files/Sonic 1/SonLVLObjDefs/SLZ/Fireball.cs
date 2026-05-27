@@ -81,7 +81,7 @@ namespace S1ObjectDefinitions.SLZ
 
 		public override ReadOnlyCollection<byte> Subtypes
 		{
-			get { return new ReadOnlyCollection<byte>(new byte[] {0x30, 0x41, 0x42, 0x43, 0x34, 0x35, 0x36, 0x37}); } // some hidden intervals..
+			get { return new ReadOnlyCollection<byte>(new byte[] {0x34, 0x35, 0x36, 0x37, 0x30, 0x41, 0x42, 0x43}); } // some hidden intervals..
 		}
 		
 		public override byte DefaultSubtype
