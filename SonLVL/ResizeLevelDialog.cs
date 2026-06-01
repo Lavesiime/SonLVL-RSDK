@@ -19,5 +19,15 @@ namespace SonicRetro.SonLVL.GUI
 		{
 			Close();
 		}
+
+		private void levelWidth_ValueChanged(object sender, EventArgs e)
+		{
+			widthLabel.Text = $"chunks ({levelWidth.Value * 128} pixels)";
+		}
+
+		private void levelHeight_ValueChanged(object sender, EventArgs e)
+		{
+			heightLabel.Text = $"chunks ({levelHeight.Value * 128} pixels)";
+		}
 	}
 }
