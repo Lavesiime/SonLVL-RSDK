@@ -1260,8 +1260,26 @@ namespace SonicRetro.SonLVL.API
 							IncludeDebugInformation = true,
 							OutputAssembly = Path.GetFullPath(dllfile)
 						};
+
 						CompilerResults res = pr.CompileAssemblyFromFile(para, fp);
-						if (res.Errors.HasErrors)
+						bool error = res.Errors.HasErrors;
+
+						if (error)
+						{
+							if (res.Errors.Count == 1 && res.Errors[0].ErrorNumber == "CS0016")
+							{
+								// CS0016 is when we can't write to output file because it's being used by another process
+								// (said process likely being us, after the user edited their .cs obj def and tried to reload the stage)
+								// So, let's just shuffle the file name by adding the current time to the end and use that to generate a new file
+								string newPath = Path.Combine(dllcache, $"{fulltypename}_{DateTime.Now:yyyyMMdd_HHmmss}.dll");
+								para.OutputAssembly = newPath;
+								res = pr.CompileAssemblyFromFile(para, fp);
+
+								error = res.Errors.HasErrors;
+							}
+						}
+
+						if (error)
 						{
 							Log("Compile failed.", "Errors:");
 							foreach (CompilerError item in res.Errors)
