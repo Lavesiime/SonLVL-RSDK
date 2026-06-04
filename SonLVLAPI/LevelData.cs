@@ -406,6 +406,7 @@ namespace SonicRetro.SonLVL.API
 					default:
 						continue;
 				}
+
 				if (info.Count > 0)
 				{
 					int lastind = -1;
@@ -418,10 +419,12 @@ namespace SonicRetro.SonLVL.API
 				}
 				else
 					BGScroll[i].Add(new ScrollData());
-				
+
+				// Since we have the BGScroll lists set up, we don't need to worry about what's in the file anymore
 				Background.layers[i].lineScroll = new byte[0];
 			}
-			
+
+			// (See above note)
 			Background.hScroll.Clear();
 			Background.vScroll.Clear();
 
@@ -852,7 +855,13 @@ namespace SonicRetro.SonLVL.API
 			}
 
 			SaveFile("Backgrounds.bin", fn => Background.Write(fn));
-			
+
+			// And now that we saved, let's go ahead and clear the internal lists again
+			// (since we rebuild it from scratch every time, there's no need to preserve it)
+			for (int i = 0; i < 8; i++) Background.layers[i].lineScroll = new byte[0];
+			Background.hScroll.Clear();
+			Background.vScroll.Clear();
+
 			SaveFile($"Act{StageInfo.actID}.bin", fn => Scene.Write(fn));
 			foreach (var astg in AdditionalScenes)
 				SaveFile($"Act{astg.StageInfo.actID}.bin", fn => astg.Scene.Write(fn));
