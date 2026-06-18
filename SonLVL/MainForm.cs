@@ -8496,6 +8496,7 @@ namespace SonicRetro.SonLVL.GUI
 				++numdel;
 			}
 			TileSelector.Invalidate();
+			DrawTilePicture();
 			chunkBlockEditor.SelectedObjects = chunkBlockEditor.SelectedObjects;
 			SaveState("Delete Unused Tiles");
 			MessageBox.Show(this, $"Deleted {numdel} unused tiles.", "SonLVL-RSDK");
