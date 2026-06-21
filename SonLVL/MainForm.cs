@@ -6947,40 +6947,59 @@ namespace SonicRetro.SonLVL.GUI
 					for (int x = 0; x < width; x++)
 						for (int y = layout.Length - selection.Height; y < layout.Length; y++)
 							layout[y][x] = 0;
-					if (dlg.moveObjects.Checked)
-					{
-						if (CurrentTab == Tab.Foreground)
-						{
-							foreach (ObjectEntry item in LevelData.Objects)
-								if (item.Y >= selection.Bottom * 128)
-								{
-									item.Y -= (short)(selection.Height * 128);
-									item.UpdateSprite();
-								}
-						}
-						else if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll)
-						{
-							for (int i = 1; i < LevelData.BGScroll[bglayer].Count; i++)
-							{
-								if (LevelData.BGScroll[bglayer][i].StartPos > selection.Top * 128)
-								{
-									if (LevelData.BGScroll[bglayer][i].StartPos >= selection.Bottom * 128)
-									{
-										LevelData.BGScroll[bglayer][i].StartPos -= (ushort)(selection.Height * 128);
-										scrollList.Items[i] = string.Format(scrollFormat, LevelData.BGScroll[bglayer][i].StartPos);
-										
-										if (LevelData.BGScroll[bglayer][i].StartPos != LevelData.BGScroll[bglayer][i - 1].StartPos)
-											continue;
-									}
 
-									LevelData.BGScroll[bglayer].Remove(LevelData.BGScroll[bglayer][i]);
-									scrollList.Items.RemoveAt(i--);
-								}
+					if (dlg.moveObjects.Checked && CurrentTab == Tab.Foreground)
+					{
+						foreach (ObjectEntry item in LevelData.Objects)
+							if (item.Y >= selection.Bottom * 128)
+							{
+								item.Y -= (short)(selection.Height * 128);
+								item.UpdateSprite();
 							}
-						}
 					}
+
 					if (CurrentTab == Tab.Background)
 					{
+						if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll)
+						{
+							scrollList.BeginUpdate();
+
+							int prevSelection = scrollList.SelectedIndex;
+
+							if (dlg.moveObjects.Checked)
+								for (int i = 1; i < LevelData.BGScroll[bglayer].Count; i++)
+								{
+									if (LevelData.BGScroll[bglayer][i].StartPos >= selection.Top * 128)
+									{
+										if (LevelData.BGScroll[bglayer][i].StartPos > selection.Bottom * 128)
+										{
+											LevelData.BGScroll[bglayer][i].StartPos -= (ushort)(selection.Height * 128);
+											scrollList.Items[i] = string.Format(scrollFormat, LevelData.BGScroll[bglayer][i].StartPos);
+
+											if (LevelData.BGScroll[bglayer][i].StartPos != LevelData.BGScroll[bglayer][i - 1].StartPos)
+												continue;
+										}
+
+										LevelData.BGScroll[bglayer].Remove(LevelData.BGScroll[bglayer][i]);
+										scrollList.Items.RemoveAt(i--);
+									}
+								}
+
+							// Even if dlg.moveObjects.Checked was false, we still want to delete any invalid parallax entries that are in the area we cut off
+							int cutoff = (LevelData.BGHeight[bglayer] - selection.Height) * 128;
+							int index = LevelData.BGScroll[bglayer].FindLastIndex(a => a.StartPos >= cutoff);
+							while (index != -1)
+							{
+								LevelData.BGScroll[bglayer].RemoveAt(index);
+								scrollList.Items.RemoveAt(index);
+
+								index = LevelData.BGScroll[bglayer].FindLastIndex(a => a.StartPos >= cutoff);
+							}
+
+							scrollList.EndUpdate();
+							scrollList.SelectedIndex = Math.Min(prevSelection, scrollList.Items.Count - 1);
+						}
+
 						if (LevelData.BGHeight[bglayer] > selection.Height)
 						{
 							LevelData.ResizeBG(bglayer, LevelData.BGWidth[bglayer], LevelData.BGHeight[bglayer] - selection.Height);
@@ -7011,40 +7030,59 @@ namespace SonicRetro.SonLVL.GUI
 					for (int y = 0; y < layout.Length; y++)
 						for (int x = layout[y].Length - selection.Width; x < layout[y].Length; x++)
 							layout[y][x] = 0;
-					if (dlg.moveObjects.Checked)
+
+					if (dlg.moveObjects.Checked && CurrentTab == Tab.Foreground)
 					{
-						if (CurrentTab == Tab.Foreground)
-						{
-							foreach (ObjectEntry item in LevelData.Objects)
-								if (item.X >= selection.Right * 128)
-								{
-									item.X -= (short)(selection.Width * 128);
-									item.UpdateSprite();
-								}
-						}
-						else if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.VScroll)
-						{
-							for (int i = 1; i < LevelData.BGScroll[bglayer].Count; i++)
+						foreach (ObjectEntry item in LevelData.Objects)
+							if (item.X >= selection.Right * 128)
 							{
-								if (LevelData.BGScroll[bglayer][i].StartPos > selection.Left * 128)
-								{
-									if (LevelData.BGScroll[bglayer][i].StartPos >= selection.Right * 128)
-									{
-										LevelData.BGScroll[bglayer][i].StartPos -= (ushort)(selection.Width * 128);
-										scrollList.Items[i] = string.Format(scrollFormat, LevelData.BGScroll[bglayer][i].StartPos);
-
-										if (LevelData.BGScroll[bglayer][i].StartPos != LevelData.BGScroll[bglayer][i - 1].StartPos)
-											continue;
-									}
-
-									LevelData.BGScroll[bglayer].Remove(LevelData.BGScroll[bglayer][i]);
-									scrollList.Items.RemoveAt(i--);
-								}
+								item.X -= (short)(selection.Width * 128);
+								item.UpdateSprite();
 							}
-						}
 					}
+
 					if (CurrentTab == Tab.Background)
 					{
+						if (LevelData.Background.layers[bglayer].type == RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll)
+						{
+							scrollList.BeginUpdate();
+
+							int prevSelection = scrollList.SelectedIndex;
+
+							if (dlg.moveObjects.Checked)
+								for (int i = 1; i < LevelData.BGScroll[bglayer].Count; i++)
+								{
+									if (LevelData.BGScroll[bglayer][i].StartPos >= selection.Left * 128)
+									{
+										if (LevelData.BGScroll[bglayer][i].StartPos >= selection.Right * 128)
+										{
+											LevelData.BGScroll[bglayer][i].StartPos -= (ushort)(selection.Width * 128);
+											scrollList.Items[i] = string.Format(scrollFormat, LevelData.BGScroll[bglayer][i].StartPos);
+
+											if (LevelData.BGScroll[bglayer][i].StartPos != LevelData.BGScroll[bglayer][i - 1].StartPos)
+												continue;
+										}
+
+										LevelData.BGScroll[bglayer].Remove(LevelData.BGScroll[bglayer][i]);
+										scrollList.Items.RemoveAt(i--);
+									}
+								}
+
+							// Even if dlg.moveObjects.Checked was false, we still want to delete any invalid parallax entries that are in the area we cut off
+							int cutoff = (LevelData.BGWidth[bglayer] - selection.Width) * 128;
+							int index = LevelData.BGScroll[bglayer].FindLastIndex(a => a.StartPos >= cutoff);
+							while (index != -1)
+							{
+								LevelData.BGScroll[bglayer].RemoveAt(index);
+								scrollList.Items.RemoveAt(index);
+
+								index = LevelData.BGScroll[bglayer].FindLastIndex(a => a.StartPos >= cutoff);
+							}
+
+							scrollList.EndUpdate();
+							scrollList.SelectedIndex = Math.Min(prevSelection, scrollList.Items.Count - 1);
+						}
+
 						if (LevelData.BGWidth[bglayer] > selection.Width)
 						{
 							LevelData.ResizeBG(bglayer, LevelData.BGWidth[bglayer] - selection.Width, LevelData.BGHeight[bglayer]);
