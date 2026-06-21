@@ -850,12 +850,14 @@ namespace SonicRetro.SonLVL.GUI
 			foregroundDeformation.Checked = LevelData.ForegroundDeformation;
 
 			// We always leave layer 1 enabled, even if it's empty
-			newLayerToolStripMenuItem.Enabled = false;
+			bool any = false;
 			for (int i = 1; i < 8; i++)
 			{
-				bgLayerDropDown.DropDownItems[i].Available = !LevelData.BGSize[i].IsEmpty;
-				newLayerToolStripMenuItem.Enabled |= LevelData.BGSize[i].IsEmpty;
+				bgDuplicateLayerOverToolStripButton.DropDownItems[i].Available = bgLayerDropDown.DropDownItems[i].Available = !LevelData.BGSize[i].IsEmpty;
+				any |= LevelData.BGSize[i].IsEmpty;
 			}
+
+			newDuplicateLayerToolStripMenuItem.Enabled = newLayerToolStripMenuItem.Enabled = any;
 
 			loadGlobalObjects.Checked = LevelData.StageConfig.loadGlobalObjects;
 			objectListBox.BeginUpdate();
@@ -1170,12 +1172,14 @@ namespace SonicRetro.SonLVL.GUI
 			foregroundDeformation.Checked = LevelData.ForegroundDeformation;
 
 			// We always leave layer 1 enabled, even if it's empty
-			newLayerToolStripMenuItem.Enabled = false;
+			bool any = false;
 			for (int i = 1; i < 8; i++)
 			{
-				bgLayerDropDown.DropDownItems[i].Available = !LevelData.BGSize[i].IsEmpty;
-				newLayerToolStripMenuItem.Enabled |= LevelData.BGSize[i].IsEmpty;
+				bgDuplicateLayerOverToolStripButton.DropDownItems[i].Available = bgLayerDropDown.DropDownItems[i].Available = !LevelData.BGSize[i].IsEmpty;
+				any |= LevelData.BGSize[i].IsEmpty;
 			}
+
+			newDuplicateLayerToolStripMenuItem.Enabled = newLayerToolStripMenuItem.Enabled = any;
 
 			// If and *only* if the object list changed, we'll refresh the entire object def list
 			bool refresh = loadGlobalObjects.Checked != LevelData.StageConfig.loadGlobalObjects;
@@ -1685,13 +1689,13 @@ namespace SonicRetro.SonLVL.GUI
 							}
 						}
 
-						newLayerToolStripMenuItem.Enabled = false;
-						bgLayerDropDown.DropDownItems[bglayer].Available = true;
+						bgDuplicateLayerOverToolStripButton.DropDownItems[bglayer].Available = bgLayerDropDown.DropDownItems[bglayer].Available = true;
+
+						bool any = false;
 						for (int i = 1; i < 8; i++)
-						{
-							bgLayerDropDown.DropDownItems[i].Available = !LevelData.BGSize[i].IsEmpty;
-							newLayerToolStripMenuItem.Enabled |= LevelData.BGSize[i].IsEmpty;
-						}
+							any |= LevelData.BGSize[i].IsEmpty;
+
+						newDuplicateLayerToolStripMenuItem.Enabled = newLayerToolStripMenuItem.Enabled = any;
 					}
 					else
 					{
@@ -1740,9 +1744,9 @@ namespace SonicRetro.SonLVL.GUI
 				foregroundDeformation.Checked = LevelData.ForegroundDeformation;
 
 				for (int i = 1; i < 8; i++)
-					bgLayerDropDown.DropDownItems[i].Available = true;
+					bgDuplicateLayerOverToolStripButton.DropDownItems[i].Available = bgLayerDropDown.DropDownItems[i].Available = true;
 
-				newLayerToolStripMenuItem.Enabled = true;
+				newDuplicateLayerToolStripMenuItem.Enabled = newLayerToolStripMenuItem.Enabled = true;
 
 				loadGlobalObjects.Checked = LevelData.StageConfig.loadGlobalObjects;
 				objectListBox.Items.Clear();
@@ -2361,17 +2365,16 @@ namespace SonicRetro.SonLVL.GUI
 
 		void bgLayerDropDown_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			if (e.ClickedItem == newLayerToolStripMenuItem)
+			int index = bgLayerDropDown.DropDownItems.IndexOf(e.ClickedItem);
+			if (index > 7)
 				return;
 
 			foreach (var item in bgLayerDropDown.DropDownItems.OfType<ToolStripMenuItem>())
 				item.Checked = item == e.ClickedItem;
 
-			foreach (var item in bgDuplicateLayerOverToolStripButton.DropDownItems.OfType<ToolStripMenuItem>())
-				item.Available = true;
-			
-			bglayer = bgLayerDropDown.DropDownItems.IndexOf(e.ClickedItem);
-			bgDuplicateLayerOverToolStripButton.DropDownItems[bglayer].Available = false;
+			bgDuplicateLayerOverToolStripButton.DropDownItems[bglayer].Enabled = true;
+			bglayer = index;
+			bgDuplicateLayerOverToolStripButton.DropDownItems[bglayer].Enabled = false;
 			bgLayerDropDown.Text = $"Layer: {bglayer + 1}";
 			BGSelection = Rectangle.Empty;
 			UpdateScrollControls();
@@ -2390,7 +2393,7 @@ namespace SonicRetro.SonLVL.GUI
 				// We shouldn't be here in the first place..
 				// Ideally this code should never run but if it does, let's just return and pretend this never happened in the first place
 				MessageBox.Show(this, "Maximum layer count reached!", "SonLVL-RSDK", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				newLayerToolStripMenuItem.Enabled = false;
+				newDuplicateLayerToolStripMenuItem.Enabled = newLayerToolStripMenuItem.Enabled = false;
 				return;
 			}
 
@@ -2416,25 +2419,46 @@ namespace SonicRetro.SonLVL.GUI
 					UpdateScrollControls();
 					DrawLevel();
 
-					newLayerToolStripMenuItem.Enabled = false;
+					bgDuplicateLayerOverToolStripButton.DropDownItems[bglayer].Available = bgLayerDropDown.DropDownItems[bglayer].Available = true;
+
+					bool any = false;
 					for (int i = 1; i < 8; i++)
-					{
-						bgLayerDropDown.DropDownItems[i].Available = !LevelData.BGSize[i].IsEmpty;
-						newLayerToolStripMenuItem.Enabled |= LevelData.BGSize[i].IsEmpty;
-					}
+						any |= LevelData.BGSize[i].IsEmpty;
+
+					newDuplicateLayerToolStripMenuItem.Enabled = newLayerToolStripMenuItem.Enabled = any;
 				}
 			}
 		}
-
-		// TODO: update this, too
 
 		private void bgDuplicateLayerOverToolStripButton_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
 			bgDuplicateLayerOverToolStripButton.HideDropDown();
 
 			int destLayer = bgDuplicateLayerOverToolStripButton.DropDownItems.IndexOf(e.ClickedItem);
-			if (MessageBox.Show(this, $"This action will COMPLETELY replace both the chunk layout and parallax data of background layer {destLayer + 1}.\n\nAre you sure you want duplicate layer {bglayer + 1} over layer {destLayer + 1}?", "Duplicate Background Layer", MessageBoxButtons.OKCancel) != DialogResult.OK)
-				return;
+
+			if (e.ClickedItem == newDuplicateLayerToolStripMenuItem)
+			{
+				destLayer = 1;
+				while (destLayer < 8 && bgLayerDropDown.DropDownItems[destLayer].Available)
+					destLayer++;
+
+				if (destLayer >= 8)
+				{
+					// We shouldn't be here in the first place..
+					// Ideally this code should never run but if it does, let's just return and pretend this never happened in the first place
+					MessageBox.Show(this, "Maximum layer count reached!", "SonLVL-RSDK", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					newDuplicateLayerToolStripMenuItem.Enabled = newLayerToolStripMenuItem.Enabled = false;
+					return;
+				}
+
+				if (MessageBox.Show(this, $"Create a new layer based on background layer {bglayer + 1}'s chunk layout and parallax data?", "Duplicate Background Layer", MessageBoxButtons.OKCancel) != DialogResult.OK)
+					return;
+			}
+			else
+			{
+				if (destLayer > 7 || MessageBox.Show(this, $"This action will COMPLETELY replace both the chunk layout and parallax data of background layer {destLayer + 1}.\n\nAre you sure you want duplicate layer {bglayer + 1} over layer {destLayer + 1}?", "Duplicate Background Layer", MessageBoxButtons.OKCancel) != DialogResult.OK)
+					return;
+			}
 
 			LevelData.Background.layers[destLayer].type = LevelData.Background.layers[bglayer].type;
 			LevelData.Background.layers[destLayer].scrollSpeed = LevelData.Background.layers[bglayer].scrollSpeed;
@@ -2446,13 +2470,17 @@ namespace SonicRetro.SonLVL.GUI
 
 			LevelData.BGScroll[destLayer] = LevelData.BGScroll[bglayer].Select(a => a.Clone()).ToList();
 
-			bgLayerDropDown.DropDownItems[destLayer].Available = true;
+			bgDuplicateLayerOverToolStripButton.DropDownItems[destLayer].Available = bgLayerDropDown.DropDownItems[destLayer].Available = true;
 
-			newLayerToolStripMenuItem.Enabled = false;
+			bool any = false;
 			for (int i = 1; i < 8; i++)
-				newLayerToolStripMenuItem.Enabled |= LevelData.BGSize[i].IsEmpty;
+				any |= LevelData.BGSize[i].IsEmpty;
+
+			newDuplicateLayerToolStripMenuItem.Enabled = newLayerToolStripMenuItem.Enabled = any;
 
 			SaveState("Duplicate Background Layer");
+
+			bgLayerDropDown.DropDownItems[destLayer].PerformClick();
 		}
 
 		BitmapBits32 LevelImg8bpp;

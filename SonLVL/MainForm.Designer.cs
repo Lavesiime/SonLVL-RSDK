@@ -388,6 +388,8 @@
             this.importProgressControl1 = new SonicRetro.SonLVL.ImportProgressControl();
             this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
             this.newLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
+            this.newDuplicateLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             label4 = new System.Windows.Forms.Label();
@@ -2907,7 +2909,9 @@
             this.layer5ToolStripMenuItem,
             this.layer6ToolStripMenuItem,
             this.layer7ToolStripMenuItem,
-            this.layer8ToolStripMenuItem});
+            this.layer8ToolStripMenuItem,
+            this.toolStripSeparator17,
+            this.newDuplicateLayerToolStripMenuItem});
             this.bgDuplicateLayerOverToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bgDuplicateLayerOverToolStripButton.Name = "bgDuplicateLayerOverToolStripButton";
             this.bgDuplicateLayerOverToolStripButton.Size = new System.Drawing.Size(210, 44);
@@ -2920,7 +2924,7 @@
             this.layer1ToolStripMenuItem.Name = "layer1ToolStripMenuItem";
             this.layer1ToolStripMenuItem.Size = new System.Drawing.Size(223, 44);
             this.layer1ToolStripMenuItem.Text = "Layer 1";
-            this.layer1ToolStripMenuItem.Visible = false;
+            this.layer1ToolStripMenuItem.Enabled = false;
             // 
             // layer2ToolStripMenuItem
             // 
@@ -2963,6 +2967,18 @@
             this.layer8ToolStripMenuItem.Name = "layer8ToolStripMenuItem";
             this.layer8ToolStripMenuItem.Size = new System.Drawing.Size(223, 44);
             this.layer8ToolStripMenuItem.Text = "Layer 8";
+            // 
+            // toolStripSeparator17
+            // 
+            this.toolStripSeparator17.Name = "toolStripSeparator17";
+            this.toolStripSeparator17.Size = new System.Drawing.Size(223, 6);
+            // 
+            // newDuplicateLayerToolStripMenuItem
+            // 
+            this.newDuplicateLayerToolStripMenuItem.Name = "newDuplicateLayerToolStripMenuItem";
+            this.newDuplicateLayerToolStripMenuItem.Size = new System.Drawing.Size(223, 44);
+            this.newDuplicateLayerToolStripMenuItem.Text = "New...";
+            //this.newDuplicateLayerToolStripMenuItem.Click += new System.EventHandler(this.newLayerToolStripMenuItem_Click);
             // 
             // tabControl3
             // 
@@ -5013,6 +5029,8 @@
 		private System.Windows.Forms.ToolStripMenuItem layer6ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem layer7ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem layer8ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
+		private System.Windows.Forms.ToolStripMenuItem newDuplicateLayerToolStripMenuItem;
 		private System.Windows.Forms.TrackBar midpointTrackBar;
 		private System.Windows.Forms.Label lowTilesLabel;
 		private System.Windows.Forms.GroupBox previewGroupBox;
