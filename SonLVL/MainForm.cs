@@ -5731,6 +5731,11 @@ namespace SonicRetro.SonLVL.GUI
 
 		private bool ImportImage(Bitmap bmp, Bitmap colbmp1, Bitmap colbmp2, Bitmap pribmp, ushort[,] layout, ImportFlags flags = ImportFlags.Normal)
 		{
+			/*
+			// TODO: only apply if image import is successful, revert otherwise
+			// For now, let's just comment this out..
+			Color[] oldPalette = null;
+
 			// If the image is composite/isn't indexed..
 			if (flags.HasFlag(ImportFlags.DetectCompositeImgPalette) && !bmp.PixelFormat.HasFlag(PixelFormat.Indexed))
 			{
@@ -5756,6 +5761,7 @@ namespace SonicRetro.SonLVL.GUI
 					{
 						case DialogResult.Yes:
 							Color[] srcPal = palette.Select(a => Color.FromArgb(a)).ToArray();
+							// TODO: only let them change the stage palette, hide/disable the global rows
 							using (ImportPalette dialog = new ImportPalette(srcPal, LevelData.NewPalette, false))
 							{
 								if (dialog.ShowDialog(this) == DialogResult.OK)
@@ -5786,6 +5792,7 @@ namespace SonicRetro.SonLVL.GUI
 					}
 				}
 			}
+			*/
 
 			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 			sw.Start();
