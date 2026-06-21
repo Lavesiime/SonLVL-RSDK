@@ -3898,7 +3898,7 @@ namespace SonicRetro.SonLVL.GUI
 			if (tabControl3.SelectedIndex == 2)
 			{
 				if (!showScrollAreas.Checked) return;
-				Point mouse = new Point((int)(e.X / ZoomLevel) + backgroundPanel.HScrollValue, (int)(e.Y / ZoomLevel) + backgroundPanel.VScrollValue);
+				Point mouse = new Point(Math.Min((int)(e.X / ZoomLevel) + backgroundPanel.HScrollValue, LevelData.BGWidth[bglayer] * 128 - 1), Math.Min((int)(e.Y / ZoomLevel) + backgroundPanel.VScrollValue, LevelData.BGHeight[bglayer] * 128 - 1));
 				selectedScrollLine = -1;
 				switch (LevelData.Background.layers[bglayer].type)
 				{
