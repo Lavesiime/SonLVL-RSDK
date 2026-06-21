@@ -5171,6 +5171,7 @@ namespace SonicRetro.SonLVL.GUI
 			if (a.ShowDialog() == DialogResult.OK)
 			{
 				LevelData.NewPalette[(line * 16) + index] = a.Color;
+				LevelData.SyncStaticCycleColor((line * 16) + index);
 				LevelData.PaletteChanged();
 				loaded = false;
 				colorRed.Value = a.Color.R;
@@ -5338,6 +5339,7 @@ namespace SonicRetro.SonLVL.GUI
 			colorHex.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].ToArgb() & 0xFFFFFF;
 			loaded = true;
 
+			LevelData.SyncStaticCycleColor((SelectedColor.Y * 16) + SelectedColor.X);
 			LevelData.PaletteChanged();
 			SaveState($"Change Color {(SelectedColor.Y * 16) + SelectedColor.X}");
 		}
@@ -5353,6 +5355,7 @@ namespace SonicRetro.SonLVL.GUI
 			colorBlue.Value = LevelData.NewPalette[(SelectedColor.Y * 16) + SelectedColor.X].B;
 			loaded = true;
 
+			LevelData.SyncStaticCycleColor((SelectedColor.Y * 16) + SelectedColor.X);
 			LevelData.PaletteChanged();
 			SaveState($"Change Color {(SelectedColor.Y * 16) + SelectedColor.X}");
 		}
