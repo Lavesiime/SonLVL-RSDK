@@ -16,4 +16,53 @@ jobs:
          with:
            name: SonLVL
            path: SonLVL/bin/Release
-    
+       - name: Upload LevelConverter artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: LevelConverter
+           path: LevelConverter/bin/Release
+       - name: Upload SonAni artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: SonAni
+           path: SonAni/bin/Release
+       - name: Upload ObjectLayoutDiff artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: ObjectLayoutDiff
+           path: ObjectLayoutDiff/bin/Release
+       - name: Upload SpriteSheetGen artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: SpriteSheetGen
+           path: SpriteSheetGen/bin/Release
+       - name: Upload SpritePlotter.NET artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: SpritePlotter.NET
+           path: SpritePlotter.NET/bin/Release
+       - name: Upload GetArt.NET artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: GetArt.NET
+           path: GetArt.NET/bin/Release
+       - name: Upload S1SSEdit artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: S1SSEdit
+           path: S1SSEdit/bin/Release
+       - name: Upload S3SSEdit artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: S3SSEdit
+           path: S3SSEdit/bin/Release
+       - name: Upload ObjectLayoutMerge artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: ObjectLayoutMerge
+           path: ObjectLayoutMerge/bin/Release
+       - name: Upload SonPLN artifacts
+         uses: actions/upload-artifact@v4
+         with:
+           name: SonPLN
+           path: SonPLN/bin/Release
