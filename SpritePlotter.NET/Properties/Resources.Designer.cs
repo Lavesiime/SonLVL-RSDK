@@ -19,7 +19,7 @@ namespace SpritePlotter.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,8 +61,18 @@ namespace SpritePlotter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Usage: spriteplotter [options] input output
-        ///.
+        ///   Looks up a localized string similar to Usage: spriteplotter [options]
+        ///
+        ///Arguments:
+        ///
+        ///    -h, --help              Shows this help screen.
+        ///    -p, --padding=number    Pixels of padding between sprites. Default 2.
+        ///    -t, --transparent=color Transparent color, as a name or #RRGGBB.
+        ///                            Defaults to first color of palette.
+        ///    -s, --startpal=number   Starting palette line for mappings (0-based).
+        ///    -n, --nullfirst         Inserts a blank frame at the start of the
+        ///                            mappings.
+        ///    -2, --twopla [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string HelpText {
             get {
