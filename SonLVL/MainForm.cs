@@ -185,6 +185,7 @@ namespace SonicRetro.SonLVL.GUI
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
+			/*
 			if (File.Exists("SonLVL Updater.exe"))
 			{
 				Dictionary<string, int> downloaded;
@@ -233,6 +234,7 @@ namespace SonicRetro.SonLVL.GUI
 				}
 #endif
 			}
+			*/
 			Settings = Settings.Load();
 			imageTransparency.SetColorMatrix(new ColorMatrix() { Matrix33 = 0.75f }, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 			PalettePanelGfx = PalettePanel.CreateGraphics();
