@@ -103,7 +103,7 @@ namespace SonicRetro.SonLVL
 
 			// If we already have something loaded, dispose of it before loading the new Bitmap
 			if (bmp != null)
-				b.Dispose();
+				bmp.Dispose();
 
 			// Make our own copy, so that we can release the original file
 			// (Whether the user needs/wants to edit it more, or if they're selecting the same file for several fields)
