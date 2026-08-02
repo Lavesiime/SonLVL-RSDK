@@ -1,68 +1,47 @@
-name: Build SonLVL Tools
+name: Update release
+
+#on:
+#  push:
+#    paths:
+#      - update.ini
+#    branches:
+#      - patch-2 # master
+
+# on: [pushworkflow_dispatch]
+
+permissions:
+   contents: write
+
 on: [push, workflow_dispatch]
 jobs:
    build:
      runs-on: windows-latest
+     
      steps:
        - name: Checkout repository 
          uses: actions/checkout@v4
+         
        - name: Setup MSBuild
          uses: microsoft/setup-msbuild@v2
+         
        - name: Build projects
          run: |
           msbuild SonLVL.sln /p:Configuration=Release
-       - name: Upload SonLVL artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: SonLVL
-           path: SonLVL/bin/Release
-       - name: Upload LevelConverter artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: LevelConverter
-           path: LevelConverter/bin/Release
-       - name: Upload SonAni artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: SonAni
-           path: SonAni/bin/Release
-       - name: Upload ObjectLayoutDiff artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: ObjectLayoutDiff
-           path: ObjectLayoutDiff/bin/Release
-       - name: Upload SpriteSheetGen artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: SpriteSheetGen
-           path: SpriteSheetGen/bin/Release
-       - name: Upload SpritePlotter.NET artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: SpritePlotter.NET
-           path: SpritePlotter.NET/bin/Release
-       - name: Upload GetArt.NET artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: GetArt.NET
-           path: GetArt.NET/bin/Release
-       - name: Upload S1SSEdit artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: S1SSEdit
-           path: S1SSEdit/bin/Release
-       - name: Upload S3SSEdit artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: S3SSEdit
-           path: S3SSEdit/bin/Release
-       - name: Upload ObjectLayoutMerge artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: ObjectLayoutMerge
-           path: ObjectLayoutMerge/bin/Release
-       - name: Upload SonPLN artifacts
-         uses: actions/upload-artifact@v4
-         with:
-           name: SonPLN
-           path: SonPLN/bin/Release
+          
+       - name: Create archives
+         shell: cmd
+         run: |
+          set "projects=SonLVL LevelConverter SonAni ObjectLayoutDiff SpriteSheetGen SpritePlotter.NET GetArt.NET S1SSEdit S3SSEdit ObjectLayoutMerge SonPLN"
+          for %%a in (%projects%) do powershell -Command "Compress-Archive -Path '%%a/bin/Release' -DestinationPath 'build/%%a.zip' -Force"
+          
+       - name: Push to build branch
+         run: |
+          git config --global user.email "sonicretro@github.com"
+          git config --global user.name "sonicretro"
+          git checkout -b build
+          git rm -r .
+          cp -r build/* .
+          rm -rf build/
+          git add "*.zip"
+          git commit -m "Update build"
+          git push origin build --force
