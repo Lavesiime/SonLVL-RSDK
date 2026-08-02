@@ -32,6 +32,7 @@ jobs:
          shell: cmd
          run: |
           set "projects=SonLVL LevelConverter SonAni ObjectLayoutDiff SpriteSheetGen SpritePlotter.NET GetArt.NET S1SSEdit S3SSEdit ObjectLayoutMerge SonPLN"
+          mkdir "build"
           for %%a in (%projects%) do powershell -Command "Compress-Archive -Path '%%a/bin/Release' -DestinationPath 'build/%%a.zip' -Force"
           
        - name: Push to build branch
