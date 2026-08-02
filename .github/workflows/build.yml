@@ -15,7 +15,7 @@ permissions:
 on:
   push:
     paths:
-      - update.ini
+      - Update.ini
     branches:
       - patch-2 # change to master later
 jobs:
