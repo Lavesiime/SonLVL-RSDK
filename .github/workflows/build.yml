@@ -12,7 +12,12 @@ name: Update release
 permissions:
    contents: write
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    paths:
+      - update.ini
+    branches:
+      - patch-2 # change to master later
 jobs:
    build:
      runs-on: windows-latest
@@ -28,11 +33,16 @@ jobs:
          run: |
           msbuild SonLVL.sln /p:Configuration=Release
           
+       - name: Create build folder
+         shell: cmd
+         run: |
+          mkdir "build"
+          move Update.ini build/
+          
        - name: Create archives
          shell: cmd
          run: |
           set "projects=SonLVL LevelConverter SonAni ObjectLayoutDiff SpriteSheetGen SpritePlotter.NET GetArt.NET S1SSEdit S3SSEdit ObjectLayoutMerge SonPLN"
-          mkdir "build"
           for %%a in (%projects%) do powershell -Command "Compress-Archive -Path '%%a/bin/Release' -DestinationPath 'build/%%a.zip' -Force"
           
        - name: Push to build branch
@@ -44,5 +54,6 @@ jobs:
           cp -r build/* .
           rm -r -force build/
           git add "*.zip"
+          git add Update.ini
           git commit -m "Update build"
           git push origin build --force
