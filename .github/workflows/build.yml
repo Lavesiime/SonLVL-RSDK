@@ -42,7 +42,7 @@ jobs:
           git checkout -b build
           git rm -r .
           cp -r build/* .
-          rm -rf build/
+          rm -r -force build/
           git add "*.zip"
           git commit -m "Update build"
           git push origin build --force
