@@ -5762,9 +5762,8 @@ namespace SonicRetro.SonLVL.GUI
 
 		private bool ImportImage(Bitmap bmp, Bitmap colbmp1, Bitmap colbmp2, Bitmap pribmp, ushort[,] layout, ImportFlags flags = ImportFlags.Normal)
 		{
-			/*
-			// TODO: only apply if image import is successful, revert otherwise
-			// For now, let's just comment this out..
+			// TODO: for below, only apply if image import is successful; revert otherwise
+			// TODO: maybe let the user specify their transparency colour?
 			Color[] oldPalette = null;
 
 			// If the image is composite/isn't indexed..
@@ -5773,11 +5772,12 @@ namespace SonicRetro.SonLVL.GUI
 				// Then, let's get a list of all unique colours in the image
 				HashSet<int> palette = new HashSet<int>();
 
+				// To begin, let's get every colour in the image..
 				BitmapBits32 bmp32 = new BitmapBits32(bmp);
 				foreach (var pixel in bmp32.Bits)
 					palette.Add(pixel);
 
-				// Now, let's sort out all elements not already present in LevelData.NewPalette
+				// Next, let's sort out all elements not already present in LevelData.NewPalette
 				palette.ExceptWith(LevelData.NewPalette.Select(a => a.ToArgb()).ToHashSet());
 
 				// Some extra filtering.. let's remove all colours that are transparent
@@ -5823,7 +5823,6 @@ namespace SonicRetro.SonLVL.GUI
 					}
 				}
 			}
-			*/
 
 			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 			sw.Start();
