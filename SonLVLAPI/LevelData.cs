@@ -333,15 +333,21 @@ namespace SonicRetro.SonLVL.API
 			for (int l = 0; l < StageConfig.stagePalette.colors.Length; l++)
 				for (int c = 0; c < StageConfig.stagePalette.colors[l].Length; c++)
 					NewPalette[(l * 16) + c + 96] = StageConfig.stagePalette.colors[l][c].ToSystemColor();
-			
+
+			NewChunks = ReadFile<Tiles128x128>(stgfol + "128x128Tiles.bin");
+			Collision = ReadFile<TileConfig>(stgfol + "CollisionMasks.bin");
+
+			NewTiles = new BitmapBits[Collision.collisionMasks[0].Length];
+
+			int pos = 0;
 			Gif tilebmp = ReadFile<Gif>(stgfol + "16x16Tiles.gif");
 			if (tilebmp.width >= 16 && tilebmp.height >= 16)
 			{
-				NewTiles = new BitmapBits[tilebmp.height / 16];
-				for (int i = 0; i < tilebmp.height / 16; i++)
+				int end = Math.Min(tilebmp.height / 16, NewTiles.Length);
+				for (; pos < end; pos++)
 				{
-					NewTiles[i] = new BitmapBits(16, 16);
-					Array.Copy(tilebmp.pixels, i * 256, NewTiles[i].Bits, 0, 256);
+					NewTiles[pos] = new BitmapBits(16, 16);
+					Array.Copy(tilebmp.pixels, pos * 256, NewTiles[pos].Bits, 0, 256);
 				}
 
 				for (int i = 128; i < 256; i++)
@@ -349,22 +355,17 @@ namespace SonicRetro.SonLVL.API
 			}
 			else
 			{
-				// If the 16x16Tiles.gif doesn't exist, then create a new one
-
-				NewTiles = new BitmapBits[0x400];
-				for (int i = 0; i < 0x400; i++)
-					NewTiles[i] = new BitmapBits(16, 16);
-
 				// Just fill in the entire gif section of the palette with the transparency colour
 				NewPalette.Fill(NewPalette[0], 128, 128);
 			}
 
+			// Whether the gif doesn't exist or we just don't have enough tiles in it, let's fill out the rest of the list
+			for (; pos < NewTiles.Length; pos++)
+				NewTiles[pos] = new BitmapBits(16, 16);
+
 			// We reset these here, it's up to object definitions to add to the list (through AddPaletteCycle)
 			PaletteCycles = new List<PaletteCycleInfo>();
 			PaletteFiles = new Dictionary<string, byte[]>();
-
-			NewChunks = ReadFile<Tiles128x128>(stgfol + "128x128Tiles.bin");
-			Collision = ReadFile<TileConfig>(stgfol + "CollisionMasks.bin");
 
 			// Let's also quietly keep track of all other stages in the same stage folder, so if folder-wide changes are made (ie swapping chunks, changing the object list) 
 			// then we can apply it to the entire folder and not just the single scene we have open
@@ -500,14 +501,17 @@ namespace SonicRetro.SonLVL.API
 
 		public static void ReloadTiles()
 		{
+			NewTiles = new BitmapBits[Collision.collisionMasks[0].Length];
+
+			int pos = 0;
 			Gif tilebmp = ReadFile<Gif>($"Data/Stages/{StageInfo.folder}/16x16Tiles.gif");
 			if (tilebmp.width >= 16 && tilebmp.height >= 16)
 			{
-				NewTiles = new BitmapBits[tilebmp.height / 16];
-				for (int i = 0; i < tilebmp.height / 16; i++)
+				int end = Math.Min(tilebmp.height / 16, NewTiles.Length);
+				for (; pos < end; pos++)
 				{
-					NewTiles[i] = new BitmapBits(16, 16);
-					Array.Copy(tilebmp.pixels, i * 256, NewTiles[i].Bits, 0, 256);
+					NewTiles[pos] = new BitmapBits(16, 16);
+					Array.Copy(tilebmp.pixels, pos * 256, NewTiles[pos].Bits, 0, 256);
 				}
 
 				for (int i = 128; i < 256; i++)
@@ -515,12 +519,13 @@ namespace SonicRetro.SonLVL.API
 			}
 			else
 			{
-				NewTiles = new BitmapBits[0x400];
-				for (int i = 0; i < 0x400; i++)
-					NewTiles[i] = new BitmapBits(16, 16);
-
+				// Just fill in the entire gif section of the palette with the transparency colour
 				NewPalette.Fill(NewPalette[0], 128, 128);
 			}
+
+			// Whether the gif doesn't exist or we just don't have enough tiles in it, let's fill out the rest of the list
+			for (; pos < NewTiles.Length; pos++)
+				NewTiles[pos] = new BitmapBits(16, 16);
 		}
 
 		public static void ClearLevel()
