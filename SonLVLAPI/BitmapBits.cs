@@ -954,8 +954,12 @@ namespace SonicRetro.SonLVL.API
 		public BitmapBits GetSection(int x, int y, int width, int height)
 		{
 			BitmapBits result = new BitmapBits(width, height);
+			int pos = GetPixelIndex(x, y);
 			for (int v = 0; v < height; v++)
-				Array.Copy(this.Bits, GetPixelIndex(x, y + v), result.Bits, v * width, width);
+			{
+				Array.Copy(Bits, pos, result.Bits, v * width, width);
+				pos += Width;
+			}
 			return result;
 		}
 
