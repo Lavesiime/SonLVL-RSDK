@@ -2606,6 +2606,9 @@ namespace SonicRetro.SonLVL.GUI
 								scrlind--;
 							else
 								scrlind = 0;
+
+							int width = Math.Min((lvlsize.Width * 128) - camera.X, dispRect.Width);
+
 							for (; scrlind < LevelData.BGScroll[bglayer].Count && LevelData.BGScroll[bglayer][scrlind].StartPos < dispRect.Bottom; scrlind++)
 							{
 								ScrollData scrollData = LevelData.BGScroll[bglayer][scrlind];
@@ -2617,11 +2620,11 @@ namespace SonicRetro.SonLVL.GUI
 
 								if (scrollList.SelectedIndex == scrlind)
 								{
-									LevelImg8bpp.DrawLine(Color.Blue, 0, scrollData.StartPos - camera.Y, dispRect.Width, scrollData.StartPos - camera.Y);
-									LevelImg8bpp.FillRectangle(Color.FromArgb(254, Color.Blue), 0, scrollData.StartPos - camera.Y, dispRect.Width, height);
+									LevelImg8bpp.DrawLine(Color.Blue, 0, scrollData.StartPos - camera.Y, width, scrollData.StartPos - camera.Y);
+									LevelImg8bpp.FillRectangle(Color.FromArgb(254, Color.Blue), 0, scrollData.StartPos - camera.Y, width, height);
 								}
 								else
-									LevelImg8bpp.DrawLine(Color.Yellow, 0, scrollData.StartPos - camera.Y, dispRect.Width, scrollData.StartPos - camera.Y);
+									LevelImg8bpp.DrawLine(Color.Yellow, 0, scrollData.StartPos - camera.Y, width, scrollData.StartPos - camera.Y);
 							}
 						}
 						break;
@@ -2639,6 +2642,9 @@ namespace SonicRetro.SonLVL.GUI
 								scrlind--;
 							else
 								scrlind = 0;
+
+							int height = Math.Min((lvlsize.Height * 128) - camera.Y, dispRect.Height);
+
 							for (; scrlind < LevelData.BGScroll[bglayer].Count && LevelData.BGScroll[bglayer][scrlind].StartPos < dispRect.Right; scrlind++)
 							{
 								ScrollData scrollData = LevelData.BGScroll[bglayer][scrlind];
@@ -2650,11 +2656,11 @@ namespace SonicRetro.SonLVL.GUI
 
 								if (scrollList.SelectedIndex == scrlind)
 								{
-									LevelImg8bpp.DrawLine(Color.Blue, scrollData.StartPos - camera.X, 0, scrollData.StartPos - camera.X, dispRect.Height);
-									LevelImg8bpp.FillRectangle(Color.FromArgb(254, Color.Blue), scrollData.StartPos - camera.X, 0, width, dispRect.Height);
+									LevelImg8bpp.DrawLine(Color.Blue, scrollData.StartPos - camera.X, 0, scrollData.StartPos - camera.X, height);
+									LevelImg8bpp.FillRectangle(Color.FromArgb(254, Color.Blue), scrollData.StartPos - camera.X, 0, width, height);
 								}
 								else
-									LevelImg8bpp.DrawLine(Color.Yellow, scrollData.StartPos - camera.X, 0, scrollData.StartPos - camera.X, dispRect.Height);
+									LevelImg8bpp.DrawLine(Color.Yellow, scrollData.StartPos - camera.X, 0, scrollData.StartPos - camera.X, height);
 							}
 						}
 						break;
