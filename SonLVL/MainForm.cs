@@ -2415,8 +2415,12 @@ namespace SonicRetro.SonLVL.GUI
 					bgLayerDropDown.DropDownItems[first].Available = true;
 					bgLayerDropDown.DropDownItems[first].PerformClick();
 
+					LevelData.Background.layers[bglayer].type = RSDKv3_4.Backgrounds.Layer.LayerTypes.HScroll;
+					LevelData.Background.layers[bglayer].scrollSpeed = 0;
+					LevelData.Background.layers[bglayer].parallaxFactor = 0x100;
 					LevelData.ResizeBG(bglayer, (int)dg.levelWidth.Value, (int)dg.levelHeight.Value);
-					LevelData.BGScroll[bglayer] = new List<ScrollData>{ new ScrollData() };
+
+					LevelData.BGScroll[bglayer] = new List<ScrollData> { new ScrollData() };
 
 					SaveState($"Add Background {bglayer + 1}");
 					UpdateScrollBars();
